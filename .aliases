@@ -1,0 +1,40 @@
+#!/usr/bin/env bash
+
+#
+# navigation
+#
+alias ..="cd .."
+alias ...="cd ../.."
+alias ....="cd ../../.."
+alias .....="cd ../../../.."
+
+#
+# navigational shortcuts
+#
+alias g="cd \$HOME/box/code/go"
+alias pl="cd \$HOME/box/code/perl"
+alias ru="cd \$HOME/box/code/ruby"
+alias s="cd \$HOME/box/code/shell"
+alias p="cd \$HOME/box/code/puppet"
+alias d="cd \$HOME/box/code/docker"
+alias v="cd \$HOME/box/code/vagrant"
+alias a="cd \$HOME/box/code/ansible"
+alias pa="cd \$HOME/box/code/packer"
+
+# hub > git
+alias git="hub"
+
+# mutli-os colorized ls
+alias la="ls -laphG"
+alias ll="ls -lphG"
+alias lsd="ls -lphG | grep '^d'"
+
+# Enable aliases to be sudo’ed
+alias sudo="sudo "
+
+# vagrant status
+alias vstat="vagrant global-status"
+
+# untar (.tar || .tar.gz)
+alias untar="tar xvf"
+alias untarz="tar zxvf"
