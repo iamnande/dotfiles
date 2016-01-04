@@ -21,10 +21,13 @@ fi
 unset color_prompt force_color_prompt
 
 # bash completion on various things
-for file in /usr/local/etc/bash_completion.d/*;
-do
-  source "$file"
-done
+if [ -d '/usr/local/etc/bash_completion.d/' ];
+then
+	for file in /usr/local/etc/bash_completion.d/*;
+	do
+  		source "$file"
+	done
+fi
 
 # homebrew bash completion
 if [ "$(uname)" == "Darwin" ];
