@@ -1,5 +1,8 @@
 # go path
 export GOPATH=$HOME/box/code/go
 
+# rakudobrew path (perl6)
+export PERL6PATH=/usr/local/lib/rakudobrew
+
 # update path
-export PATH=/usr/local/bin:/usr/local/go/bin:$PATH:$GOPATH/bin:/sbin
+export PATH=/usr/local/bin:/usr/local/go/bin:$GOPATH/bin:$PERL6PATH/bin:$PATH:/sbin
