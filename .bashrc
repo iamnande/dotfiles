@@ -32,7 +32,7 @@ fi
 # homebrew bash completion
 if [ "$(uname)" == "Darwin" ];
 then
-	source $(brew --repository)/Library/Contributions/brew_bash_completion.sh
+	source $(/usr/local/bin/brew --repository)/Library/Contributions/brew_bash_completion.sh
 fi
 
 if [[ -f $HOME/.bash_profile ]];
