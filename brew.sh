@@ -11,7 +11,7 @@ do
 	kill -0 "$$" || exit
 done 2>/dev/null &
 
-# latest homebrew
+# ensure latest
 brew update
 
 # upgrade installed formulae
