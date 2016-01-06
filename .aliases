@@ -19,9 +19,6 @@ alias v="cd \$HOME/box/code/vagrant"
 # hub > git
 alias git="hub "
 
-# perl6 > perl5
-alias perl="perl6 "
-
 # mutli-os colorized ls
 alias la="ls -laphG"
 alias ll="ls -lphG"
