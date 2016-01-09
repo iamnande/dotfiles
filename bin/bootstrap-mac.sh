@@ -179,6 +179,8 @@ setup_dotfiles() {
 		cd "$homedir/vimfiles"
 		make
 	)
+
+	source "$homedir/.bashrc"
 }
 
 #
@@ -200,18 +202,18 @@ setup_go() {
 
 	# go packages
 	(
-		go get github.com/golang/lint/golint
-		go get golang.org/x/tools/cmd/cover
-		go get golang.org/x/tools/cmd/vet
-		go get golang.org/x/tools/cmd/goimports
+		go get -v github.com/golang/lint/golint
+		go get -v golang.org/x/tools/cmd/cover
+		go get -v golang.org/x/tools/cmd/vet
+		go get -v golang.org/x/tools/cmd/goimports
 
-		go get github.com/alecthomas/kingpin
+		go get -v github.com/alecthomas/kingpin
 
-		go get github.com/mavricknz/asn1-ber
-		go get github.com/mavricknz/ldap
+		go get -v github.com/mavricknz/asn1-ber
+		go get -v github.com/mavricknz/ldap
 
-		go get github.com/wafture/log
-		go get github.com/wafture/godap
+		go get -v github.com/wafture/log
+		go get -v github.com/wafture/godap
 	)
 }
 
@@ -253,6 +255,12 @@ bootstrap() {
 		log "installing golang and packages"
 		get_sudo
 		setup_go
+	elif [[ $cmd == "all" ]];
+	then
+		log "installing ALLTHETHINGS"
+		bootstrap "packages"
+		bootstrap "dotfiles"
+		bootstrap "golang"
 	else
 		usage
 	fi
