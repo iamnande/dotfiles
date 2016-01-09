@@ -179,8 +179,6 @@ setup_dotfiles() {
 		cd "$homedir/vimfiles"
 		make
 	)
-
-	source .bashrc
 }
 
 #
