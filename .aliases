@@ -11,7 +11,7 @@ alias .....="cd ../../../.."
 #
 # navigational shortcuts
 #
-alias g="cd \$HOME/box/code/golang"
+alias g="cd \$HOME/golang"
 alias p="cd \$HOME/box/code/puppet"
 alias d="cd \$HOME/box/code/docker"
 alias v="cd \$HOME/box/code/vagrant"
