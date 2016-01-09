@@ -49,6 +49,6 @@ setup_dotfiles:
 	@ln -sfn $(CURDIR)/.aliases $(HOME)/.aliases
 	@ln -sfn $(CURDIR)/.functions $(HOME)/.functions
 	@ln -sfn $(CURDIR)/.gitconfig $(HOME)/.gitconfig
-	@ln -sfn $(CURDIR)/.hush_login $(HOME)/.hushlogin
+	@ln -sfn $(CURDIR)/.hushlogin $(HOME)/.hushlogin
 	@ln -sfn $(CURDIR)/.bash_prompt $(HOME)/.bash_prompt
 	@ln -sfn $(CURDIR)/.bash_profile $(HOME)/.bash_profile
