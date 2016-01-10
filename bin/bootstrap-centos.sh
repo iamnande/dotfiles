@@ -47,22 +47,15 @@ install_packages() {
 		'rpm-build'
 		'rpmdevtools'
 		'ruby'
-		'rubygems'
-		'rubygem-aws-sdk'
-		'rubygem-bundler'
-		'rubygem-couchrest'
-		'rubygem-httparty'
-		'rubygem-ipaddress'
-		'rubygem-json'
-		'rubygem-nokogiri'
-		'rubygem-rake'
-		'sshpass'
 		'subversion'
 		'tree'
 		'unzip'
+		'wget'
 	)
 
 	log "install_packages initializing"
+	sudo yum update -y
+	sudo yum groupinstall "Development Tools"
 	sudo yum install -y ${packages[@]}
 	log "install_packages terminating"
 }
@@ -181,8 +174,10 @@ bootstrap() {
 
 	if [[ -z "$cmd" ]];
 	then
-		usage
-		exit 1
+		log "installing ALLTHETHINGS"
+		bootstrap "packages"
+		bootstrap "dotfiles"
+		bootstrap "golang"
 	fi
 
 	if [[ $cmd == "packages" ]];
@@ -201,12 +196,6 @@ bootstrap() {
 		log "installing golang and packages"
 		get_sudo
 		setup_go
-	elif [[ $cmd == "all" ]];
-	then
-		log "installing ALLTHETHINGS"
-		bootstrap "packages"
-		bootstrap "dotfiles"
-		bootstrap "golang"
 	else
 		usage
 	fi
