@@ -184,8 +184,8 @@ bootstrap() {
 	then
 		log "installing packages and apps"
 		get_sudo
-		#install_packages
-		#install_vim
+		install_packages
+		install_vim
 		install_hub
 	elif [[ $cmd == "dotfiles" ]];
 	then
