@@ -155,53 +155,14 @@ setup_go() {
 }
 
 #
-# usage
-#
-usage() {
-	echo "bootrap-centos.sh"
-	echo -e "\tThis script installs my basic setup for a CentOS machine.\n"
-	echo "Usage:"
-	echo "  packages                    - installs base packages"
-	echo "  dotfiles                    - get dotfiles"
-	echo "  golang                      - install golang and packages"
-}
-
-#
-# main bootstrap fuction
-#
-bootstrap() {
-	local cmd=$1
-
-	if [[ -z "$cmd" ]];
-	then
-		log "installing ALLTHETHINGS"
-		bootstrap "packages"
-		bootstrap "dotfiles"
-		bootstrap "golang"
-	fi
-
-	if [[ $cmd == "packages" ]];
-	then
-		log "installing packages and apps"
-		get_sudo
-		install_packages
-		install_vim
-		install_hub
-	elif [[ $cmd == "dotfiles" ]];
-	then
-		log "installing dotfiles"
-		setup_dotfiles
-	elif [[ $cmd == "golang" ]];
-	then
-		log "installing golang and packages"
-		get_sudo
-		setup_go
-	else
-		usage
-	fi
-}
-
-#
 # bootstrap my machine
 #
-bootstrap "$@"
+log "installing packages and apps"
+get_sudo
+install_packages
+install_vim
+install_hub
+log "setting up dotfiles"
+setup_dotfiles
+log "installing golang and packages"
+setup_go
