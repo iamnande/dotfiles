@@ -55,7 +55,7 @@ install_packages() {
 
 	log "install_packages initializing"
 	sudo yum update -y
-	sudo yum groupinstall "Development Tools"
+	sudo yum groupinstall -y "Development Tools"
 	sudo yum install -y ${packages[@]}
 	log "install_packages terminating"
 }
@@ -69,14 +69,10 @@ install_vim() {
 
 	(
 		cd /usr/local/src
-
 		sudo wget $vim_tarball
 		sudo tar -zjf vim-$vim_version.tar.bz2
-
 		cd vim74
-
 		sudo ./configure --prefix=/usr --with-features=huge --enable-rubyinterp --enable-pythoninterp --enable-luainterp
-
 		sudo make && sudo make install
 	)
 }
@@ -90,7 +86,6 @@ install_hub() {
 
 	(
 		sudo curl -sSL $hub_tarball | sudo tar -v -C /usr/local/src -zx
-
 		cd /usr/local/src/hub-linux-amd64-$hub_version
 		sudo ./install
 	)
@@ -109,10 +104,8 @@ setup_dotfiles() {
 		cd $homedir
 		git clone $dotfiles_repo "$homedir/dotfiles"
 		git clone --recursive $vimfiles_repo "$homedir/vimfiles"
-
 		cd "$homedir/dotfiles"
 		make
-
 		cd "$homedir/vimfiles"
 		make
 	)
