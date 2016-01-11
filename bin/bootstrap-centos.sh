@@ -26,12 +26,9 @@ log() {
 #
 install_packages() {
 	local packages=(
-		'ansible'
-		'composer'
 		'cmake'
 		'docker'
 		'dos2unix'
-		'fping'
 		'git'
 		'gcc'
 		'gcc-c++'
@@ -41,7 +38,6 @@ install_packages() {
 		'ncurses-devel'
 		'nmap'
 		'openssl'
-		'perl-Net-IP'
 		'perl-XML-LibXML'
 		'perl-LWP-Protocol-https'
 		'rpm-build'
@@ -51,6 +47,7 @@ install_packages() {
 		'tree'
 		'unzip'
 		'wget'
+		'vim-enhanced'
 	)
 
 	log "install_packages initializing"
