@@ -64,11 +64,8 @@ install_vim() {
 	local vim_tarball="ftp://ftp.vim.org/pub/vim/unix/vim-$vim_version.tar.bz2"
 
 	(
-		cd /usr/local/src
-		sudo wget $vim_tarball
-		sudo tar -zjf vim-$vim_version.tar.bz2
-		cd vim74
-		sudo ./configure --prefix=/usr --with-features=huge --enable-rubyinterp --enable-pythoninterp --enable-luainterp
+		cd /usr/local/src && sudo curl -sL $vim_tarball | tar -v -C /usr/local -jx
+		cd vim74 && sudo ./configure --prefix=/usr --with-features=huge --enable-rubyinterp --enable-pythoninterp --enable-luainterp
 		sudo make && sudo make install
 	)
 }
