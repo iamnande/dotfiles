@@ -55,7 +55,6 @@ install_packages() {
 
 	log "install_packages initializing"
 	sudo yum update -y
-	sudo yum groupinstall -y "Development Tools"
 	sudo yum install -y ${packages[@]}
 	log "install_packages terminating"
 }
