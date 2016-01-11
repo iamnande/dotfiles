@@ -64,7 +64,7 @@ install_vim() {
 	local vim_tarball="ftp://ftp.vim.org/pub/vim/unix/vim-$vim_version.tar.bz2"
 
 	(
-		cd /usr/local/src && sudo curl -sL $vim_tarball | tar -v -C /usr/local -jx
+		cd /usr/local/src && sudo curl -sL $vim_tarball | tar -v -C /usr/local/src -jx
 		cd vim74 && sudo ./configure --prefix=/usr --with-features=huge --enable-rubyinterp --enable-pythoninterp --enable-luainterp
 		sudo make && sudo make install
 	)
@@ -88,7 +88,12 @@ install_hub() {
 # setup dotfiles (bash/vim)
 #
 setup_dotfiles() {
-	local homedir="/home/$USER"
+	if [[ $USER == 'root' ]];
+	then
+		local homedir="/$USER"
+	else
+		local homedir="/home/$USER"
+	fi
 	local github_account='https://github.com/wafture'
 	local dotfiles_repo="$github_account/dotfiles.git"
 	local vimfiles_repo="$github_account/vimfiles.git"
@@ -97,10 +102,8 @@ setup_dotfiles() {
 		cd $homedir
 		git clone $dotfiles_repo "$homedir/dotfiles"
 		git clone --recursive $vimfiles_repo "$homedir/vimfiles"
-		cd "$homedir/dotfiles"
-		make
-		cd "$homedir/vimfiles"
-		make
+		cd "$homedir/dotfiles" && make
+		cd "$homedir/vimfiles" && make
 	)
 
 	source "$homedir/.bashrc"
