@@ -120,3 +120,57 @@ vgo() {
 
 	cd `$vagrant_cmd global-status | grep $machine_name | awk '{ print $5 }'`
 }
+
+#
+# pulp admin
+#
+repologin() {
+	local pulp_admin_cmd=$(which pulp)
+
+	if [[ -z $PULP_ADMIN_USER ]] || [[ -z $PULP_ADMIN_PASS ]];
+	then
+		echo "pulp credentials not set, please place them in .extras"
+		return 1
+	fi
+
+	$pulp_admin_cmd login -u $PULP_ADMIN_USER -p $PULP_ADMIN_PASS
+}
+
+repolist() {
+	local pulp_repo=$1
+	local pulp_search=$2
+	local pulp_admin_cmd=$(which pulp-admin)
+
+	if [[ -z $pulp_repo ]];
+	then
+		$pulp_admin_cmd repo list | grep nike | awk 'NR %2 { print $2 }'
+	fi
+
+	if [[ -z $pulp_search ]];
+	then
+		echo "no search query provided"
+		return 1
+	fi
+
+	$pulp_admin_cmd rpm repo content rpm --repo-id $1 --match "name=.*$pulp_search.*" | grep 'Name:' | awk '{print $2}'
+}
+
+rpmupload() {
+	local pulp_repo=$1
+	local pulp_file=$2
+	local pulp_admin_cmd=$(which pulp-admin)
+
+	if [[ -z $pulp_repo ]];
+	then
+		echo "no repository specified"
+		exit 1
+	fi
+
+	if [[ -z $pulp_file ]];
+	then
+		echo "no rpm file specified"
+		exit 1
+	fi
+
+	$pulp_admin_cmd rpm repo uploads rpm --repo-id "$pulp_repo" --file "$pulp_file"
+}
