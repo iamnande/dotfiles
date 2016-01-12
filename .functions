@@ -125,7 +125,7 @@ vgo() {
 # pulp admin
 #
 repologin() {
-	local pulp_admin_cmd=$(which pulp)
+	local pulp_admin_cmd=$(which pulp-admin)
 
 	if [[ -z $PULP_ADMIN_USER ]] || [[ -z $PULP_ADMIN_PASS ]];
 	then
