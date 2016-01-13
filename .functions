@@ -173,4 +173,5 @@ rpmupload() {
 	fi
 
 	$pulp_admin_cmd rpm repo uploads rpm --repo-id "$pulp_repo" --file "$pulp_file"
+	$pulp_admin_cmd rpm repo publish run --repo-id "$pulp_repo"
 }
