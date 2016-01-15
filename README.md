@@ -1,8 +1,4 @@
 # dotfiles
-[![build](https://img.shields.io/travis/wafture/godap.svg?style=flat)](https://travis-ci.org/wafture/godap)
----
-
-This is LARGELY based off Jess Frazelle (@jfrazelle) and her superb [dotfiles repo](https://github.com/jfrazelle/dotfiles)
 
 **To install:**
 
@@ -13,7 +9,7 @@ This will create symlinks from the checkout to your home folder.
 
 **To customize:**
 
-Save env vars, etc in a `.extra` file, that looks something like
+Save env vars, etc in a `.extras` file, that looks something like
 this:
 
 ```bash
