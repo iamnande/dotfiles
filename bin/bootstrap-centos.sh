@@ -26,18 +26,22 @@ log() {
 #
 install_packages() {
 	local packages=(
+		'autoconf'
 		'cmake'
 		'docker'
 		'dos2unix'
-		'git'
-		'gcc'
-		'gcc-c++'
+		'gcc{,-c++}'
+		'git',
+		'gettext-devel'
 		'lua'
 		'lua-devel'
 		'ncurses'
 		'ncurses-devel'
 		'nmap'
 		'openssl'
+		'openssl-devel'
+		'perl-CPAN'
+		'perl-devel'
 		'perl-XML-LibXML'
 		'perl-LWP-Protocol-https'
 		'rpm-build'
@@ -48,6 +52,7 @@ install_packages() {
 		'unzip'
 		'wget'
 		'vim-enhanced'
+		'zlib-devel'
 	)
 
 	log "install_packages initializing"
@@ -67,6 +72,27 @@ install_vim() {
 		cd /usr/local/src && sudo curl -sL $vim_tarball | tar -v -C /usr/local/src -jx
 		cd vim74 && sudo ./configure --prefix=/usr --with-features=huge --enable-rubyinterp --enable-pythoninterp --enable-luainterp
 		sudo make && sudo make install
+	)
+}
+
+#
+# install git (from source)
+#
+install_git() {
+	local curl=$(which curl)
+	local git_version="2.7.0"
+	local git_source="https://github.com/git/git/archive/v${git_version}.tar.gz"
+
+	(
+		# get source
+		$curl -sSL $git_source | tar -v -C /usr/local/src -zx
+		cd /usr/local/src/git-$git_version
+
+		# configure
+		sudo make configure && ./configure --prefix=/
+
+		# build binary and install
+		sudo make install
 	)
 }
 
@@ -150,6 +176,7 @@ log "installing packages and apps"
 get_sudo
 install_packages
 install_vim
+install_git
 install_hub
 log "setting up dotfiles"
 setup_dotfiles
