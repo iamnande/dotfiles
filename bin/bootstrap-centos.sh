@@ -89,10 +89,10 @@ install_git() {
 		cd /usr/local/src/git-$git_version
 
 		# configure
-		sudo make configure && ./configure --prefix=/
+		sudo make configure && ./configure 
 
 		# build binary and install
-		sudo make install
+		sudo make && sudo make install
 	)
 }
 
