@@ -28,9 +28,11 @@ install_packages() {
 	local packages=(
 		'autoconf'
 		'cmake'
+		'curl-devel'
 		'docker'
 		'dos2unix'
-		'gcc{,-c++}'
+		'gcc'
+		'gcc-c++'
 		'git',
 		'gettext-devel'
 		'lua'
