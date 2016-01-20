@@ -27,7 +27,6 @@ default: install
 # clean (remove) links
 #
 clean:
-	-@unlink $(HOME)/bin >/dev/null 2>&1; true
 	-@unlink $(HOME)/.path >/dev/null 2>&1; true
 	-@unlink $(HOME)/.bashrc >/dev/null 2>&1; true
 	-@unlink $(HOME)/.extras >/dev/null 2>&1; true
@@ -43,7 +42,6 @@ clean:
 # link dotfiles
 #
 setup_dotfiles:
-	@ln -sfn $(CURDIR)/bin $(HOME)/bin
 	@ln -sfn $(CURDIR)/.path $(HOME)/.path
 	@ln -sfn $(CURDIR)/.bashrc $(HOME)/.bashrc
 	@ln -sfn $(CURDIR)/.extras $(HOME)/.extras
