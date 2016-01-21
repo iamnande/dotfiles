@@ -93,32 +93,38 @@ golistdeps(){
 # ssh to a vagrant machine using a name
 #
 vssh() {
-	local machine_name=$1
+	local vagrant_dir=$1
 	local vagrant_cmd=$(which vagrant)
+	local vagrant_base="${HOME}/vagrant"
 
-	if [[ -z $machine_name ]];
+	if [[ -z $vagrant_dir ]];
 	then
-		echo "machine name not specified"
+		echo "vagrant directory not specified"
 		return 1
 	fi
 
-	$vagrant_cmd ssh `$vagrant_cmd global-status | grep $machine_name | awk '{ print $1}'`
+	local path=$(find "${vagrant_base}" -maxdepth 2 -type d -name "${vagrant_dir}")
+
+	cd "${path}" && $vagrant_cmd ssh
 }
 
 #
 # cd to a vagrant machine dir
 #
 vgo() {
-	local machine_name=$1
+	local vagrant_dir=$1
 	local vagrant_cmd=$(which vagrant)
+	local vagrant_base="${HOME}/vagrant"
 
-	if [[ -z $machine_name ]];
+	if [[ -z $vagrant_dir ]];
 	then
-		echo "machine name not specified"
+		echo "vagrant directory not specified"
 		return 1
 	fi
 
-	cd `$vagrant_cmd global-status | grep $machine_name | awk '{ print $5 }'`
+	local path=$(find "${vagrant_base}" -maxdepth 2 -type d -name "${vagrant_dir}")
+
+	cd "${path}"
 }
 
 #
