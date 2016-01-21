@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # go path
-GOPATH="$HOME/golang"
+export GOPATH="$HOME/golang"
 export PATH="$GOPATH/bin:/usr/local/go/bin:$PATH"
 
 # home bin
