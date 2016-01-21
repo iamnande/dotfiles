@@ -13,11 +13,11 @@ get_sudo() {
 #
 log() {
 	local message=$1
-	local timestamp=`/bin/date "+%Y-%m-%d %H:%M:%S %z"`
-	local fmt="$timestamp [bootstrap] $message"
+	local timestamp=()
 	if [[ -n $message ]];
 	then
-		echo "$fmt"
+		timestamp=$(/bin/date "+%Y-%m-%d %H:%M:%S %z")
+		echo "${timestamp} [bootstrap] ${message}"
 	fi
 }
 
@@ -25,41 +25,11 @@ log() {
 # install a sh!t ton of packages
 #
 install_packages() {
-	local packages=(
-		'autoconf'
-		'cmake'
-		'curl-devel'
-		'docker'
-		'dos2unix'
-		'gcc'
-		'gcc-c++'
-		'git',
-		'gettext-devel'
-		'lua'
-		'lua-devel'
-		'ncurses'
-		'ncurses-devel'
-		'nmap'
-		'openssl'
-		'openssl-devel'
-		'perl-CPAN'
-		'perl-devel'
-		'perl-XML-LibXML'
-		'perl-LWP-Protocol-https'
-		'rpm-build'
-		'rpmdevtools'
-		'ruby'
-		'subversion'
-		'tree'
-		'unzip'
-		'wget'
-		'vim-enhanced'
-		'zlib-devel'
-	)
+	local packages=(autoconf cmake curl-devel docker dos2unix gcc gcc-c++ git gettext-devel lua lua-devel ncurses ncurses-devel nmap openssl openssl-devel	perl-CPAN	perl-devel perl-XML-LibXML perl-LWP-Protocol-https rpm-build rpmdevtools ruby subversion tree unzip wget vim-enhanced	zlib-devel)
 
 	log "install_packages initializing"
 	sudo yum update -y
-	sudo yum install -y ${packages[@]}
+	sudo yum install -y "${packages[@]}"
 	log "install_packages terminating"
 }
 
@@ -68,10 +38,10 @@ install_packages() {
 #
 install_vim() {
 	local vim_version="7.4"
-	local vim_tarball="ftp://ftp.vim.org/pub/vim/unix/vim-$vim_version.tar.bz2"
+	local vim_tarball="ftp://ftp.vim.org/pub/vim/unix/vim-${vim_version}.tar.bz2"
 
 	(
-		cd /usr/local/src && sudo curl -sL $vim_tarball | tar -v -C /usr/local/src -jx
+		cd /usr/local/src && sudo curl -sL "${vim_tarball}" | tar -v -C /usr/local/src -jx
 		cd vim74 && sudo ./configure --prefix=/usr --with-features=huge --enable-rubyinterp --enable-pythoninterp --enable-luainterp
 		sudo make && sudo make install
 	)
@@ -81,17 +51,16 @@ install_vim() {
 # install git (from source)
 #
 install_git() {
-	local curl=$(which curl)
 	local git_version="2.7.0"
 	local git_source="https://github.com/git/git/archive/v${git_version}.tar.gz"
 
 	(
 		# get source
-		$curl -sSL $git_source | tar -v -C /usr/local/src -zx
-		cd /usr/local/src/git-$git_version
+		curl -sSL "${git_source}" | tar -v -C /usr/local/src -zx
+		cd "/usr/local/src/git-${git_version}" && sudo make configure
 
 		# configure
-		sudo make configure && ./configure 
+		sudo ./configure
 
 		# build binary and install
 		sudo make && sudo make install
@@ -103,12 +72,11 @@ install_git() {
 #
 install_hub() {
 	local hub_version="2.2.2"
-	local hub_tarball="https://github.com/github/hub/releases/download/v$hub_version/hub-linux-amd64-$hub_version.tgz"
+	local hub_tarball="https://github.com/github/hub/releases/download/v${hub_version}/hub-linux-amd64-${hub_version}.tgz"
 
 	(
-		sudo curl -sSL $hub_tarball | sudo tar -v -C /usr/local/src -zx
-		cd /usr/local/src/hub-linux-amd64-$hub_version
-		sudo ./install
+		sudo curl -sSL "${hub_tarball}" | sudo tar -v -C /usr/local/src -zx
+		cd "/usr/local/src/hub-linux-amd64-${hub_version}" && sudo ./install
 	)
 }
 
@@ -118,23 +86,20 @@ install_hub() {
 setup_dotfiles() {
 	if [[ $USER == 'root' ]];
 	then
-		local homedir="/$USER"
+		local homedir="/${USER}"
 	else
-		local homedir="/home/$USER"
+		local homedir="/home/${USER}"
 	fi
 	local github_account='https://github.com/wafture'
-	local dotfiles_repo="$github_account/dotfiles.git"
-	local vimfiles_repo="$github_account/vimfiles.git"
+	local dotfiles_repo="${github_account}/dotfiles.git"
+	local vimfiles_repo="${github_account}/vimfiles.git"
 
 	(
-		cd $homedir
-		git clone $dotfiles_repo "$homedir/dotfiles"
-		git clone --recursive $vimfiles_repo "$homedir/vimfiles"
-		cd "$homedir/dotfiles" && make
-		cd "$homedir/vimfiles" && make
+		git clone "${dotfiles_repo}" "${homedir}/dotfiles"
+		git clone --recursive "${vimfiles_repo}" "${homedir}/vimfiles"
+		cd "${homedir}/dotfiles" && make
+		cd "${homedir}/vimfiles" && make
 	)
-
-	source "$homedir/.bashrc"
 }
 
 #
@@ -144,14 +109,14 @@ setup_go() {
 	local go_version="1.5.2"
 	local go_source="/usr/local/go"
 
-	if [[ -d "$go_source" ]];
+	if [[ -d "${go_source}" ]];
 	then
-		sudo rm -rf "$go_source"
+		sudo rm -rf "${go_source}"
 	fi
 
 	# go
 	(
-		curl -sSL "https://storage.googleapis.com/golang/go$go_version.linux-amd64.tar.gz" | sudo tar -v -C /usr/local -zx
+		curl -sSL "https://storage.googleapis.com/golang/go${go_version}.linux-amd64.tar.gz" | sudo tar -v -C /usr/local -zx
 	)
 
 	# go packages
