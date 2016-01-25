@@ -105,7 +105,7 @@ vssh() {
 
 	local path=$(find "${vagrant_base}" -maxdepth 2 -type d -name "${vagrant_dir}")
 
-	cd "${path}" && $vagrant_cmd ssh
+	cd "${path}" && $vagrant_cmd ssh -c "sudo su -"
 }
 
 #
