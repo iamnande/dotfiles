@@ -17,7 +17,7 @@ alias d="cd \$HOME/box/code/docker"
 alias v="cd \$HOME/box/code/vagrant"
 
 # hub > git
-alias git="hub "
+#alias git="hub "
 
 # mutli-os colorized ls
 alias la="ls -laphG"
