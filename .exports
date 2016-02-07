@@ -13,7 +13,7 @@ export HISTIGNORE=" *:ls:cd:cd -:pwd:exit:date:* --help:* -h:pony:pony add *:pon
 
 # prefer us english and use utf-8
 export LANG="en_US.UTF-8";
-export LC_ALL="en_US.UTF-8";
+#export LC_ALL="en_US.UTF-8";
 
 # highlight section titles in manual pages
 export LESS_TERMCAP_md="${yellow}";
