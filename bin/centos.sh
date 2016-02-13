@@ -28,6 +28,7 @@ install_packages() {
 	local packages=(autoconf cmake curl-devel docker dos2unix gcc gcc-c++ git gettext-devel lua lua-devel ncurses ncurses-devel nmap openssl openssl-devel	perl-CPAN	perl-devel perl-XML-LibXML perl-LWP-Protocol-https rpm-build rpmdevtools ruby subversion tree unzip wget vim-enhanced	zlib-devel)
 
 	log "install_packages initializing"
+	sudo yum clean all && sudo yum makecache
 	sudo yum update -y
 	sudo yum install -y "${packages[@]}"
 	log "install_packages terminating"
@@ -133,6 +134,7 @@ setup_go() {
 
 		go get -v github.com/wafture/log
 		go get -v github.com/wafture/godap
+		go get -v github.com/wafture/gopherstack
 	)
 }
 
