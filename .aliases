@@ -12,17 +12,17 @@ alias .....="cd ../../../.."
 # navigational shortcuts
 #
 alias g="cd \$HOME/golang"
-alias p="cd \$HOME/box/code/puppet"
-alias d="cd \$HOME/box/code/docker"
-alias v="cd \$HOME/box/code/vagrant"
+alias p="cd \$HOME/puppet"
+alias d="cd \$HOME/docker"
+alias v="cd \$HOME/vagrant"
 
 # hub > git
 #alias git="hub "
 
 # mutli-os colorized ls
-alias la="ls -laph --color=auto"
-alias ll="ls -lph --color=auto"
-alias lsd="ls -lph --color=auto | grep '^d'"
+alias la="ls -laphG"
+alias ll="ls -lphG"
+alias lsd="ls -lphG | grep '^d'"
 
 # Enable aliases to be sudo’ed
 alias sudo="sudo "
