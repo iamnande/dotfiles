@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/bash
 
 #
 # sudo (with keep-alive)
@@ -77,16 +77,21 @@ install_taps() {
 #
 install_bottles() {
 	local bottles=(
-		'docker'
+		'bash-completion2'
 		'dos2unix'
+		'fping'
 		'git'
 		'hub'
+		'jq'
+		'lua'
 		'openssl'
 		'packer'
 		'ruby'
 		'subversion'
 		'tree'
 		'vagrant-completion'
+		'vim'
+		'wget'
 	)
 
 	log "install_bottles initializing"
@@ -95,10 +100,6 @@ install_bottles() {
 		log "installing bottle: ${bottle}"
 		brew install "${bottle}"
 	done
-
-	brew install wget --with-iri
-	brew install vim --with-lua --with-system-vi
-
 	log "install_bottles terminating"
 }
 
@@ -182,8 +183,6 @@ setup_go() {
 
 		go get -v github.com/wafture/log
 		go get -v github.com/wafture/godap
-		go get -v github.com/wafture/opendeploy
-		go get -v github.com/wafture/openstack
 	)
 }
 

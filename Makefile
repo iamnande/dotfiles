@@ -50,7 +50,7 @@ setup_centos:
 #
 setup_mac:
 	@echo $(fmt) "configuring system for mac"
-	@/bin/bash $(CURDIR)/bin/darwin.sh
+	@/bin/bash $(CURDIR)/bin/darwin
 
 #
 # setup for Debian
