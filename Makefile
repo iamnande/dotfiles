@@ -43,7 +43,7 @@ clean:
 #
 setup_centos:
 	@echo $(fmt) "configuring system for CentOS"
-	@/bin/bash $(CURDIR)/bin/centos.sh
+	@/bin/bash $(CURDIR)/bin/centos
 
 #
 # setup for mac
