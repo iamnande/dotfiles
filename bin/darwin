@@ -1,0 +1,197 @@
+#!/usr/bin/env bash
+
+#
+# sudo (with keep-alive)
+#
+get_sudo() {
+	sudo -v
+	while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
+}
+
+#
+# logger func
+#
+log() {
+	local msg=$1
+	local timestamp=$(/bin/date "+%Y-%m-%d %H:%M:%S %z")
+	local message="${timestamp} [setup_mac] ${msg}"
+	if [[ -n "${msg}" ]];
+	then
+		echo "${message}"
+	fi
+}
+
+#
+# install brew
+#
+install_brew() {
+	if ! command -v brew >/dev/null;
+	then
+		log "installing homebrew"
+		curl -fsSL \
+			'https://raw.githubusercontent.com/Homebrew/install/master/install' | ruby
+	else
+		log "homebrew already installed.. moving on"
+	fi
+}
+
+#
+# update brew itself
+#
+update_brew() {
+	brew update
+}
+
+#
+# upgrade installed formulae
+#
+upgrade_formulae() {
+	log "install_taps initializing"
+	brew upgrade --all
+	log "install_taps terminating"
+}
+
+#
+# install a list of taps
+#
+install_taps() {
+	local taps=(
+		'homebrew/php'
+		'caskroom/cask'
+		'homebrew/dupes'
+		'homebrew/versions'
+		'homebrew/completions'
+	)
+
+	log "install_taps initializing"
+	for tap in "${taps[@]}";
+	do
+		log "tapping ${tap}"
+		brew tap "${tap}"
+	done
+	log "install_taps terminating"
+}
+
+#
+# install a sh!t ton of bottles
+#
+install_bottles() {
+	local bottles=(
+		'docker'
+		'dos2unix'
+		'git'
+		'hub'
+		'openssl'
+		'packer'
+		'ruby'
+		'subversion'
+		'tree'
+		'vagrant-completion'
+	)
+
+	log "install_bottles initializing"
+	for bottle in "${bottles[@]}";
+	do
+		log "installing bottle: ${bottle}"
+		brew install "${bottle}"
+	done
+
+	brew install wget --with-iri
+	brew install vim --with-lua --with-system-vi
+
+	log "install_bottles terminating"
+}
+
+#
+# cleanup brew (outdated formulae)
+#
+cleanup_brew() {
+	brew cleanup
+}
+
+#
+# setup brew (install taps, bottles, etc)
+#
+setup_brew() {
+	get_sudo
+	install_brew
+	update_brew
+	upgrade_formulae
+	install_taps
+	install_bottles
+	cleanup_brew
+}
+
+#
+# setup dotfiles (bash/vim)
+#
+setup_dotfiles() {
+	local homedir="/Users/${USER}"
+	local github_account='https://github.com/wafture'
+	local dotfiles="${github_account}/dotfiles.git"
+	local vimfiles="${github_account}/vimfiles.git"
+
+	(
+		cd "${homedir}" || exit
+		git clone ${dotfiles} "${homedir}/dotfiles"
+		git clone ${vimfiles} "${homedir}/vimfiles"
+
+		cd "${homedir}/dotfiles" || exit
+		make
+
+		cd "${homedir}/vimfiles" || exit
+		make
+	)
+}
+
+#
+# install golang and packages
+#
+setup_go() {
+	get_sudo
+	local go_version="1.6" #bleeding edge ;)
+	local go_source="/usr/local/go"
+
+	if [[ -d "${go_source}" ]];
+	then
+		sudo rm -rf "${go_source}"
+	fi
+
+	# go
+	(
+		curl -sSL "https://storage.googleapis.com/golang/go${go_version}.darwin-amd64.tar.gz" | sudo tar -v -C /usr/local -zx
+	)
+
+	# go packages
+	(
+		go get -v golang.org/x/tools/cmd/cover
+		go get -v golang.org/x/tools/cmd/vet
+		go get -v golang.org/x/tools/cmd/goimports
+		go get -v golang.org/x/tools/cmd/oracle
+		go get -v golang.org/x/tools/cmd/gorename
+		go get -v github.com/golang/lint/golint
+
+		go get -v github.com/nsf/gocode
+		go get -v github.com/rogpeppe/godef
+		go get -v github.com/golang/lint/golint
+		go get -v github.com/alecthomas/kingpin
+		go get -v github.com/alecthomas/gometalinter
+		go get -v github.com/kisielk/errcheck
+		go get -v github.com/jstemmer/gotags
+		go get -v github.com/klauspost/asmfmt/cmd/asmfmt
+
+		go get -v github.com/wafture/log
+		go get -v github.com/wafture/godap
+		go get -v github.com/wafture/opendeploy
+		go get -v github.com/wafture/openstack
+	)
+}
+
+log "installing packages and apps"
+setup_brew
+
+log "installing dotfiles"
+setup_dotfiles
+
+log "installing golang and packages"
+setup_go
