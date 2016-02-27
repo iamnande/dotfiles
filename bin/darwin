@@ -124,22 +124,14 @@ setup_brew() {
 }
 
 #
-# setup dotfiles (bash/vim)
+# setup vimfiles
 #
-setup_dotfiles() {
+setup_vimfiles() {
 	local homedir="/Users/${USER}"
-	local github_account='https://github.com/wafture'
-	local dotfiles="${github_account}/dotfiles.git"
-	local vimfiles="${github_account}/vimfiles.git"
+	local vimfiles='https://github.com/wafture/vimfiles.git'
 
 	(
-		cd "${homedir}" || exit
-		git clone ${dotfiles} "${homedir}/dotfiles"
 		git clone ${vimfiles} "${homedir}/vimfiles"
-
-		cd "${homedir}/dotfiles" || exit
-		make
-
 		cd "${homedir}/vimfiles" || exit
 		make
 	)
@@ -150,7 +142,7 @@ setup_dotfiles() {
 #
 setup_go() {
 	get_sudo
-	local go_version="1.6" #bleeding edge ;)
+	local go_version="1.6"
 	local go_source="/usr/local/go"
 
 	if [[ -d "${go_source}" ]];
@@ -160,7 +152,9 @@ setup_go() {
 
 	# go
 	(
-		curl -sSL "https://storage.googleapis.com/golang/go${go_version}.darwin-amd64.tar.gz" | sudo tar -v -C /usr/local -zx
+		curl -sSL \
+		"https://storage.googleapis.com/golang/go${go_version}.darwin-amd64.tar.gz" | \
+		sudo tar -v -C /usr/local -zx
 	)
 
 	# go packages
