@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/bash
 
 #
 # sudo (with keep-alive)
@@ -12,40 +12,42 @@ get_sudo() {
 # logger func
 #
 log() {
-	local message=$1
-	local timestamp=()
-	if [[ -n $message ]];
+	local msg=$1
+	local timestamp=$(/bin/date "+%Y-%m-%d %H:%M:%S %z")
+	local message="${timestamp} [setup_mac] ${msg}"
+	if [[ -n "${msg}" ]];
 	then
-		timestamp=$(/bin/date "+%Y-%m-%d %H:%M:%S %z")
-		echo "${timestamp} [bootstrap] ${message}"
+		echo "${message}"
 	fi
 }
 
 #
-# install a sh!t ton of packages
+# install packages
 #
 install_packages() {
-	local packages=(autoconf cmake curl-devel docker dos2unix gcc gcc-c++ git gettext-devel lua lua-devel ncurses ncurses-devel nmap openssl openssl-devel	perl-CPAN	perl-devel perl-XML-LibXML perl-LWP-Protocol-https rpm-build rpmdevtools ruby subversion tree unzip wget vim-enhanced	zlib-devel)
+	get_sudo
+	local packages=(
+		'cmake'
+		'docker'
+		'dos2unix'
+		'gcc'
+		'gcc-c++'
+		'git'
+		'openssl'
+		'ruby'
+		'subversion'
+		'tree'
+		'unzip'
+		'wget'
+		'vim-enhanced'
+	)
 
 	log "install_packages initializing"
-	sudo yum clean all && sudo yum makecache
+	sudo yum clean all
+	sudo yum makecache
 	sudo yum update -y
 	sudo yum install -y "${packages[@]}"
 	log "install_packages terminating"
-}
-
-#
-# install vim from source
-#
-install_vim() {
-	local vim_version="7.4"
-	local vim_tarball="ftp://ftp.vim.org/pub/vim/unix/vim-${vim_version}.tar.bz2"
-
-	(
-		cd /usr/local/src && sudo curl -sL "${vim_tarball}" | tar -v -C /usr/local/src -jx
-		cd vim74 && sudo ./configure --prefix=/usr --with-features=huge --enable-rubyinterp --enable-pythoninterp --enable-luainterp
-		sudo make && sudo make install
-	)
 }
 
 #
@@ -91,14 +93,10 @@ setup_dotfiles() {
 	else
 		local homedir="/home/${USER}"
 	fi
-	local github_account='https://github.com/wafture'
-	local dotfiles_repo="${github_account}/dotfiles.git"
-	local vimfiles_repo="${github_account}/vimfiles.git"
+	local vimfiles='https://github.com/wafture/vimfiles.git'
 
 	(
-		git clone "${dotfiles_repo}" "${homedir}/dotfiles"
-		git clone --recursive "${vimfiles_repo}" "${homedir}/vimfiles"
-		cd "${homedir}/dotfiles" && make
+		git clone "${vimfiles}" "${homedir}/vimfiles"
 		cd "${homedir}/vimfiles" && make
 	)
 }
@@ -107,7 +105,7 @@ setup_dotfiles() {
 # install golang and packages
 #
 setup_go() {
-	local go_version="1.5.2"
+	local go_version="1.6"
 	local go_source="/usr/local/go"
 
 	if [[ -d "${go_source}" ]];
@@ -122,19 +120,24 @@ setup_go() {
 
 	# go packages
 	(
-		go get -v github.com/golang/lint/golint
 		go get -v golang.org/x/tools/cmd/cover
 		go get -v golang.org/x/tools/cmd/vet
 		go get -v golang.org/x/tools/cmd/goimports
+		go get -v golang.org/x/tools/cmd/oracle
+		go get -v golang.org/x/tools/cmd/gorename
+		go get -v github.com/golang/lint/golint
 
+		go get -v github.com/nsf/gocode
+		go get -v github.com/rogpeppe/godef
+		go get -v github.com/golang/lint/golint
 		go get -v github.com/alecthomas/kingpin
-
-		go get -v github.com/mavricknz/asn1-ber
-		go get -v github.com/mavricknz/ldap
+		go get -v github.com/alecthomas/gometalinter
+		go get -v github.com/kisielk/errcheck
+		go get -v github.com/jstemmer/gotags
+		go get -v github.com/klauspost/asmfmt/cmd/asmfmt
 
 		go get -v github.com/wafture/log
 		go get -v github.com/wafture/godap
-		go get -v github.com/wafture/gopherstack
 	)
 }
 
@@ -142,10 +145,10 @@ setup_go() {
 # bootstrap my machine
 #
 log "installing packages and apps"
-get_sudo
 install_packages
-install_vim
+log "installing git from source"
 install_git
+log "installing hub from source"
 install_hub
 log "setting up dotfiles"
 setup_dotfiles
