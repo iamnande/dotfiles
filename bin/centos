@@ -113,8 +113,9 @@ setup_dotfiles() {
 #
 setup_go() {
 	local go_version="1.6"
+	local gopath="${HOME}/golang"
 	local go_source="/usr/local/go"
-	PATH="${PATH}:/usr/local/go/bin"
+	local path="${PATH}:/usr/local/go/bin"
 
 	if [[ -d "${go_source}" ]];
 	then
@@ -128,7 +129,9 @@ setup_go() {
 
 	# go packages
 	(
-		export PATH
+		export PATH="${path}"
+		export GOPATH="${gopath}"
+
 		go get -v golang.org/x/tools/cmd/cover
 		go get -v golang.org/x/tools/cmd/vet
 		go get -v golang.org/x/tools/cmd/goimports
