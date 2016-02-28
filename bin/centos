@@ -27,7 +27,10 @@ log() {
 install_packages() {
 	get_sudo
 	local packages=(
+		'autoconf'
 		'cmake'
+		'curl'
+		'curl-devel'
 		'docker'
 		'dos2unix'
 		'fping'
@@ -35,6 +38,7 @@ install_packages() {
 		'gcc-c++'
 		'git'
 		'openssl'
+		'openssl-devel'
 		'rpm-build'
 		'rpmdevtools'
 		'ruby'
@@ -62,7 +66,7 @@ install_git() {
 
 	(
 		# get source
-		curl -sSL "${git_source}" | tar -v -C /usr/local/src -zx
+		sudo curl -sSL "${git_source}" | sudo tar -v -C /usr/local/src -zx
 		cd "/usr/local/src/git-${git_version}" && sudo make configure
 
 		# configure
@@ -110,6 +114,7 @@ setup_dotfiles() {
 setup_go() {
 	local go_version="1.6"
 	local go_source="/usr/local/go"
+	PATH="${PATH}:/usr/local/go/bin"
 
 	if [[ -d "${go_source}" ]];
 	then
@@ -123,6 +128,7 @@ setup_go() {
 
 	# go packages
 	(
+		export PATH
 		go get -v golang.org/x/tools/cmd/cover
 		go get -v golang.org/x/tools/cmd/vet
 		go get -v golang.org/x/tools/cmd/goimports

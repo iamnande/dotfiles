@@ -23,6 +23,8 @@ clean:
 	-@unlink $(HOME)/.bashrc >/dev/null 2>&1; true
 	@echo $(fmt) "unlinking .extras"
 	-@unlink $(HOME)/.extras >/dev/null 2>&1; true
+	@echo $(fmt) "unlinking .prompt"
+	-@unlink $(HOME)/.prompt >/dev/null 2>&1; true
 	@echo $(fmt) "unlinking .exports"
 	-@unlink $(HOME)/.exports >/dev/null 2>&1; true
 	@echo $(fmt) "unlinking .aliases"
@@ -33,8 +35,6 @@ clean:
 	-@unlink $(HOME)/.gitconfig >/dev/null 2>&1; true
 	@echo $(fmt) "unlinking .hushlogin"
 	-@unlink $(HOME)/.hushlogin >/dev/null 2>&1; true
-	@echo $(fmt) "unlinking .bash_prompt"
-	-@unlink $(HOME)/.bash_prompt >/dev/null 2>&1; true
 	@echo $(fmt) "unlinking .bash_profile"
 	-@unlink $(HOME)/.bash_profile >/dev/null 2>&1; true
 
@@ -79,7 +79,7 @@ link:
 	-@ln -sfn $(CURDIR)/.gitconfig $(HOME)/.gitconfig
 	@echo $(fmt) "symlinking .hushlogin"
 	-@ln -sfn $(CURDIR)/.hushlogin $(HOME)/.hushlogin
-	@echo $(fmt) "symlinking .bash_prompt"
-	-@ln -sfn $(CURDIR)/.bash_prompt $(HOME)/.bash_prompt
+	@echo $(fmt) "symlinking .prompt"
+	-@ln -sfn $(CURDIR)/.prompt $(HOME)/.prompt
 	@echo $(fmt) "symlinking .bash_profile"
 	-@ln -sfn $(CURDIR)/.bash_profile $(HOME)/.bash_profile
