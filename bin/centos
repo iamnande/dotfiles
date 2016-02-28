@@ -14,7 +14,7 @@ get_sudo() {
 log() {
 	local msg=$1
 	local timestamp=$(/bin/date "+%Y-%m-%d %H:%M:%S %z")
-	local message="${timestamp} [setup_mac] ${msg}"
+	local message="${timestamp} [setup_centos] ${msg}"
 	if [[ -n "${msg}" ]];
 	then
 		echo "${message}"
