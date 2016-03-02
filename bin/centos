@@ -149,7 +149,7 @@ setup_go() {
 		go get -v github.com/klauspost/asmfmt/cmd/asmfmt
 
 		go get -v github.com/wafture/log
-		go get -v github.com/wafture/godap
+		go get -v github.com/wafture/openstack
 	)
 }
 
