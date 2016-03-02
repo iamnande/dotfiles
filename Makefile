@@ -1,20 +1,32 @@
-.PHONY: default install clean centos darwin debian link
-
-default: clean link
-
-centos: clean setup_centos link
-
-darwin: clean setup_mac link
-
-debian: clean setup_debian link
+.PHONY: help default links clean centos darwin debian link
 
 #
-# make log
+# Help/Usage
+#
+help:
+	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | \
+	awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s %s\n", $$1, $$2}'
+
+default: help
+
+#
+# Build Commands
+#
+links: clean link ## Cleanup and re-link symlinks from source to homedir
+
+centos: clean setup_centos link ## Run build steps for a CentOS machine
+
+darwin: clean setup_darwin link ## Run build steps for a Mac machine
+
+debian: clean setup_debian link ## Run Build steps for a Debian machine
+
+#
+# Make Log Format
 #
 fmt := `/bin/date "+%Y-%m-%d %H:%M:%S %z [dotfiles]"`
 
 #
-# clean (remove) links
+# Cleanup (remove) Symlinks
 #
 clean:
 	@echo $(fmt) "unlinking .path"
@@ -39,32 +51,34 @@ clean:
 	-@unlink $(HOME)/.bash_profile >/dev/null 2>&1; true
 
 #
-# setup for CentOS
+# Build Setup for CentOS
 #
 setup_centos:
 	@echo $(fmt) "configuring system for CentOS"
 	@/bin/bash $(CURDIR)/bin/centos
 
 #
-# setup for mac
+# Build Setup for Darwin
 #
-setup_mac:
-	@echo $(fmt) "configuring system for mac"
+setup_darwin:
+	@echo $(fmt) "configuring system for Darwin"
 	@/bin/bash $(CURDIR)/bin/darwin
 
 #
-# setup for Debian
+# Build Setup for Debian
 #
 setup_debian:
 	@echo $(fmt) "configuring system for Debian"
 	@/bin/bash $(CURDIR)/bin/debian.sh
 
 #
-# link dotfiles
+# Symlink Dotfiles to $(HOME)
 #
 link:
 	@echo $(fmt) "symlinking .path"
 	-@ln -sfn $(CURDIR)/.path $(HOME)/.path
+	@echo $(fmt) "symlinking .prompt"
+	-@ln -sfn $(CURDIR)/.prompt $(HOME)/.prompt
 	@echo $(fmt) "symlinking .bashrc"
 	-@ln -sfn $(CURDIR)/.bashrc $(HOME)/.bashrc
 	@echo $(fmt) "symlinking .extras"
@@ -79,7 +93,5 @@ link:
 	-@ln -sfn $(CURDIR)/.gitconfig $(HOME)/.gitconfig
 	@echo $(fmt) "symlinking .hushlogin"
 	-@ln -sfn $(CURDIR)/.hushlogin $(HOME)/.hushlogin
-	@echo $(fmt) "symlinking .prompt"
-	-@ln -sfn $(CURDIR)/.prompt $(HOME)/.prompt
 	@echo $(fmt) "symlinking .bash_profile"
 	-@ln -sfn $(CURDIR)/.bash_profile $(HOME)/.bash_profile
