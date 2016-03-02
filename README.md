@@ -1,11 +1,15 @@
 # dotfiles
 
 **To install:**
+You have options!
 
 ```console
 $ make
+links                          Cleanup and re-link symlinks from source to homedir
+centos                         Run build steps for a CentOS machine
+darwin                         Run build steps for a Mac machine
+debian                         Run Build steps for a Debian machine
 ```
-This will create symlinks from the checkout to your home folder.
 
 **To customize:**
 
