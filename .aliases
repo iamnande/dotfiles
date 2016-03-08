@@ -1,35 +1,13 @@
 #!/usr/bin/env bash
 
-#
-# navigation
-#
-alias ..="cd .."
-alias ...="cd ../.."
-alias ....="cd ../../.."
-alias .....="cd ../../../.."
-
-#
-# navigational shortcuts
-#
-alias g="cd \$HOME/golang"
-alias p="cd \$HOME/puppet"
-alias d="cd \$HOME/docker"
-alias v="cd \$HOME/vagrant"
-
-# hub > git
-#alias git="hub "
+# Enable aliases to be sudo’ed
+alias sudo="sudo "
 
 # mutli-os colorized ls
 alias la="ls -laphG"
 alias ll="ls -lphG"
 alias lsd="ls -lphG | grep '^d'"
 
-# Enable aliases to be sudo’ed
-alias sudo="sudo "
-
-# vagrant status
-alias vstat="vagrant global-status"
-
-# untar (.tar || .tar.gz)
-alias untar="tar xvf"
-alias untarz="tar zxvf"
+# ruby ish
+alias brake="bundle exec rake"
+alias bint="bundle install --without system_tests --path=${BUNDLE_PATH:-vendor/bundle}"
