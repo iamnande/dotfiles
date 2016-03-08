@@ -180,6 +180,24 @@ setup_go() {
 	)
 }
 
+#
+# install rvm (ruby versioning)
+# http://rvm.io
+#
+setup_rvm() {
+  local rvm_rev="stable"
+  local home_dir="/Users/${USER}"
+  local rvm_url="https://get.rvm.io"
+  local rvm_exe="${home_dir}/.rvm/bin/rvm"
+
+  (
+  	cd "${HOME}"
+	curl -sSL "${rvm_url}" | bash -s "${rvm_rev}"
+
+	eval "${rvm_exe} use 2.1.6 --install --binary --fuzzy" # for poopets
+  )
+}
+
 log "installing packages and apps"
 setup_brew
 
@@ -188,3 +206,6 @@ setup_dotfiles
 
 log "installing golang and packages"
 setup_go
+
+log "installing ruby/rvm"
+setup_rvm
