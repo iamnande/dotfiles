@@ -77,16 +77,23 @@ install_taps() {
 #
 install_bottles() {
 	local bottles=(
+		'autoconf'
+		'automake'
 		'bash-completion2'
+		'curl'
 		'dos2unix'
 		'fping'
 		'git'
 		'hub'
 		'jq'
+		'libxml2'
+		'libxslt'
+		'libyaml'
 		'lua'
 		'openssl'
 		'packer'
 		'ruby'
+		'shellcheck'
 		'subversion'
 		'tree'
 		'vagrant-completion'
