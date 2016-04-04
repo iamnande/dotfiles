@@ -10,4 +10,4 @@ alias lsd="ls -lphG | grep '^d'"
 
 # ruby ish
 alias brake="bundle exec rake"
-alias bint="bundle install --without system_tests --path=${BUNDLE_PATH:-vendor/bundle}"
+alias bint="bundle install --without system_tests --path=.bundle"
