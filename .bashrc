@@ -21,23 +21,30 @@ fi
 unset color_prompt force_color_prompt
 
 # bash completion on various things
-if [ -d '/usr/local/etc/bash_completion.d/' ];
+if [ -d $(/usr/local/bin/brew --prefix) ];
 then
-	for file in /usr/local/etc/bash_completion.d/*;
-	do
-  		source "$file"
-	done
+  source $(/usr/local/bin/brew --prefix)/share/bash-completion/bash_completion
+  for file in /usr/local/etc/bash_completion.d/*;
+  do
+    source "${file}"
+  done
 fi
 
 # homebrew bash completion
 if [ "$(uname)" == "Darwin" ];
 then
-	source $(/usr/local/bin/brew --repository)/Library/Contributions/brew_bash_completion.sh
+  if [[ -d $(/usr/local/bin/brew --prefix)/Cellar ]];
+  then
+    for file in /usr/local/etc/bash_completion.d/*;
+    do
+      source "${file}"
+    done
+  fi
 fi
 
 if [[ -f $HOME/.bash_profile ]];
 then
-	source $HOME/.bash_profile
+  source $HOME/.bash_profile
 fi
 
 export PATH="$PATH:$HOME/.rvm/bin" # Add RVM to PATH for scripting
