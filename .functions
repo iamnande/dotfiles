@@ -169,13 +169,13 @@ rpmupload() {
 	if [[ -z $pulp_repo ]];
 	then
 		echo "no repository specified"
-		exit 1
+		return 0
 	fi
 
 	if [[ -z $pulp_file ]];
 	then
 		echo "no rpm file specified"
-		exit 1
+		return 0
 	fi
 
 	$pulp_admin_cmd rpm repo uploads rpm --repo-id "$pulp_repo" --file "$pulp_file"
