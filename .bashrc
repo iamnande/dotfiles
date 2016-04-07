@@ -20,21 +20,21 @@ else
 fi
 unset color_prompt force_color_prompt
 
-# bash completion on various things
-if [ -d $(/usr/local/bin/brew --prefix) ];
-then
-  source $(/usr/local/bin/brew --prefix)/share/bash-completion/bash_completion
-  for file in /usr/local/etc/bash_completion.d/*;
-  do
-    source "${file}"
-  done
-fi
 
 # homebrew bash completion
 if [ "$(uname)" == "Darwin" ];
 then
   if [[ -f /usr/local/bin/brew ]];
   then
+    # bash completion on various things
+    if [ -d $(/usr/local/bin/brew --prefix) ];
+    then
+      source $(/usr/local/bin/brew --prefix)/share/bash-completion/bash_completion
+      for file in /usr/local/etc/bash_completion.d/*;
+      do
+        source "${file}"
+      done
+    fi
     if [[ -d $(/usr/local/bin/brew --prefix)/Cellar ]];
     then
       for file in /usr/local/etc/bash_completion.d/*;
