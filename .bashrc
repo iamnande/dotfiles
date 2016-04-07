@@ -33,12 +33,15 @@ fi
 # homebrew bash completion
 if [ "$(uname)" == "Darwin" ];
 then
-  if [[ -d $(/usr/local/bin/brew --prefix)/Cellar ]];
+  if [[ -f /usr/local/bin/brew ]];
   then
-    for file in /usr/local/etc/bash_completion.d/*;
-    do
-      source "${file}"
-    done
+    if [[ -d $(/usr/local/bin/brew --prefix)/Cellar ]];
+    then
+      for file in /usr/local/etc/bash_completion.d/*;
+      do
+        source "${file}"
+   	  done
+  	fi
   fi
 fi
 
