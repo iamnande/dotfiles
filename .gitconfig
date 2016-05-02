@@ -92,10 +92,10 @@
 
 [user]
 	name = Nicholas Anderson
-	email = nick@miletwo.net
+	email = nicholas.anderson@nike.com
 
 [github]
-	user = wafture
+	user = iamnande
 
 [credential]
 	helper = store --file ~/box/.git-credentials
