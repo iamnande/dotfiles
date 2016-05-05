@@ -135,7 +135,7 @@ setup_brew() {
 #
 setup_vimfiles() {
 	local homedir="/Users/${USER}"
-	local vimfiles='https://github.com/wafture/vimfiles.git'
+	local vimfiles='https://github.com/iamnande/vimfiles.git'
 
 	(
 		git clone ${vimfiles} "${homedir}/vimfiles"
@@ -182,8 +182,8 @@ setup_go() {
 		go get -v github.com/jstemmer/gotags
 		go get -v github.com/klauspost/asmfmt/cmd/asmfmt
 
-		go get -v github.com/wafture/log
-		go get -v github.com/wafture/openstack
+		go get -v github.com/iamnande/log
+		go get -v github.com/iamnande/openstack
 	)
 }
 
