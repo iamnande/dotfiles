@@ -1,6 +1,7 @@
 [alias]
 	# View abbreviated SHA, description, and history graph of the latest 20 commits
 	l = log --pretty=oneline -n 20 --graph
+	lc = log --pretty=oneline -n 1
 
 	# current working tree status using the short format
 	s= status -s
