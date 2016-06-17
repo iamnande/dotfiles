@@ -166,24 +166,24 @@ setup_go() {
 
 	# go packages
 	(
-		go get -v golang.org/x/tools/cmd/cover
-		go get -v golang.org/x/tools/cmd/vet
-		go get -v golang.org/x/tools/cmd/goimports
-		go get -v golang.org/x/tools/cmd/oracle
-		go get -v golang.org/x/tools/cmd/gorename
-		go get -v github.com/golang/lint/golint
+		/usr/local/go/bin/go get -v golang.org/x/tools/cmd/cover
+		/usr/local/go/bin/go get -v golang.org/x/tools/cmd/vet
+		/usr/local/go/bin/go get -v golang.org/x/tools/cmd/goimports
+		/usr/local/go/bin/go get -v golang.org/x/tools/cmd/oracle
+		/usr/local/go/bin/go get -v golang.org/x/tools/cmd/gorename
+		/usr/local/go/bin/go get -v github.com/golang/lint/golint
 
-		go get -v github.com/nsf/gocode
-		go get -v github.com/rogpeppe/godef
-		go get -v github.com/golang/lint/golint
-		go get -v github.com/alecthomas/kingpin
-		go get -v github.com/alecthomas/gometalinter
-		go get -v github.com/kisielk/errcheck
-		go get -v github.com/jstemmer/gotags
-		go get -v github.com/klauspost/asmfmt/cmd/asmfmt
+		/usr/local/go/bin/go get -v github.com/nsf/gocode
+		/usr/local/go/bin/go get -v github.com/rogpeppe/godef
+		/usr/local/go/bin/go get -v github.com/golang/lint/golint
+		/usr/local/go/bin/go get -v github.com/alecthomas/kingpin
+		/usr/local/go/bin/go get -v github.com/alecthomas/gometalinter
+		/usr/local/go/bin/go get -v github.com/kisielk/errcheck
+		/usr/local/go/bin/go get -v github.com/jstemmer/gotags
+		/usr/local/go/bin/go get -v github.com/klauspost/asmfmt/cmd/asmfmt
 
-		go get -v github.com/iamnande/log
-		go get -v github.com/iamnande/openstack
+		/usr/local/go/bin/go get -v github.com/iamnande/bodega
+		/usr/local/go/bin/go get -v github.com/iamnande/openstack
 	)
 }
 
