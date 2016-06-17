@@ -79,6 +79,7 @@ install_bottles() {
 	local bottles=(
 		'autoconf'
 		'automake'
+		'bash'
 		'bash-completion2'
 		'curl'
 		'dos2unix'
@@ -89,7 +90,6 @@ install_bottles() {
 		'libxml2'
 		'libxslt'
 		'libyaml'
-		'lua'
 		'openssl'
 		'packer'
 		'ruby'
@@ -208,8 +208,8 @@ setup_rvm() {
 log "installing packages and apps"
 setup_brew
 
-log "installing dotfiles"
-setup_dotfiles
+log "installing vimfiles"
+setup_vimfiles
 
 log "installing golang and packages"
 setup_go
