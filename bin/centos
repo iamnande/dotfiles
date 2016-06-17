@@ -61,7 +61,7 @@ install_packages() {
 # install git (from source)
 #
 install_git() {
-	local git_version="2.7.0"
+	local git_version="2.9.0"
 	local git_source="https://github.com/git/git/archive/v${git_version}.tar.gz"
 
 	(
@@ -81,7 +81,7 @@ install_git() {
 # install hub (from source)
 #
 install_hub() {
-	local hub_version="2.2.2"
+	local hub_version="2.2.3"
 	local hub_tarball="https://github.com/github/hub/releases/download/v${hub_version}/hub-linux-amd64-${hub_version}.tgz"
 
 	(
