@@ -3,24 +3,17 @@
 # make vim the default editor
 export EDITOR=/usr/local/bin/vim;
 
-# larger bash history (allow 32³ entries; default is 500)
+# history
 export HISTSIZE=50000000;
 export HISTFILESIZE=$HISTSIZE;
 export HISTCONTROL=ignoredups;
-
-# hide some stuff from bash history
-export HISTIGNORE=" *:ls:cd:cd -:pwd:exit:date:* --help:* -h:pony:pony add *:pony update *:pony save *:pony ls:pony ls *";
+export HISTIGNORE="ls:cd:cd -:pwd:exit:date:* --help:* -h";
 
 # prefer us english and use utf-8
 export LANG="en_US.UTF-8";
-#export LC_ALL="en_US.UTF-8";
 
 # highlight section titles in manual pages
 export LESS_TERMCAP_md="${yellow}";
 
 # don’t clear the screen after quitting a manual page
 export MANPAGER="less -X";
-
-# turn on go vendoring experiment
-export GO15VENDOREXPERIMENT=1
-export GOMAXPROCS=1
