@@ -3,6 +3,9 @@
 # make vim the default editor
 export EDITOR=/usr/local/bin/vim;
 
+# show three levels of pwd
+export PROMPT_DIRTRIM=3
+
 # history
 export HISTSIZE=50000000;
 export HISTFILESIZE=$HISTSIZE;
