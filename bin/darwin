@@ -149,7 +149,7 @@ setup_vimfiles() {
 #
 setup_go() {
 	get_sudo
-	local go_version="1.6"
+	local go_version="1.7"
 	local go_source="/usr/local/go"
 
 	if [[ -d "${go_source}" ]];

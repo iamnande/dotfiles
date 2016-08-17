@@ -112,7 +112,7 @@ setup_dotfiles() {
 # install golang and packages
 #
 setup_go() {
-	local go_version="1.6"
+	local go_version="1.7"
 	local gopath="${HOME}/golang"
 	local go_source="/usr/local/go"
 	local path="${PATH}:/usr/local/go/bin"
