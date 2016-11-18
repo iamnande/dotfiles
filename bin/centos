@@ -113,6 +113,8 @@ go_from_source() {
   (
     write_log "${FUNCNAME[0]} => intalling go v${go_vrs}"
     curl -sSL "${go_tar}" | tar -C /usr/local -zx
+
+    go get -u github.com/iamnande/openstack
   )
 
   write_log "${FUNCNAME[0]} => done"
