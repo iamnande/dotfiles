@@ -70,23 +70,23 @@ setup_mac:
 #
 link_home:
 	@echo "$(fmt)$@::link init"
-	@ln -sfn $(CURDIR)/.path $(HOME)/path
+	@ln -sfn $(CURDIR)/path $(HOME)/.path
 	@echo "$(fmt)$@::link => prompt"
-	@ln -sfn $(CURDIR)/.prompt $(HOME)/prompt
+	@ln -sfn $(CURDIR)/prompt $(HOME)/.prompt
 	@echo "$(fmt)$@::link => bashrc"
-	@ln -sfn $(CURDIR)/.bashrc $(HOME)/bashrc
+	@ln -sfn $(CURDIR)/bashrc $(HOME)/.bashrc
 	@echo "$(fmt)$@::link => extras"
-	@ln -sfn $(CURDIR)/.extras $(HOME)/extras
+	@ln -sfn $(CURDIR)/extras $(HOME)/.extras
 	@echo "$(fmt)$@::link => exports"
-	@ln -sfn $(CURDIR)/.exports $(HOME)/exports
+	@ln -sfn $(CURDIR)/exports $(HOME)/.exports
 	@echo "$(fmt)$@::link => aliases"
-	@ln -sfn $(CURDIR)/.aliases $(HOME)/aliases
+	@ln -sfn $(CURDIR)/aliases $(HOME)/.aliases
 	@echo "$(fmt)$@::link => functions"
-	@ln -sfn $(CURDIR)/.functions $(HOME)/functions
+	@ln -sfn $(CURDIR)/functions $(HOME)/.functions
 	@echo "$(fmt)$@::link => gitconfig"
-	@ln -sfn $(CURDIR)/.gitconfig $(HOME)/gitconfig
+	@ln -sfn $(CURDIR)/gitconfig $(HOME)/.gitconfig
 	@echo "$(fmt)$@::link => hushlogin"
-	@ln -sfn $(CURDIR)/.hushlogin $(HOME)/hushlogin
+	@ln -sfn $(CURDIR)/hushlogin $(HOME)/.hushlogin
 	@echo "$(fmt)$@::link => bash_profile"
-	@ln -sfn $(CURDIR)/.bash_profile $(HOME)/bash_profile
+	@ln -sfn $(CURDIR)/bash_profile $(HOME)/.bash_profile
 	@echo "$(fmt)$@::link done"
