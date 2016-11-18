@@ -12,9 +12,10 @@ help:
 #
 # make: targets
 #
-clean:  clean_home                        ## clean workspace symlinks
 mac:    clean_home setup_mac link_home    ## setup mac workstation
 centos: clean_home setup_centos link_home ## setup centos/rhel machine
+clean:  clean_home                        ## clean workspace symlinks
+links:  link_home                         ## clean workspace symlinks
 
 #
 # make: log
