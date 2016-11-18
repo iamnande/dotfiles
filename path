@@ -1,16 +1,9 @@
 #!/usr/bin/env bash
 
-# go path
-export GOPATH="$HOME/golang"
-export PATH="$GOPATH/bin:/usr/local/go/bin:$PATH"
-
-# home bin
-HOMEBIN="$HOME/bin"
-export PATH="$HOMEBIN:$PATH"
-
-# puppet bin
-PUPPETBIN="/opt/puppet/bin"
-export PATH="$PATH:$PUPPETBIN"
-
 # global path
-export PATH="/usr/local/bin:$PATH:/sbin"
+export PATH="/usr/local/bin:${PATH}:/sbin"
+
+# go path
+export GOPATH="${HOME}/go"
+export GOROOT="/usr/local/go"
+export PATH="${GOPATH}/bin:${GOROOT}/bin:${PATH}"
