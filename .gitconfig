@@ -42,14 +42,6 @@
 	contributors = shortlog --summary --numbered
 	lg = log --color --decorate --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an (%G?)>%Creset' --abbrev-commit
 
-  # git-codereview
-  change = codereview change
-  gofmt = codereview gofmt
-  mail = codereview mail
-  pending = codereview pending
-  submit = codereview submit
-  sync = codereview sync
-
 [apply]
 	# Detect whitespace errors when applying a patch
 	whitespace = fix

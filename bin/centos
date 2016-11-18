@@ -1,168 +1,166 @@
 #!/bin/bash
+#
+# RHEL/Centos Bootstrap Script
+#
+set -u -e
 
 #
-# sudo (with keep-alive)
+# write log
 #
-get_sudo() {
-	sudo -v
-	while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
-}
-
-#
-# logger func
-#
-log() {
-	local msg=$1
-	local timestamp=$(/bin/date "+%Y-%m-%d %H:%M:%S %z")
-	local message="${timestamp} [setup_centos] ${msg}"
-	if [[ -n "${msg}" ]];
-	then
-		echo "${message}"
-	fi
+write_log() {
+  if [[ -n "${1}" ]];
+  then
+    local datestamp=$(/bin/date "+%Y-%m-%d %H:%M:%S %z")
+    echo "${datestamp} make::centos::${1}"
+  fi
 }
 
 #
 # install packages
 #
-install_packages() {
-	get_sudo
-	local packages=(
-		'autoconf'
-		'cmake'
-		'curl'
-		'curl-devel'
-		'docker'
-		'dos2unix'
-		'fping'
-		'gcc'
-		'gcc-c++'
-		'git'
-		'openssl'
-		'openssl-devel'
-		'rpm-build'
-		'rpmdevtools'
-		'ruby'
-		'subversion'
-		'tree'
-		'unzip'
-		'wget'
-		'vim-enhanced'
-	)
+yum_packages() {
+  local packages=(
+    'autoconf'
+    'cmake'
+    'curl'
+    'curl-devel'
+    'fping'
+    'gcc'
+    'gcc-c++'
+    'lua-devel'
+    'ncurses-devel'
+    'openssl'
+    'openssl-devel'
+    'rpm-build'
+    'rpmdevtools'
+    'ruby'
+    'subversion'
+    'tree'
+    'unzip'
+    'wget'
+  )
 
-	log "install_packages initializing"
-	sudo yum clean all
-	sudo yum makecache
-	sudo yum update -y
-	sudo yum install -y "${packages[@]}"
-	log "install_packages terminating"
+  write_log "${FUNCNAME[0]} => init"
+
+  write_log "${FUNCNAME[0]} => update system"
+  yum update -y -q -e 0
+
+  write_log "${FUNCNAME[0]} => install packages"
+  yum install -y -q -e 0 "${packages[@]}"
+
+  write_log "${FUNCNAME[0]} => done"
 }
 
 #
 # install git (from source)
 #
-install_git() {
-	local git_version="2.9.0"
-	local git_source="https://github.com/git/git/archive/v${git_version}.tar.gz"
+git_from_source() {
+  local git_vrs="2.10.2"
+  local git_src="/usr/local/src"
+  local git_tar="https://github.com/git/git/archive/v${git_vrs}.tar.gz"
 
-	(
-		# get source
-		sudo curl -sSL "${git_source}" | sudo tar -v -C /usr/local/src -zx
-		cd "/usr/local/src/git-${git_version}" && sudo make configure
+  write_log "${FUNCNAME[0]} => init"
+  (
+    curl -sSL "${git_tar}" | tar -C "${git_src}" -zx
 
-		# configure
-		sudo ./configure
+    cd "${git_src}/git-${git_vrs}"
+    make configure
+    ./configure
 
-		# build binary and install
-		sudo make && sudo make install
-	)
+    write_log "${FUNCNAME[0]} => intalling version ${git_vrs}"
+    make
+    make install
+  )
+  write_log "${FUNCNAME[0]} => done"
 }
 
 #
 # install hub (from source)
 #
-install_hub() {
-	local hub_version="2.2.3"
-	local hub_tarball="https://github.com/github/hub/releases/download/v${hub_version}/hub-linux-amd64-${hub_version}.tgz"
+hub_from_source() {
+  local hub_vrs="2.3.0-pre8"
+  local hub_src="/usr/local/src"
+  local hub_tar="https://github.com/github/hub/releases/download/v${hub_vrs}/hub-linux-amd64-${hub_vrs}.tgz"
 
-	(
-		sudo curl -sSL "${hub_tarball}" | sudo tar -v -C /usr/local/src -zx
-		cd "/usr/local/src/hub-linux-amd64-${hub_version}" && sudo ./install
-	)
-}
+  write_log "${FUNCNAME[0]} => init"
+  (
+    curl -sSL "${hub_tar}" | tar -C "${hub_src}" -zx
 
-#
-# setup dotfiles (bash/vim)
-#
-setup_dotfiles() {
-	if [[ $USER == 'root' ]];
-	then
-		local homedir="/${USER}"
-	else
-		local homedir="/home/${USER}"
-	fi
-	local vimfiles='https://github.com/iamnande/vimfiles.git'
-
-	(
-		git clone "${vimfiles}" "${homedir}/vimfiles"
-		cd "${homedir}/vimfiles" && make
-	)
+    cd "${hub_src}/hub-linux-amd64-${hub_vrs}"
+    write_log "${FUNCNAME[0]} => intalling hub v${hub_vrs}"
+    ./install
+  )
+  write_log "${FUNCNAME[0]} => done"
 }
 
 #
 # install golang and packages
 #
-setup_go() {
-	local go_version="1.7"
-	local gopath="${HOME}/golang"
-	local go_source="/usr/local/go"
-	local path="${PATH}:/usr/local/go/bin"
+go_from_source() {
+  local go_vrs="1.7.3"
+  local go_src="/usr/local/go"
+  local go_tar="https://storage.googleapis.com/golang/go${go_vrs}.linux-amd64.tar.gz"
 
-	if [[ -d "${go_source}" ]];
-	then
-		sudo rm -rf "${go_source}"
-	fi
+  write_log "${FUNCNAME[0]} => init"
 
-	# go
-	(
-		curl -sSL "https://storage.googleapis.com/golang/go${go_version}.linux-amd64.tar.gz" | sudo tar -v -C /usr/local -zx
-	)
+  # remove old version
+  if [[ -d "${go_src}" ]];
+  then
+    rm -rf "${go_src}"
+  fi
 
-	# go packages
-	(
-		export PATH="${path}"
-		export GOPATH="${gopath}"
+	# install go
+  (
+    write_log "${FUNCNAME[0]} => intalling go v${go_vrs}"
+    curl -sSL "${go_tar}" | tar -C /usr/local -zx
+  )
 
-		go get -v golang.org/x/tools/cmd/cover
-		go get -v golang.org/x/tools/cmd/vet
-		go get -v golang.org/x/tools/cmd/goimports
-		go get -v golang.org/x/tools/cmd/oracle
-		go get -v golang.org/x/tools/cmd/gorename
-		go get -v github.com/golang/lint/golint
+  write_log "${FUNCNAME[0]} => done"
+}
 
-		go get -v github.com/nsf/gocode
-		go get -v github.com/rogpeppe/godef
-		go get -v github.com/golang/lint/golint
-		go get -v github.com/alecthomas/kingpin
-		go get -v github.com/alecthomas/gometalinter
-		go get -v github.com/kisielk/errcheck
-		go get -v github.com/jstemmer/gotags
-		go get -v github.com/klauspost/asmfmt/cmd/asmfmt
+#
+# install vim
+#
+vim_from_source() {
+  local vim_vrs="8.0"
+  local vim_cfg=(
+    "--prefix=/usr"
+    "--enable-luainterp"
+    "--enable-rubyinterp"
+    "--with-features=huge"
+    "--enable-pythoninterp"
+  )
+  local vim_src="/usr/local/src"
+  local vim_tar="ftp://ftp.vim.org/pub/vim/unix/vim-${vim_vrs}.tar.bz2"
 
-		go get -v github.com/iamnande/log
-		go get -v github.com/iamnande/openstack
-	)
+  write_log "${FUNCNAME[0]} => init"
+  (
+    curl -sSL "${vim_tar}" | tar -C "${vim_src}" -xj
+
+    cd "${vim_src}/vim80"
+    ./configure "${vim_cfg[@]}"
+
+    write_log "${FUNCNAME[0]} => installing vim v${vim_vrs}"
+    make
+    make install
+  )
+  write_log "${FUNCNAME[0]} => done"
 }
 
 #
 # bootstrap my machine
 #
-log "installing packages and apps"
-install_packages
-log "installing git from source"
-install_git
-log "installing hub from source"
-install_hub
-log "setting up dotfiles"
-setup_dotfiles
-log "installing golang and packages"
-setup_go
+main() {
+  write_log "${FUNCNAME[0]} => yum"
+  yum_packages
+  write_log "${FUNCNAME[0]} => go"
+  go_from_source
+  write_log "${FUNCNAME[0]} => git"
+  git_from_source
+  write_log "${FUNCNAME[0]} => hub"
+  hub_from_source
+  write_log "${FUNCNAME[0]} => vim"
+  vim_from_source
+}
+
+main

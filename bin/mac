@@ -1,0 +1,149 @@
+#!/bin/bash
+#
+# MAC Bootstrap Script
+#
+set -u -e
+
+#
+# get sudo
+#
+get_sudo() {
+  sudo -v
+  while true;
+  do
+    sudo -n true;
+    sleep 60;
+    kill -0 "$$" || exit;
+  done 2>/dev/null &
+}
+
+#
+# write log
+#
+write_log() {
+  if [[ -n "${1}" ]];
+  then
+    local datestamp=$(/bin/date "+%Y-%m-%d %H:%M:%S %z")
+    echo "${datestamp} make::mac::${1}"
+  fi
+}
+
+#
+# install brew
+#
+install_brew() {
+  if ! command -v brew >/dev/null;
+  then
+    log "installing homebrew"
+    curl -fsSL \
+      'https://raw.githubusercontent.com/Homebrew/install/master/install' | ruby
+  else
+    log "homebrew already installed.. moving on"
+  fi
+}
+
+#
+# update brew itself
+#
+update_brew() {
+  brew update
+}
+
+#
+# upgrade installed formulae
+#
+upgrade_formulae() {
+  log "install_taps initializing"
+  brew upgrade --all
+  log "install_taps terminating"
+}
+
+#
+# install a list of taps
+#
+install_taps() {
+  local taps=(
+    'homebrew/php'
+    'caskroom/cask'
+    'homebrew/dupes'
+    'homebrew/versions'
+    'homebrew/completions'
+  )
+
+  log "install_taps initializing"
+  for tap in "${taps[@]}";
+  do
+    log "tapping ${tap}"
+    brew tap "${tap}"
+  done
+  log "install_taps terminating"
+}
+
+#
+# install a sh!t ton of bottles
+#
+install_bottles() {
+  local bottles=(
+    'bash'
+    'bash-completion2'
+    'jq'
+    'openssl'
+    'shellcheck'
+    'subversion'
+    'tree'
+    'vagrant-completion'
+  )
+
+  log "install_bottles initializing"
+  for bottle in "${bottles[@]}";
+  do
+    log "installing bottle: ${bottle}"
+    brew install "${bottle}"
+  done
+  log "install_bottles terminating"
+}
+
+#
+# cleanup brew (outdated formulae)
+#
+cleanup_brew() {
+  brew cleanup
+}
+
+#
+# setup brew (install taps, bottles, etc)
+#
+setup_brew() {
+  get_sudo
+  install_brew
+  update_brew
+  upgrade_formulae
+  install_taps
+  install_bottles
+  cleanup_brew
+}
+
+#
+# install rvm
+#
+setup_rvm() {
+  local rvm_rev="stable"
+  local rvm_url="https://get.rvm.io"
+  local rvm_exe="/Users/${USER}/.rvm/bin/rvm"
+
+  (
+    cd "/Users/${USER}"
+    curl -sSL "${rvm_url}" | bash -s "${rvm_rev}"
+  )
+}
+
+#
+# setup: entry point
+#
+main() {
+  setup_brew
+  setup_go
+  setup_rvm
+}
+
+main

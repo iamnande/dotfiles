@@ -8,6 +8,9 @@ alias la="ls -laphG"
 alias ll="ls -lphG"
 alias lsd="ls -lphG | grep '^d'"
 
+# git/hub
+eval "$(hub alias -s)"
+
 # ruby ish
 alias brake="bundle exec rake"
 alias bint="bundle install --without system_tests --path=.bundle"
