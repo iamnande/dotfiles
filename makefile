@@ -20,7 +20,7 @@ links:  link_home                         ## clean workspace symlinks
 #
 # make: log
 #
-fmt := `/bin/date "+%Y-%m-%d %H:%M:%S %z make::"`
+fmt := `/bin/date "+%Y-%m-%d %H:%M:%S %z make::dotfiles"`
 
 #
 # remove symlinks to homedir
