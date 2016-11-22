@@ -5,8 +5,8 @@
 up      = sync
 stat    = status -s
 contrib = shortlog --summary --numbered
-ll      = log --pretty=oneline --number 10 --graph --abbrev-commit
-lg      = log --color --decorate --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an (%G?)>%Creset' --abbrev-commit --number 10
+ll      = log --pretty=oneline -n 10 --graph --abbrev-commit
+lg      = log --color --decorate --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an (%G?)>%Creset' --abbrev-commit -n 10
 
 #
 # git: core configs
