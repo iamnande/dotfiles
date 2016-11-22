@@ -27,6 +27,7 @@ yum_packages() {
     'fping'
     'gcc'
     'gcc-c++'
+    'jq'
     'lua-devel'
     'ncurses-devel'
     'openssl'
