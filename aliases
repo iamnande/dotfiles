@@ -9,7 +9,10 @@ alias ll="ls -lphG"
 alias lsd="ls -lphG | grep '^d'"
 
 # git/hub
-eval "$(hub alias -s)"
+if [[ -f "/usr/local/bin/hub" ]];
+then
+  eval "$(hub alias -s)"
+fi
 
 # ruby ish
 alias brake="bundle exec rake"
