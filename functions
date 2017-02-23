@@ -93,19 +93,20 @@ golistdeps(){
 # ssh to a vagrant machine using a name
 #
 vssh() {
-	local vagrant_dir=$1
-	local vagrant_cmd=$(which vagrant)
-	local vagrant_base="${HOME}/vagrant"
+  local box_name="${1}"
 
-	if [[ -z $vagrant_dir ]];
-	then
-		echo "vagrant directory not specified"
-		return 1
-	fi
+  if [[ -z "${box_name}" ]]; then
+    echo "box name not provided.. boo!"
+    return 1
+  fi
 
-	local path=$(find "${vagrant_base}" -maxdepth 2 -type d -name "${vagrant_dir}")
+  local v_cmd=$(which vagrant)
+  local v_stat=$($v_cmd global-status)
+  local dir=$(grep "${box_name}" <<< "${v_stat}" | awk '{print $5}')
+  local name=$(grep "${box_name}" <<< "${v_stat}" | awk '{print $1}')
 
-	cd "${path}" && $vagrant_cmd ssh -c "sudo su -"
+  cd "${dir}" && $v_cmd ssh -c "sudo su -" $box_name
+
 }
 
 #
