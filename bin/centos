@@ -56,7 +56,7 @@ yum_packages() {
 # install git (from source)
 #
 git_from_source() {
-  local git_vrs="2.10.2"
+  local git_vrs="2.11.1"
   local git_src="/usr/local/src"
   local git_tar="https://github.com/git/git/archive/v${git_vrs}.tar.gz"
 
@@ -98,7 +98,7 @@ hub_from_source() {
 # install golang and packages
 #
 go_from_source() {
-  local go_vrs="1.7.3"
+  local go_vrs="1.7.5"
   local go_src="/usr/local/go"
   local go_tar="https://storage.googleapis.com/golang/go${go_vrs}.linux-amd64.tar.gz"
 
@@ -114,8 +114,6 @@ go_from_source() {
   (
     write_log "${FUNCNAME[0]} => intalling go v${go_vrs}"
     curl -sSL "${go_tar}" | tar -C /usr/local -zx
-
-    go get -u github.com/iamnande/openstack
   )
 
   write_log "${FUNCNAME[0]} => done"
