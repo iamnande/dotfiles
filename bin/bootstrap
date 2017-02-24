@@ -1,0 +1,134 @@
+#!/usr/bin/env bash
+#
+# machine bootstrap script
+#
+# yum packages:
+#   - autoconf
+#   - cmake
+#   - gcc
+#   - gcc-c++
+#   - jq
+#   - rpm-build
+#   - rpmdevtools
+#   - subversion
+#   - tree
+#   - unzip
+#   - wget
+#
+# brew steps:
+#   - install
+#   - ugprade
+#   - update
+#   - prune
+#   - cleanup
+#
+# brew bottles:
+#   - bash
+#   - bash-completion2
+#   - jq
+#   - openssl
+#   - shellcheck
+#   - subversion
+#   - tree
+#   - vagrant-completion
+#
+set -e
+
+OS_FLAVOR=$(uname -s | awk '{print tolower($0)}')
+
+get_sudo() {
+  sudo -v
+  while true;
+  do
+    sudo -n true; sleep 60; kill -0 "$$" || exit;
+  done 2>/dev/null &
+}
+
+install_github() {
+  local git_version="2.12.0"
+  local git_src="/usr/local/src"
+
+  (
+    curl -sSL "https://github.com/git/git/archive/v${git_version}.tar.gz" | sudo tar -v -C "${git_src}" -zx
+    cd "${git_src}/git-${git_version}"
+    sudo make configure
+    sudo ./configure
+    sudo make
+    sudo make install
+  )
+
+  local hub_version="2.3.0-pre9"
+  local hub_src="/usr/local/src"
+
+  (
+    curl -sSL "https://github.com/github/hub/releases/download/v${hub_version}/hub-${OS_FLAVOR}-amd64-${hub_version}.tgz" | sudo tar -v -C "${hub_src}" -zx
+    cd "${hub_src}/hub-${OS_FLAVOR}-amd64-${hub_version}"
+    sudo ./install
+  )
+}
+
+install_golang() {
+  local go_version="1.8"
+  local go_src="/usr/local/go"
+
+  if [[ -d "${go_src}" ]]; then
+    sudo rm -rf "${go_src}"
+  fi
+
+  (
+    curl -sSL "https://storage.googleapis.com/golang/go${go_version}.${OS_FLAVOR}-amd64.tar.gz" | sudo tar -v -C /usr/local -zx
+  )
+}
+
+get_vimfiles() {
+  local vimfiles_src="${HOME}/vimfiles"
+
+  if [[ -d "${vimfiles_src}" ]]; then
+    rm -rf "${vimfiles_src}"
+  fi
+
+  (
+    cd "${HOME}"
+    git clone https://github.com/iamnande/vimfiles.git
+
+    cd "${vimfiles_src}"
+    make
+  )
+}
+
+usage() {
+  echo -e "boostrap [action]\n"
+  echo "usage:"
+  #echo "  brew            - install homebrew suite"
+  echo "  github          - install git and hub tools"
+  echo "  golang          - install golang and packages"
+  #echo "  packages        - install base software packages"
+  echo "  vimfiles        - get and install vimfiles"
+}
+
+main() {
+  local cmd="${1}"
+
+  if [[ -z "${cmd}" ]]; then
+    usage
+    exit 1
+  fi
+
+  get_sudo
+  case "${cmd}" in
+    "github")
+      install_github
+      ;;
+    "golang")
+      install_golang
+      ;;
+    "vimfiles")
+      get_vimfiles
+      ;;
+    *)
+      usage
+      exit 1
+      ;;
+  esac
+}
+main "${@}"
