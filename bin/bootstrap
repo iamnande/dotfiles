@@ -50,6 +50,34 @@ get_sudo() {
   done 2>/dev/null &
 }
 
+install_hashitools() {
+  local base_url="https://releases.hashicorp.com"
+
+  local nomad_version="0.5.4"
+  local packer_version="0.12.2"
+  local terraform_version="0.8.7"
+
+  (
+    # nomad
+    curl -sSL "${base_url}/nomad/${nomad_version}/nomad_${nomad_version}_${OS_FLAVOR}_amd64.zip" > nomad.zip
+
+    # packer
+    curl -sSL "${base_url}/packer/${packer_version}/packer_${packer_version}_${OS_FLAVOR}_amd64.zip" > packer.zip
+
+    # terraform
+    curl -sSL "${base_url}/terraform/${terraform_version}/terraform_${terraform_version}_${OS_FLAVOR}_amd64.zip" > terraform.zip
+
+    for zp in `ls *.zip`;
+    do
+      unzip "${zp}"
+    done
+
+    mv nomad packer terraform /usr/local/bin
+
+    rm *.zip
+  )
+}
+
 install_github() {
   local git_version="2.12.0"
   local git_src="/usr/local/src"
@@ -122,6 +150,9 @@ main() {
 
   get_sudo
   case "${cmd}" in
+    "hashi")
+      install_hashitools
+      ;;
     "github")
       install_github
       ;;

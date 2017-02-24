@@ -6,6 +6,7 @@ bootstrap:
 	@/bin/bash $(CURDIR)/bin/bootstrap golang
 	@/bin/bash $(CURDIR)/bin/bootstrap github
 	@/bin/bash $(CURDIR)/bin/bootstrap vimfiles
+	@/bin/bash $(CURDIR)/bin/bootstrap terraform
 
 links:
 	@ln -sfn $(CURDIR)/path $(HOME)/.path
