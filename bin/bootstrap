@@ -2,6 +2,12 @@
 #
 # machine bootstrap script
 #
+# go packages:
+#   - github.com/golang/lint/golint
+#   - golang.org/x/tools/cmd/cover
+#   - golang.org/x/tools/cmd/gorename
+#   - github.com/iamnande/openstack
+#
 # yum packages:
 #   - autoconf
 #   - cmake
