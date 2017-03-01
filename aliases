@@ -11,7 +11,7 @@ alias lsd="ls -lphG | grep '^d'"
 # git/hub
 if [[ -f "/usr/local/bin/hub" ]];
 then
-  eval "$(hub alias -s)"
+  eval "$(/usr/local/bin/hub alias -s)"
 fi
 
 # ruby ish
