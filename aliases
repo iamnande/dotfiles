@@ -1,16 +1,22 @@
 #!/usr/bin/env bash
 
-# Enable aliases to be sudo’ed
+# commons
 alias sudo="sudo "
 
 # mutli-os colorized ls
-alias la="ls -laphG"
 alias ll="ls -lphG"
+alias la="ls -laphG"
 alias lsd="ls -lphG | grep '^d'"
 
+OS_FLAVOR=$(uname -s)
+
+if [[ "${OS_FLAVOR}" == "Darwin" ]]; then
+  ignore_dirs="Appl|Desk|Down|Drop|Libr|Movi|Musi|Pict|Docu|Publ|Virt"
+  alias ll="ls -lphG | grep -v -E '${ignore_dirs}'"
+fi
+
 # git/hub
-if [[ -f "/usr/local/bin/hub" ]];
-then
+if [[ -f "/usr/local/bin/hub" ]]; then
   eval "$(/usr/local/bin/hub alias -s)"
 fi
 

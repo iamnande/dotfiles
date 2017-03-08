@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# keep colors after piping through grep
+export CLICOLOR_FORCE='ls -G | less -R'
+
 # make vim the default editor
 export EDITOR=/usr/local/bin/vim;
 
