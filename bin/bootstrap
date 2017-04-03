@@ -2,25 +2,6 @@
 #
 # machine bootstrap script
 #
-# go packages:
-#   - github.com/golang/lint/golint
-#   - golang.org/x/tools/cmd/cover
-#   - golang.org/x/tools/cmd/gorename
-#   - github.com/iamnande/openstack
-#
-# yum packages:
-#   - autoconf
-#   - cmake
-#   - gcc
-#   - gcc-c++
-#   - jq
-#   - rpm-build
-#   - rpmdevtools
-#   - subversion
-#   - tree
-#   - unzip
-#   - wget
-#
 # brew steps:
 #   - install
 #   - ugprade
@@ -50,32 +31,35 @@ get_sudo() {
   done 2>/dev/null &
 }
 
-install_hashitools() {
-  local base_url="https://releases.hashicorp.com"
-
-  local nomad_version="0.5.4"
-  local packer_version="0.12.2"
-  local terraform_version="0.8.7"
-
-  (
-    # nomad
-    curl -sSL "${base_url}/nomad/${nomad_version}/nomad_${nomad_version}_${OS_FLAVOR}_amd64.zip" > nomad.zip
-
-    # packer
-    curl -sSL "${base_url}/packer/${packer_version}/packer_${packer_version}_${OS_FLAVOR}_amd64.zip" > packer.zip
-
-    # terraform
-    curl -sSL "${base_url}/terraform/${terraform_version}/terraform_${terraform_version}_${OS_FLAVOR}_amd64.zip" > terraform.zip
-
-    for zp in `ls *.zip`;
-    do
-      unzip "${zp}"
-    done
-
-    mv nomad packer terraform /usr/local/bin
-
-    rm *.zip
+get_centos_deps() {
+  local package_list=(
+    'autoconf'
+    'cmake'
+    'curl-devel'
+    'gcc'
+    'gcc-c++'
+    'jq'
+    'rpm-build'
+    'rpmdevtools'
+    'subversion'
+    'tree'
+    'unzip'
+    'wget'
+    'zlib-devel'
   )
+
+  yum install -y -q "${package_list[@]}"
+
+}
+
+get_dependencies() {
+
+  if [[ "${OS_FLAVOR}" != "darwin" ]]; then
+    get_centos_deps
+  else
+    echo "finish the darwin shit, yo."
+  fi
+
 }
 
 install_github() {
@@ -130,42 +114,12 @@ get_vimfiles() {
   )
 }
 
-usage() {
-  echo -e "boostrap [action]\n"
-  echo "usage:"
-  #echo "  brew            - install homebrew suite"
-  echo "  github          - install git and hub tools"
-  echo "  golang          - install golang and packages"
-  #echo "  packages        - install base software packages"
-  echo "  vimfiles        - get and install vimfiles"
-}
-
 main() {
-  local cmd="${1}"
-
-  if [[ -z "${cmd}" ]]; then
-    usage
-    exit 1
-  fi
-
   get_sudo
-  case "${cmd}" in
-    "hashi")
-      install_hashitools
-      ;;
-    "github")
-      install_github
-      ;;
-    "golang")
-      install_golang
-      ;;
-    "vimfiles")
-      get_vimfiles
-      ;;
-    *)
-      usage
-      exit 1
-      ;;
-  esac
+  get_dependencies
+  install_github
+  install_golang
+  get_vimfiles
 }
-main "${@}"
+
+main
