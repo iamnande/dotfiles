@@ -7,7 +7,7 @@ export CLICOLOR_FORCE='ls -G | less -R'
 export EDITOR=/usr/local/bin/vim;
 
 # show three levels of pwd
-export PROMPT_DIRTRIM=3
+export PROMPT_DIRTRIM=1
 
 # history
 export HISTSIZE=50000000;
@@ -23,3 +23,10 @@ export LESS_TERMCAP_md="${yellow}";
 
 # don’t clear the screen after quitting a manual page
 export MANPAGER="less -X";
+
+# go setup
+export GOROOT="/usr/local/go"
+export GOPATH="${HOME}/golang"
+
+# custom PATH
+export PATH="${GOPATH}/bin:${GOROOT}/bin:/usr/local/bin:${PATH}:/sbin"

@@ -1,0 +1,175 @@
+#!/usr/bin/env bash
+#
+# machine bootstrap script
+#
+set -e -u
+
+# darwin vs. linux
+OS_FLAVOR=$(uname -s | awk '{print tolower($0)}')
+
+# check that sudo privilege
+get_sudo() {
+  sudo -v
+  while true;
+  do
+    sudo -n true; sleep 60; kill -0 "$$" || exit;
+  done 2>/dev/null &
+}
+
+# unified logger
+log() {
+  local message="${1}"
+  local datestamp=$(date "+%Y-%m-%dT%H:%M:%S")
+  echo "${datestamp} [INFO] ${message}"
+}
+
+# get package dependencies
+get_deps() {
+  log "fetching ${OS_FLAVOR} dependencies"
+
+  local darwin_packages=('bash' 'svn' 'tree')
+  local linux_packages=(
+    'autoconf'
+    'curl-devel'
+    'gcc'
+    'gcc-c++'
+    'git'
+    'make'
+    'ncurses-devel'
+    'perl-ExtUtils-MakeMaker'
+    'rpm-build'
+    'tree'
+    'svn'
+    'vim-enhanced'
+    'wget'
+    'zlib-devel'
+  )
+
+  if [[ "${OS_FLAVOR}" != "darwin" ]];
+  then
+    yum install -y "${linux_packages[@]}"
+  fi
+}
+
+# install vim from source
+get_vim() {
+  log "install vim from source"
+
+  local vim_version="8.0.1414"
+  local vim_home="/usr/local/src"
+  local vim_source="https://github.com/vim/vim/archive/v${vim_version}.tar.gz"
+
+  (
+    curl -sSL "${vim_source}" | sudo tar -v -C "${vim_home}" -zx
+    cd "${vim_home}/vim-${vim_version}"
+    sudo ./configure
+    sudo make install
+  )
+}
+
+# install git from source
+get_git() {
+  log "installing git from source"
+
+  local git_version="2.15.1"
+  local git_home="/usr/local/src"
+  local git_source="https://github.com/git/git/archive/v${git_version}.tar.gz"
+
+  (
+    curl -sSL "${git_source}" | sudo tar -v -C "${git_home}" -zx
+    cd "${git_home}/git-${git_version}"
+    sudo make configure
+    sudo ./configure
+    sudo make
+    sudo make install
+  )
+}
+
+# install hub from source
+get_hub() {
+  log "installing hub from source"
+
+  local hub_version="2.3.0-pre10"
+  local hub_home="/usr/local/src"
+  local hub_source="https://github.com/github/hub/releases/download/v2.3.0-pre10/hub-${OS_FLAVOR}-amd64-${hub_version}.tgz"
+
+  (
+    curl -sSL "${hub_source}" | sudo tar -v -C "${hub_home}" -zx
+    cd "${hub_home}/hub-${OS_FLAVOR}-amd64-${hub_version}"
+    sudo ./install
+  )
+}
+
+# install go from source
+get_go() {
+  log "installing go from source"
+
+  local go_version="1.9.2"
+  local go_source="https://redirector.gvt1.com/edgedl/go/go${go_version}.${OS_FLAVOR}-amd64.tar.gz"
+
+  (
+    curl -sSL "${go_source}" | sudo tar -v -C /usr/local -zx
+  )
+}
+
+# fetch vim config
+get_vimfiles() {
+  log "fetching vimfiles"
+
+  local vimfiles_home="${HOME}/vimfiles"
+  local vimfiles_source="https://github.com/iamnande/vimfiles.git"
+
+  if [[ ! -d "${vimfiles_home}" ]];
+  then
+    (
+      git clone "${vimfiles_source}" "${vimfiles_home}"
+    )
+  fi
+
+  (
+    cd "${vimfiles_home}"
+    make
+  )
+
+}
+
+# main: entry function
+main() {
+  local action="all"
+
+  if [[ $# -gt 0 ]];
+  then
+    action="${1}"
+  fi
+
+  case "${action}" in
+    "deps")
+      get_deps
+      ;;
+    "vim")
+      get_vim
+      ;;
+    "git")
+      get_git
+      ;;
+    "hub")
+      get_hub
+      ;;
+    "go")
+      get_go
+      ;;
+    "vimfiles")
+      get_vimfiles
+      ;;
+    *)
+      get_deps
+      get_vim
+      get_git
+      get_hub
+      get_go
+      get_vimfiles
+      ;;
+  esac
+}
+
+main "${@}"

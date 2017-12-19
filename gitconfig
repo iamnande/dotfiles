@@ -27,7 +27,7 @@ cookiefile = ~/.gitcookies
 # git: user settings
 #
 [user]
-name  = Nicholas Anderson
+name = Nicholas Anderson
 email = nicholas.anderson@nike.com
 
 [github]

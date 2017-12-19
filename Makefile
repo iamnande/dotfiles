@@ -3,7 +3,7 @@
 all: clean bootstrap links
 
 bootstrap:
-	@/bin/bash $(CURDIR)/bin/bootstrap
+	@/bin/bash $(CURDIR)/install all
 
 links:
 	@ln -sfn $(CURDIR)/path $(HOME)/.path

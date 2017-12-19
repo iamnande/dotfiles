@@ -14,12 +14,3 @@ if [[ "${OS_FLAVOR}" == "Darwin" ]]; then
   ignore_dirs="Appl|Desk|Down|Drop|Libr|Movi|Musi|Pict|Docu|Publ|Virt"
   alias ll="ls -lphG | grep -v -E '${ignore_dirs}'"
 fi
-
-# git/hub
-if [[ -f "/usr/local/bin/hub" ]]; then
-  eval "$(/usr/local/bin/hub alias -s)"
-fi
-
-# ruby ish
-alias brake="bundle exec rake"
-alias bint="bundle install --without system_tests --path=.bundle"
