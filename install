@@ -112,27 +112,6 @@ get_go() {
   )
 }
 
-# fetch vim config
-get_vimfiles() {
-  log "fetching vimfiles"
-
-  local vimfiles_home="${HOME}/vimfiles"
-  local vimfiles_source="https://github.com/iamnande/vimfiles.git"
-
-  if [[ ! -d "${vimfiles_home}" ]];
-  then
-    (
-      git clone "${vimfiles_source}" "${vimfiles_home}"
-    )
-  fi
-
-  (
-    cd "${vimfiles_home}"
-    make
-  )
-
-}
-
 # main: entry function
 main() {
   local action="all"
@@ -158,16 +137,12 @@ main() {
     "go")
       get_go
       ;;
-    "vimfiles")
-      get_vimfiles
-      ;;
     *)
       get_deps
       get_vim
       get_git
       get_hub
       get_go
-      get_vimfiles
       ;;
   esac
 }
