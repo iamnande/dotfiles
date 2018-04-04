@@ -4,6 +4,7 @@
 alias sudo="sudo "
 
 # mutli-os colorized ls
+alias lsd="ls -phG"
 alias ll="ls -lphG"
 alias la="ls -laphG"
 alias lsd="ls -lphG | grep '^d'"
@@ -11,6 +12,6 @@ alias lsd="ls -lphG | grep '^d'"
 OS_FLAVOR=$(uname -s)
 
 if [[ "${OS_FLAVOR}" == "Darwin" ]]; then
-  ignore_dirs="Appl|Desk|Down|Drop|Libr|Movi|Musi|Pict|Docu|Publ|Virt"
+  ignore_dirs="Appl|Crea|Goo|Desk|Down|Drop|Libr|Movi|Musi|Pict|Docu|Publ|Virt"
   alias ll="ls -lphG | grep -v -E '${ignore_dirs}'"
 fi
