@@ -7,7 +7,7 @@ export CLICOLOR_FORCE='ls -G | less -R'
 export EDITOR=/usr/local/bin/vim;
 
 # show three levels of pwd
-export PROMPT_DIRTRIM=1
+export PROMPT_DIRTRIM=3
 
 # history
 export HISTSIZE=50000000;
