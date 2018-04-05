@@ -42,7 +42,7 @@ clean: ## clean dotfiles
 	@echo $(log) "cleaning dotfiles"
 	@for f in $(DOT_FILES); \
 		do \
-			unlink $(HOME)/.`basename $$f` >/dev/null 2>&1; \
+			unlink $(HOME)/.`basename $$f` >/dev/null 2>&1; true; \
 	done
 
 sudo:
@@ -53,7 +53,7 @@ ifeq ($(OS_FLAVOR), linux)
 	@echo $(log) "installing dependencies"
 	@for pkg in $(PKG_DEPS); \
 		do \
-			echo yum install -y -q $$pkg; \
+			yum install -y -q $$pkg; \
 	done
 else
 	@echo $(log) "no dependencies required"
