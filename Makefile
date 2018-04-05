@@ -9,12 +9,12 @@ help:
 #
 APP_NAME    := dotfiles
 APP_VERSION := 1.0
-GIT_COMMIT  := $(shell git rev-list --count HEAD)
-GIT_BRANCH  := $(shell git rev-parse --abbrev-ref HEAD)
+APP_COMMIT  := $(shell git rev-list --count HEAD)
+APP_BRANCH  := $(shell git rev-parse --abbrev-ref HEAD)
 ifeq ($(GIT_BRANCH), master)
-	APP_VERSION := $(APP_VERSION).$(GIT_COMMIT)
+	APP_VERSION := $(APP_VERSION).$(APP_COMMIT)
 else
-	APP_VERSION := $(APP_VERSION).$(GIT_COMMIT).$(GIT_BRANCH)
+	APP_VERSION := $(APP_VERSION).$(APP_COMMIT).$(APP_BRANCH)
 endif
 
 #
@@ -22,6 +22,7 @@ endif
 #
 DOT_FILES := $(shell ls $(CURDIR)/conf/*)
 OS_FLAVOR := $(shell uname -s | awk '{print tolower($$0)}')
+PKG_DEPS  := $(shell echo 'autoconf curl-devel gcc gcc-c++ make ncurses-devel perl-ExtUtils-MakeMaker rpm-build tree wget zlib-devel')
 
 #
 # make: formatted logger
@@ -47,6 +48,17 @@ clean: ## clean dotfiles
 sudo:
 	@sudo -v
 
+deps:
+ifeq ($(OS_FLAVOR), linux)
+	@echo $(log) "installing dependencies"
+	@for pkg in $(PKG_DEPS); \
+		do \
+			echo yum install -y -q $$pkg; \
+	done
+else
+	@echo $(log) "no dependencies required"
+endif
+
 #
 # make: git
 #
@@ -54,7 +66,7 @@ GIT_VERSION := 2.17.0
 GIT_HOME    := /usr/local/src
 GIT_SOURCE  := https://github.com/git/git/archive/v$(GIT_VERSION).tar.gz
 
-git: sudo ## install git
+git: sudo deps ## install git
 	@echo $(log) "cleaning $@ install directory"
 	@sudo rm -rf $(GIT_HOME)/$@-*
 
@@ -73,7 +85,7 @@ GO_VERSION := 1.10.1
 GO_HOME    := /usr/local
 GO_SOURCE  := https://dl.google.com/go/go$(GO_VERSION).$(OS_FLAVOR)-amd64.tar.gz
 
-go: sudo ## install go
+go: sudo deps ## install go
 	@echo $(log) "cleaning $@ install directory"
 	@sudo rm -rf $(GO_HOME)/$@
 
@@ -87,7 +99,7 @@ VIM_VERSION := 8.0.1659
 VIM_HOME    := /usr/local/src
 VIM_SOURCE  := https://github.com/vim/vim/archive/v$(VIM_VERSION).tar.gz
 
-vim: sudo ## install vim
+vim: sudo deps ## install vim
 	@echo $(log) "cleaning $@ install directory"
 	@sudo rm -rf $(VIM_HOME)/$@-*
 
