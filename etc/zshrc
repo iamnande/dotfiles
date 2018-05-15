@@ -1,0 +1,52 @@
+export ZSH=/Users/nande9/.oh-my-zsh
+
+#
+# zsh: theme
+#
+ZSH_THEME="bullet-train"
+BULLETTRAIN_PROMPT_ORDER=(
+  time
+  context
+  dir
+  git
+)
+
+#
+# zsh: plugins
+#
+plugins=(
+  git
+)
+
+#
+# zsh: oh-my-zsh config
+#
+source $ZSH/oh-my-zsh.sh
+
+#
+# zsh: aliases
+#
+alias sudo="sudo "
+alias ll="ls -lphG"
+alias la="ls -laphG"
+alias lsd="ls -lphG | grep '^d'"
+
+#
+# zsh: exports
+#
+export LANG="en_US.UTF-8";
+export GOPATH="${HOME}/go"
+export GOROOT=/usr/local/go
+export EDITOR=/usr/local/bin/vim;
+export PATH="${GOPATH}/bin:${GOROOT}/bin:/usr/local/bin:${PATH}"
+
+#
+# zsh: functions
+#
+mkd () {
+  mkdir -p "$@"
+}
+
+tre () {
+  tree -aC -I '.git' --dirsfirst "$@" | less -FRNX
+}

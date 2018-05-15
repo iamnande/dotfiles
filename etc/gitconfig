@@ -1,14 +1,4 @@
 #
-# git: aliases
-#
-[alias]
-up      = sync
-stat    = status -s
-contrib = shortlog --summary --numbered
-ll      = log --pretty=oneline -n 10 --graph --abbrev-commit
-lg      = log --color --decorate --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an (%G?)>%Creset' --abbrev-commit -n 10
-
-#
 # git: core configs
 #
 [core]
@@ -36,22 +26,3 @@ user  = iamnande
 [credential]
 helper = cache --timeout 3600
 helper = store --file ~/.gitcreds
-
-#
-# git: colors
-#
-[color "diff"]
-old  = red
-new  = green
-meta = yellow bold
-frag = magenta bold
-
-[color "branch"]
-remote  = green
-local   = yellow
-current = yellow reverse
-
-[color "status"]
-untracked = cyan
-changed   = green
-added     = yellow

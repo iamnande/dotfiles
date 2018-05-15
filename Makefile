@@ -1,110 +1,57 @@
-.PHONY: default help clean install vim git go
+.PHONY: default help clean install deps
 
 default: help
 help:
-	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | \
-		awk 'BEGIN {FS = ":.*?## "}; {printf "\033[m%-12s %s\n\033[0m", $$1, $$2}'
+		@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | \
+			awk 'BEGIN {FS = ":.*?## "}; {printf "\033[32m%-12s %s\n\033[0m", $$1, $$2}'
+
 #
-# make: info
+# make: app info
 #
 APP_NAME    := dotfiles
-APP_VERSION := 1.0
-APP_COMMIT  := $(shell git rev-list --count HEAD)
-APP_BRANCH  := $(shell git rev-parse --abbrev-ref HEAD)
-ifeq ($(GIT_BRANCH), master)
-	APP_VERSION := $(APP_VERSION).$(APP_COMMIT)
-else
-	APP_VERSION := $(APP_VERSION).$(APP_COMMIT).$(APP_BRANCH)
-endif
+APP_VERSION := 0.1.0
+APP_FILES   := $(shell ls $(CURDIR)/etc/*)
+APP_LOG_FMT := `/bin/date "+%Y-%m-%d %H:%M:%S %z [$(APP_NAME)]"`
 
 #
 # make: install info
 #
-DOT_FILES := $(shell ls $(CURDIR)/conf/*)
 OS_FLAVOR := $(shell uname -s | awk '{print tolower($$0)}')
-PKG_DEPS  := $(shell echo 'autoconf curl-devel gcc gcc-c++ make ncurses-devel perl-ExtUtils-MakeMaker rpm-build tree wget zlib-devel')
 
 #
-# make: formatted logger
+# make: clean target
 #
-log := `/bin/date "+%Y-%m-%d %H:%M:%S %z [$(APP_NAME)]"`
+clean: ## clean dotfiles from homedir
+	@echo $(APP_LOG_FMT) "cleaning dotfiles from homedir"
+	@for f in $(APP_FILES); \
+		do \
+			unlink $(HOME)/.`basename $$f` > /dev/null 2>&1; \
+		done
+	
 
-all: git go vim clean install ## install dotfiles and software
-
-install: ## install dotfiles
-	@echo $(log) "installing dotfiles"
-	@for f in $(DOT_FILES); \
+#
+# make: install target
+#
+install: deps ## install dotfiles to homedir
+	@echo $(APP_LOG_FMT) "installing dotfiles"
+	@for f in $(APP_FILES); \
 		do \
 			ln -sfn $$f $(HOME)/.`basename $$f`; \
-	done
+		done
 
-clean: ## clean dotfiles
-	@echo $(log) "cleaning dotfiles"
-	@for f in $(DOT_FILES); \
-		do \
-			unlink $(HOME)/.`basename $$f` >/dev/null 2>&1; true; \
-	done
-
-sudo:
-	@sudo -v
-
+#
+# make: deps target (install dependencies)
+#
 deps:
-ifeq ($(OS_FLAVOR), linux)
-	@echo $(log) "installing dependencies"
-	@for pkg in $(PKG_DEPS); \
-		do \
-			yum install -y -q $$pkg; \
-	done
-else
-	@echo $(log) "no dependencies required"
-endif
+	@echo $(APP_LOG_FMT) "installing powerline fonts"
+	@git clone --quiet --depth=1 \
+		https://github.com/powerline/fonts.git \
+		~/source/fonts
+	@cd ~/source/fonts && ./install.sh
+	@rm -rf ~/source/fonts
 
-#
-# make: git
-#
-GIT_VERSION := 2.17.0
-GIT_HOME    := /usr/local/src
-GIT_SOURCE  := https://github.com/git/git/archive/v$(GIT_VERSION).tar.gz
+	@echo $(APP_LOG_FMT) "installing oh-my-zsh"
+	@sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
 
-git: sudo deps ## install git
-	@echo $(log) "cleaning $@ install directory"
-	@sudo rm -rf $(GIT_HOME)/$@-*
-
-	@echo $(log) "installing $@ v$(GIT_VERSION)"
-	@curl -sSL $(GIT_SOURCE) | sudo tar -C $(GIT_HOME) -zx
-	@cd $(GIT_HOME)/$@-$(GIT_VERSION) \
-		&& sudo make configure \
-		&& sudo ./configure \
-		&& sudo make \
-		&& sudo make install
-
-#
-# make: go
-#
-GO_VERSION := 1.10.1
-GO_HOME    := /usr/local
-GO_SOURCE  := https://dl.google.com/go/go$(GO_VERSION).$(OS_FLAVOR)-amd64.tar.gz
-
-go: sudo deps ## install go
-	@echo $(log) "cleaning $@ install directory"
-	@sudo rm -rf $(GO_HOME)/$@
-
-	@echo $(log) "installing $@ v$(GO_VERSION)"
-	@curl -sSL $(GO_SOURCE) | sudo tar -v -C $(GO_HOME) -zx
-
-#
-# make: vim
-#
-VIM_VERSION := 8.0.1659
-VIM_HOME    := /usr/local/src
-VIM_SOURCE  := https://github.com/vim/vim/archive/v$(VIM_VERSION).tar.gz
-
-vim: sudo deps ## install vim
-	@echo $(log) "cleaning $@ install directory"
-	@sudo rm -rf $(VIM_HOME)/$@-*
-
-	@echo $(log) "installing $@ v$(VIM_VERSION)"
-	@curl -sSL $(VIM_SOURCE) | sudo tar -C $(VIM_HOME) -zx
-	@cd $(VIM_HOME)/$@-$(VIM_VERSION) \
-		&& sudo ./configure \
-		&& sudo make install
+	@echo $(APP_LOG_FMT) "installing bullet-train theme"
+	@curl -fsSL -o ~/.oh-my-zsh/themes/bullet-train.zsh-theme https://raw.githubusercontent.com/caiogondim/bullet-train.zsh/master/bullet-train.zsh-theme
