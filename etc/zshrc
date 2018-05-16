@@ -1,4 +1,4 @@
-export ZSH=/Users/nande9/.oh-my-zsh
+export ZSH="${HOME}/.oh-my-zsh"
 
 #
 # zsh: theme
