@@ -14,11 +14,6 @@ APP_FILES   := $(shell ls $(CURDIR)/etc/*)
 APP_LOG_FMT := `/bin/date "+%Y-%m-%d %H:%M:%S %z [$(APP_NAME)]"`
 
 #
-# make: install info
-#
-OS_FLAVOR := $(shell uname -s | awk '{print tolower($$0)}')
-
-#
 # make: clean target
 #
 clean: ## clean dotfiles from homedir
@@ -41,7 +36,7 @@ install: deps ## install dotfiles to homedir
 #
 # make: deps target (install dependencies)
 #
-deps: --sudo --zsh --git --vim --go
+deps: --sudo --zsh --pkgs --git --vim --go
 --sudo:
 	@sudo -v
 
@@ -62,6 +57,21 @@ deps: --sudo --zsh --git --vim --go
 	@echo $(APP_LOG_FMT) "installing bullet-train theme"
 	@curl -fsSL -o ~/.oh-my-zsh/themes/bullet-train.zsh-theme \
 		https://raw.githubusercontent.com/caiogondim/bullet-train.zsh/master/bullet-train.zsh-theme
+
+#
+# make: pkgs target
+#
+OS_FLAVOR := $(shell uname -s | awk '{print tolower($$0)}')
+PKG_DEPS  := $(shell echo 'autoconf curl-devel gcc gcc-c++ make ncurses-devel perl-ExtUtils-MakeMaker rpm-build tree wget zlib-devel')
+
+--pkgs:
+ifeq ($(OS_FLAVOR), linux)
+	@echo $(APP_LOG_FMT) "installing base system packages"
+	@for pkg in $(PKG_DEPS); \
+	do \
+		yum install -y -q $$pkg; \
+	done
+endif
 
 #
 # make: git target
