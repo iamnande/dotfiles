@@ -50,3 +50,7 @@ mkd () {
 tre () {
   tree -aC -I '.git' --dirsfirst "$@" | less -FRNX
 }
+
+vssh () {
+  cd ~/source/iamnande/vagrant && vagrant ssh -c 'sudo su -' "$@"
+}
