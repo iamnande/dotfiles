@@ -27,7 +27,6 @@ clean: ## clean dotfiles from homedir
 		do \
 			unlink $(HOME)/.`basename $$f` > /dev/null 2>&1; \
 		done
-	
 
 #
 # make: install target
@@ -42,7 +41,14 @@ install: deps ## install dotfiles to homedir
 #
 # make: deps target (install dependencies)
 #
-deps:
+deps: --sudo --zsh --git --vim --go
+--sudo:
+	@sudo -v
+
+#
+# make: zsh target
+#
+--zsh:
 	@echo $(APP_LOG_FMT) "installing powerline fonts"
 	@git clone --quiet --depth=1 \
 		https://github.com/powerline/fonts.git \
@@ -54,4 +60,56 @@ deps:
 	@sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
 
 	@echo $(APP_LOG_FMT) "installing bullet-train theme"
-	@curl -fsSL -o ~/.oh-my-zsh/themes/bullet-train.zsh-theme https://raw.githubusercontent.com/caiogondim/bullet-train.zsh/master/bullet-train.zsh-theme
+	@curl -fsSL -o ~/.oh-my-zsh/themes/bullet-train.zsh-theme \
+		https://raw.githubusercontent.com/caiogondim/bullet-train.zsh/master/bullet-train.zsh-theme
+
+#
+# make: git target
+#
+GIT_VERSION := 2.17.0
+GIT_HOME    := /usr/local/src
+GIT_SOURCE  := https://github.com/git/git/archive/v$(GIT_VERSION).tar.gz
+
+--git:
+	@echo $(APP_LOG_FMT) "cleaning git install directory"
+	@sudo rm -rf $(GIT_HOME)/git-*
+
+	@echo $(APP_LOG_FMT) "installing git v$(GIT_VERSION)"
+	@curl -sSL $(GIT_SOURCE) | sudo tar -C $(GIT_HOME) -zx
+	@cd $(GIT_HOME)/git-$(GIT_VERSION) \
+		&& sudo make configure \
+		&& sudo ./configure \
+		&& sudo make \
+		&& sudo make install
+
+#
+# make: vim
+#
+VIM_VERSION := 8.0.1848
+VIM_HOME    := /usr/local/src
+VIM_SOURCE  := https://github.com/vim/vim/archive/v$(VIM_VERSION).tar.gz
+
+--vim:
+	@echo $(APP_LOG_FMT) "cleaning vim install directory"
+	@sudo rm -rf $(VIM_HOME)/vim-*
+
+	@echo $(APP_LOG_FMT) "installing vim v$(VIM_VERSION)"
+	@curl -sSL $(VIM_SOURCE) | sudo tar -C $(VIM_HOME) -zx
+	@cd $(VIM_HOME)/vim-$(VIM_VERSION) \
+		&& sudo ./configure \
+		&& sudo make install
+
+#
+# make: go target
+#
+GO_VERSION := 1.10.2
+GO_HOME    := /usr/local
+GO_SOURCE  := https://dl.google.com/go/go$(GO_VERSION).$(OS_FLAVOR)-amd64.tar.gz
+
+--go:
+	@echo $(APP_LOG_FMT) "cleaning go install directory"
+	@sudo rm -rf $(GO_HOME)/go
+
+	@echo $(APP_LOG_FMT) "installing go v$(GO_VERSION)"
+	@curl -sSL $(GO_SOURCE) | sudo tar -v -C $(GO_HOME) -zx
+
