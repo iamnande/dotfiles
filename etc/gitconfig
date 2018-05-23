@@ -2,7 +2,8 @@
 # git: core configs
 #
 [core]
-editor  = vim
+editor = vim
+pager  = less -FRX
 
 [diff]
 renames = copies
