@@ -17,10 +17,13 @@ APP_LOG_FMT := `/bin/date "+%Y-%m-%d %H:%M:%S %z [$(APP_NAME)]"`
 # make: clean target
 #
 clean: ## clean dotfiles from homedir
+	@echo $(APP_LOG_FMT) "cleaning oh-my-zsh from homedir"
+	@rm -rf ~/.oh-my-zsh
+
 	@echo $(APP_LOG_FMT) "cleaning dotfiles from homedir"
 	@for f in $(APP_FILES); \
 		do \
-			unlink $(HOME)/.`basename $$f` > /dev/null 2>&1; \
+			unlink $(HOME)/.`basename $$f` > /dev/null 2>&1; true; \
 		done
 
 #
@@ -36,7 +39,7 @@ install: deps ## install dotfiles to homedir
 #
 # make: deps target (install dependencies)
 #
-deps: --sudo --zsh --pkgs --git --vim --go
+deps: --sudo --pkgs --zsh --git --vim --go
 --sudo:
 	@sudo -v
 
@@ -52,7 +55,8 @@ deps: --sudo --zsh --pkgs --git --vim --go
 	@rm -rf ~/source/fonts
 
 	@echo $(APP_LOG_FMT) "installing oh-my-zsh"
-	@sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
+	@curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh | bash
+	@chsh -s /bin/zsh "${USER}"
 
 	@echo $(APP_LOG_FMT) "installing bullet-train theme"
 	@curl -fsSL -o ~/.oh-my-zsh/themes/bullet-train.zsh-theme \
@@ -62,7 +66,7 @@ deps: --sudo --zsh --pkgs --git --vim --go
 # make: pkgs target
 #
 OS_FLAVOR := $(shell uname -s | awk '{print tolower($$0)}')
-PKG_DEPS  := $(shell echo 'autoconf curl-devel gcc gcc-c++ make ncurses-devel perl-ExtUtils-MakeMaker rpm-build tree wget zlib-devel')
+PKG_DEPS  := $(shell echo 'autoconf curl-devel gcc gcc-c++ make ncurses-devel perl-ExtUtils-MakeMaker rpm-build tree wget zlib-devel zsh')
 
 --pkgs:
 ifeq ($(OS_FLAVOR), linux)
