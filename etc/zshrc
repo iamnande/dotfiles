@@ -52,5 +52,5 @@ tre () {
 }
 
 vssh () {
-  cd ~/source/iamnande/vagrant && vagrant ssh -c 'sudo su -' "$@"
+  cd ~/source/vagrant && vagrant ssh -c 'sudo su -' "$@"
 }
