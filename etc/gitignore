@@ -1,0 +1,17 @@
+# system
+.DS_Store
+
+# IDEs
+.idea/
+.vscode/
+
+# golang
+*.out
+*.test
+coverage/
+
+# terraform
+crash.log
+*.tfstate
+*.tfstate.*
+**/.terraform/*

@@ -1,0 +1,51 @@
+#
+# git: core configs
+#
+[alias]
+  # view pretty, abbreviated commit history, with sha
+  lg = log --pretty=oneline -n 20 --graph --abbrev-commit
+
+  # view shortened status
+  stat = status -s
+
+  # switch to new branch, create if necessary
+  go = "!f() { git checkout -b \"$1\" 2> /dev/null || git checkout \"$1\"; }; f"
+
+  # commit everything
+  ca = !git add -A && git commit -av
+
+[core]
+  # change default editor
+  editor = vim
+
+  # use pretty pager
+  pager = less -FRX
+  autocrlf = input
+  excludesfile = ~/.gitignore
+
+[diff]
+  # detect copies as well as renames
+  renames = copies
+
+[commit]
+  gpgsign = true
+
+[gpg]
+  program = gpg
+
+[push]
+  default = matching
+
+[help]
+  autocorrect = 1
+
+#
+# git: user settings
+#
+[user]
+  email = iamnande.us@gmail.com
+  name = Nicholas Anderson
+  signingkey = C697854BB29CE117
+
+[init]
+  defaultBranch = main
