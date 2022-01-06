@@ -43,9 +43,9 @@
 # git: user settings
 #
 [user]
-  email = iamnande.us@gmail.com
+  email = nicholas.anderson@konghq.com
   name = Nicholas Anderson
-  signingkey = C697854BB29CE117
+  signingkey = 11B2C5C252F8F27B
 
 [init]
   defaultBranch = main
