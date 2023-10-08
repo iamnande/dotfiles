@@ -89,7 +89,7 @@ install-vimfiles: ## env: install vim setup
 GO_VERSION := 1.21.2
 GO_HOME    := /usr/local
 GO_FLAVOR  := $(shell uname -s | awk '{print tolower($$0)}')
-GO_SOURCE  := https://dl.google.com/go/go$(GO_VERSION).$(GO_FLAVOR)-amd64.tar.gz
+GO_SOURCE  := https://dl.google.com/go/go$(GO_VERSION).$(GO_FLAVOR)-arm64.tar.gz
 
 .PHONY: install-go
 install-go: ## env: install go
