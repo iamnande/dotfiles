@@ -86,7 +86,7 @@ install-vimfiles: ## env: install vim setup
 	@git clone git@github.com:iamnande/vimfiles.git $(SRC_HOME)/vimfiles
 	@cd $(SRC_HOME)/vimfiles && make
 
-GO_VERSION := 1.17.3
+GO_VERSION := 1.21.2
 GO_HOME    := /usr/local
 GO_FLAVOR  := $(shell uname -s | awk '{print tolower($$0)}')
 GO_SOURCE  := https://dl.google.com/go/go$(GO_VERSION).$(GO_FLAVOR)-amd64.tar.gz
