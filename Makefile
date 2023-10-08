@@ -37,7 +37,7 @@ install: ## core: install configurations into the home directory
 # --------------------------------------------------
 # Package (Environment) Installation Targets
 # --------------------------------------------------
-BREW_PACKAGES = autoconf bash git hub jq make tree vim wget zsh
+BREW_PACKAGES = autoconf bash buf gcc gh git grpcui helm hub jq k9s kubectx kubernetes-cli make tilt tree vim wget zsh
 
 .PHONY: install-brew
 install-brew: ## env: install brew and core software
