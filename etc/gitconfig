@@ -2,50 +2,50 @@
 # git: core configs
 #
 [alias]
-  # view pretty, abbreviated commit history, with sha
-  lg = log --pretty=oneline -n 20 --graph --abbrev-commit
+    # commit everything
+    ca = !git add -A && git commit -av
 
-  # view shortened status
-  stat = status -s
+    # switch to new branch, create if necessary
+    go = "!f() { git checkout -b \"$1\" 2> /dev/null || git checkout \"$1\"; }; f"
 
-  # switch to new branch, create if necessary
-  go = "!f() { git checkout -b \"$1\" 2> /dev/null || git checkout \"$1\"; }; f"
+    # view pretty, abbreviated commit history, with sha
+    lg = log --pretty=oneline -n 20 --graph --abbrev-commit
 
-  # commit everything
-  ca = !git add -A && git commit -av
-
-[core]
-  # change default editor
-  editor = vim
-
-  # use pretty pager
-  pager = less -FRX
-  autocrlf = input
-  excludesfile = ~/.gitignore
-
-[diff]
-  # detect copies as well as renames
-  renames = copies
+    # view shortened status
+    stat = status -s
 
 [commit]
-  gpgsign = true
+    gpgsign = true
+
+[core]
+    # change default editor
+    editor = vim
+
+    # use pretty pager
+    pager = less -FRX
+    autocrlf = input
+    excludesfile = ~/.gitignore
+
+[diff]
+    # detect copies as well as renames
+    renames = copies
 
 [gpg]
-  program = /opt/homebrew/bin/gpg
-
-[push]
-  default = matching
+    program = /usr/bin/gpg
 
 [help]
-  autocorrect = 1
+    autocorrect = 1
+
+[init]
+  defaultBranch = main
+
+[push]
+    default = matching
 
 #
 # git: user settings
 #
 [user]
-  email = nicholas.anderson@konghq.com
-  name = Nicholas Anderson
-  signingkey = 11B2C5C252F8F27B
-
-[init]
-  defaultBranch = main
+    email = engineering@morethq.com
+    name = Nick Anderson
+    signingkey = FCD610793666BCEF
