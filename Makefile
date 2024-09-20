@@ -5,7 +5,6 @@ help: ## help: display available targets
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | \
 		awk 'BEGIN {FS = ":.*?## "}; {printf "\033[32m%-20s %s\n\033[0m", $$1, $$2}'
 
-
 # repository information
 SRC_NAME    := dotfiles
 SRC_HOME    := ~/src/iamnande
