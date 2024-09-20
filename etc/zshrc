@@ -1,11 +1,21 @@
+#
+# zsh: exports
+#
+export GPG_TTY=$(tty)
+export LANG="en_US.UTF-8";
+export LC_ALL="en_US.UTF-8"
+export EDITOR=/usr/local/bin/vim;
+export PATH="/usr/local/bin:${PATH}"
 export ZSH="${HOME}/.oh-my-zsh"
 
 #
 # zsh: theme
 #
+zstyle ':omz:alpha:lib:git' async-prompt no
 ZSH_THEME="bullet-train"
 BULLETTRAIN_PROMPT_ORDER=(
   time
+  context
   dir
   git
 )
@@ -14,13 +24,31 @@ BULLETTRAIN_PROMPT_ORDER=(
 # zsh: plugins
 #
 plugins=(
+  argocd
+  aws
+  azure
+  brew
+  docker-compose
+  docker
+  dotenv
+  gh
   git
+  golang
+  gradle
+  helm
+  history
+  httpie
+  kubectl
+  kubectx
+  pre-commit
+  redis-cli
+  rust
+  sbt
+  scala
+  ssh-agent
+  sudo
+  ubuntu
 )
-
-#
-# zsh: oh-my-zsh config
-#
-source $ZSH/oh-my-zsh.sh
 
 #
 # zsh: aliases
@@ -28,19 +56,7 @@ source $ZSH/oh-my-zsh.sh
 alias sudo="sudo "
 alias ll="ls -lphG"
 alias la="ls -laphG"
-eval "$(/opt/homebrew/bin/hub alias -s)"
 alias lsd="ls -lphG | grep '^d'"
-
-#
-# zsh: exports
-#
-export GPG_TTY=$(tty)
-export GO111MODULE=on
-export LANG="en_US.UTF-8";
-export GOROOT=/usr/local/go
-export GOPATH="${HOME}/src/go"
-export EDITOR=/usr/local/bin/vim;
-export PATH="${GOPATH}/bin:${GOROOT}/bin:/usr/local/bin:/opt/homebrew/bin:${PATH}"
 
 #
 # zsh: functions
@@ -62,3 +78,8 @@ alias ktx='kubectx'
 k() {
 	kubectl "$@"
 }
+
+#
+# zsh: oh-my-zsh config (keep me last)
+#
+source $ZSH/oh-my-zsh.sh
