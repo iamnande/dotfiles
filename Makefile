@@ -86,10 +86,11 @@ install-vimfiles: ## env: install vim setup
 	@git clone git@github.com:iamnande/vimfiles.git $(SRC_HOME)/vimfiles
 	@cd $(SRC_HOME)/vimfiles && make
 
-GO_VERSION := 1.21.2
+GO_VERSION := 1.23.1
 GO_HOME    := /usr/local
 GO_FLAVOR  := $(shell uname -s | awk '{print tolower($$0)}')
-GO_SOURCE  := https://dl.google.com/go/go$(GO_VERSION).$(GO_FLAVOR)-arm64.tar.gz
+GO_ARCH    := $(shell uname -m | awk '{if ($$1 == "x86_64") print "amd64"; else if ($$1 == "arm") print "arm64"; else print "unknown"}')
+GO_SOURCE  := https://dl.google.com/go/go$(GO_VERSION).$(GO_FLAVOR)-$(GO_ARCH).tar.gz
 
 .PHONY: install-go
 install-go: ## env: install go
