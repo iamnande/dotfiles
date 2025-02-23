@@ -15,7 +15,7 @@ PROJECT_VERSION  ?= $(shell cat $(PROJECT_WORKDIR)/VERSION)
 # settings & utils
 .DEFAULT_GOAL := help
 SHELL         := /usr/bin/env bash
-LOG_FMT       := `/bin/date "+%Y-%m-%d %H:%M:%S %z [$(PROJECT_NAME) - $(PROJECT_VERSION) - $(PROJECT_COMMIT)]"`
+LOG_FMT       := `/bin/date "+%Y-%m-%d %H:%M:%S %z [$(PROJECT_NAME) - $(PROJECT_VERSION)]"`
 
 # modules
 include mk/configs.mk
@@ -39,3 +39,7 @@ help: ## help: display available targets
 		grep -h -E "^$$section/[^:]+:.*?## .*$$" $(MAKEFILE_LIST) | sort -k1 | \
 		awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}' ; \
 		done
+
+.PHONY: version
+version: ## version: display project version
+	@echo $(PROJECT_VERSION)
