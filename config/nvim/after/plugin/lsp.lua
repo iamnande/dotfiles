@@ -1,0 +1,87 @@
+-- Reserve a space in the gutter
+-- This will avoid an annoying layout shift in the screen
+vim.opt.signcolumn = 'yes'
+
+-- Add cmp_nvim_lsp capabilities settings to lspconfig
+-- This should be executed before you configure any language server
+local lspconfig_defaults = require('lspconfig').util.default_config
+lspconfig_defaults.capabilities = vim.tbl_deep_extend(
+  'force',
+  lspconfig_defaults.capabilities,
+  require('cmp_nvim_lsp').default_capabilities()
+)
+
+-- This is where you enable features that only work
+-- if there is a language server active in the file
+vim.api.nvim_create_autocmd('LspAttach', {
+  desc = 'LSP actions',
+  callback = function(event)
+    local opts = {buffer = event.buf}
+
+    vim.keymap.set('n', 'K', '<cmd>lua vim.lsp.buf.hover()<cr>', opts)
+    vim.keymap.set('n', 'gd', '<cmd>lua vim.lsp.buf.definition()<cr>', opts)
+    vim.keymap.set('n', 'gD', '<cmd>lua vim.lsp.buf.declaration()<cr>', opts)
+    vim.keymap.set('n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<cr>', opts)
+    vim.keymap.set('n', 'go', '<cmd>lua vim.lsp.buf.type_definition()<cr>', opts)
+    vim.keymap.set('n', 'gr', '<cmd>lua vim.lsp.buf.references()<cr>', opts)
+    vim.keymap.set('n', 'gs', '<cmd>lua vim.lsp.buf.signature_help()<cr>', opts)
+    vim.keymap.set('n', '<F2>', '<cmd>lua vim.lsp.buf.rename()<cr>', opts)
+    vim.keymap.set({'n', 'x'}, '<F3>', '<cmd>lua vim.lsp.buf.format({async = true})<cr>', opts)
+    vim.keymap.set('n', '<F4>', '<cmd>lua vim.lsp.buf.code_action()<cr>', opts)
+  end,
+})
+
+
+require('lspconfig').arduino_language_server.setup({})
+require('lspconfig').azure_pipelines_ls.setup({})
+require('lspconfig').bazelrc_lsp.setup({})
+require('lspconfig').buf_ls.setup({})
+require('lspconfig').docker_compose_language_service.setup({})
+require('lspconfig').eslint.setup({})
+require('lspconfig').gh_actions_ls.setup({})
+require('lspconfig').golangci_lint_ls.setup({})
+require('lspconfig').gopls.setup({})
+require('lspconfig').gradle_ls.setup({})
+require('lspconfig').groovyls.setup({})
+require('lspconfig').helm_ls.setup({})
+require('lspconfig').java_language_server.setup({})
+require('lspconfig').kotlin_language_server.setup({})
+require('lspconfig').lua_ls.setup({})
+require('lspconfig').markdown_oxide.setup({})
+require('lspconfig').nginx_language_server.setup({})
+require('lspconfig').puppet.setup({})
+require('lspconfig').pylsp.setup({})
+require('lspconfig').ruby_lsp.setup({})
+require('lspconfig').rust_analyzer.setup({})
+require('lspconfig').sqlls.setup({})
+require('lspconfig').terraform_lsp.setup({})
+require('lspconfig').tilt_ls.setup({})
+require('lspconfig').yamlls.setup({})
+require('lspconfig').zls.setup({})
+
+---
+-- Autocompletion config
+---
+local cmp = require('cmp')
+
+cmp.setup({
+  sources = {
+    {name = 'nvim_lsp'},
+  },
+  mapping = cmp.mapping.preset.insert({
+    -- `Enter` key to confirm completion
+    ['<CR>'] = cmp.mapping.confirm({select = false}),
+
+    -- Ctrl+Space to trigger completion menu
+    ['<C-Space>'] = cmp.mapping.complete(),
+
+    -- Scroll up and down in the completion documentation
+    ['<C-u>'] = cmp.mapping.scroll_docs(-4),
+    ['<C-d>'] = cmp.mapping.scroll_docs(4),
+  }),
+  snippet = {
+    expand = function(args)
+      vim.snippet.expand(args.body)
+    end,
+  },
+})

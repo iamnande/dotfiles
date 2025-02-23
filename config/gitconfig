@@ -1,0 +1,67 @@
+# configure git's editor, pagination, and exclusion
+[core]
+editor = vim
+pager = less -FRX
+autocrlf = input
+excludesfile = ~/.gitignore
+
+[init]
+defaultBranch = main
+
+# 👋 Halo - I'm a backend engineer (Go) at Kong, Inc. working on the Konnect
+# Platform Team. Our scope includes Identity, Authorization, Notifications, 
+# Search, and various other shared services. #allmyhomieshatelinters
+# https://konghq.com/blog/engineering/meet-the-engineers-behind-konnect
+[user]
+email = nicholas.anderson@konghq.com
+name = Nicholas Anderson
+signingkey = 11B2C5C252F8F27B
+
+# bring receipts
+[commit]
+gpgsign = true
+
+[gpg]
+program = /opt/homebrew/bin/gpg
+
+# dx
+[push]
+default = matching
+
+[help]
+autocorrect = 1
+
+[diff]
+renames = copies
+
+[advice]
+skippedCherryPicks = false
+
+# utilities
+[alias]
+# get with the times!
+up = "!f() { \
+      current_branch=$(git symbolic-ref --short HEAD); \
+      git checkout main && \
+      git fetch -p && \
+      git pull origin main && \
+      git checkout $current_branch && \
+      git rebase main; \
+      }; f"
+
+# JA: "wtf did you do? 😅" 
+lg = log --pretty=oneline -n 10 --graph --abbrev-commit
+
+# dude, where am i?
+stat = status -s
+
+# success, let's have another	
+merged = "!f() { \
+          CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD) && \
+          git checkout main && \
+          git branch -D \"$CURRENT_BRANCH\" && \
+          git up && \
+          git checkout -b \"$1\"; \
+          }; f"
+
+
