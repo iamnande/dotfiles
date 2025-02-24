@@ -5,7 +5,6 @@ DEPENDENCIES = awscli $\
 			   buf $\
 			   gh $\
 			   git $\
-			   golangci-lint-langserver $\
 			   gopls $\
 			   grpcui $\
 			   helm $\
