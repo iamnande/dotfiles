@@ -40,7 +40,7 @@ export EDITOR=vim
 export GPG_TTY=$(tty)
 export LANG="en_US.UTF-8";
 export GOROOT=/usr/local/go
-export GOPATH="${HOME}/src/go"
+export GOPATH="/usr/local/lib/go"
 
 export PATH_GOPATH="${GOPATH}/bin"
 export PATH_GOROOT="${GOROOT}/bin"
