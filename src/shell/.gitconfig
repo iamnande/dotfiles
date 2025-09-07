@@ -1,0 +1,61 @@
+# configure git's editor, pagination, and exclusion
+[core]
+editor = nvim
+pager = less -FNRX
+autocrlf = input
+excludesfile = ~/.gitignore
+
+[init]
+defaultBranch = main
+
+[user]
+email = nick@morethq.com
+name = Nicholas Anderson
+
+# bring receipts
+#[commit]
+#gpgsign = true
+
+#[gpg]
+#program = /opt/homebrew/bin/gpg
+
+# dx
+[push]
+default = matching
+
+[help]
+autocorrect = 1
+
+[diff]
+renames = copies
+
+[advice]
+skippedCherryPicks = false
+
+# utilities
+[alias]
+# get with the times!
+up = "!f() { \
+      current_branch=$(git symbolic-ref --short HEAD); \
+      git checkout main && \
+      git fetch -p && \
+      git pull origin main && \
+      git checkout $current_branch && \
+      git rebase main; \
+      }; f"
+
+# JA: "wtf did you do? 😅" 
+lg = log --pretty=oneline -n 10 --graph --abbrev-commit
+
+# dude, where am i?
+stat = status -s
+
+# success, let's have another
+merged = "!f() { \
+          CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD) && \
+          git checkout main && \
+          git branch -D \"$CURRENT_BRANCH\" && \
+          git up && \
+          git checkout -b \"$1\"; \
+          }; f"
+

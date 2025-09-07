@@ -4,42 +4,52 @@ ifneq (,$(wildcard ./.env))
 	export
 endif
 
-# project information
-OWNER_NAME       := iamnande
-PROJECT_NAME     := dotfiles
-PROJECT_WORKDIR  := $(shell pwd)
-PROJECT_REPO     := github.com/$(OWNER_NAME)/$(PROJECT_NAME)
-PROJECT_COMMIT   ?= $(shell git rev-parse --short=7 HEAD)
-PROJECT_VERSION  ?= $(shell cat $(PROJECT_WORKDIR)/VERSION)
-
-# settings & utils
+# core
 .DEFAULT_GOAL := help
+WORKDIR       := $(shell pwd)
 SHELL         := /usr/bin/env bash
-LOG_FMT       := `/bin/date "+%Y-%m-%d %H:%M:%S %z [$(PROJECT_NAME) - $(PROJECT_VERSION)]"`
+
+# vcs info
+VCS_COMMIT   := $(shell git rev-parse --short=7 HEAD)
+VCS_IS_DIRTY := $(shell test -n "$$(git status --porcelain)" && echo "-alpha")
+
+# colors are pretty
+# COLOR_36m
+COLOR_GREEN=\033[0;32m
+COLOR_MAGENTA=\033[0;35m
+COLOR_YELLOW=\033[0;33m
+COLOR_NONE=\033[0m
+
+# project information
+OWNER_NAME      := iamnande
+PROJECT_NAME    := dotfiles
+PROJECT_VERSION ?= $(shell cat $(WORKDIR)/VERSION)$(VCS_IS_DIRTY)
+PROJECT_SLUG    := $(OWNER_NAME)-$(PROJECT_NAME)-$(PROJECT_VERSION)
 
 # modules
-include mk/configs.mk
-include mk/dependencies.mk
+include mk/log.mk
+include mk/setup.mk
 include mk/lang-go.mk
 # include mk/lang-rust.mk
 # include mk/lang-zig.mk
 # include mk/lang-typescript.mk
-include mk/shell.mk
 
-# help me obi wan kenobi, you're my only hope
 .PHONY: help
-help: ## help: display available targets
-	@grep -h -E '^[a-zA-Z0-9_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort -k1 | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
+help: ## display this help screen
+	@echo -e "${COLOR_GREEN}=================================================================================${COLOR_NONE}"
+	@echo -e "                    [ ${COLOR_MAGENTA}$(OWNER_NAME)${COLOR_YELLOW}/${COLOR_MAGENTA}$(PROJECT_NAME) ${COLOR_NONE} - ${COLOR_MAGENTA}$(PROJECT_VERSION)${COLOR_NONE} ] "
+	@echo -e "${COLOR_GREEN}=================================================================================${COLOR_NONE}"
+	@grep -h -E '^[a-zA-Z0-9_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort -k1 | \
+		awk 'BEGIN {FS = ":.*?## "} \
+		{printf "\033[36m%-12s\033[0m %s %s\n", $$1, "    ..................................    ", $$2}'
 	@grep -h -E '^[a-zA-Z0-9_-]+/[a-zA-Z0-9/_-]+:.*?## .*$$' $(MAKEFILE_LIST) | \
-		awk '{print $$1}' | \
-		awk -F/ '{print $$1}' | \
-		sort -u | \
+		awk '{print $$1}' | awk -F/ '{print $$1}' | sort -u | \
 		while read section ; do \
-		echo; \
-		grep -h -E "^$$section/[^:]+:.*?## .*$$" $(MAKEFILE_LIST) | sort -k1 | \
-		awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}' ; \
+			echo; \
+			grep -h -E "^$$section/[^:]+:.*?## .*$$" $(MAKEFILE_LIST) | sort -k1 | \
+			awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, "    ...................................    ", $$2}' ; \
 		done
 
 .PHONY: version
-version: ## version: display project version
+version: ## display project version
 	@echo $(PROJECT_VERSION)

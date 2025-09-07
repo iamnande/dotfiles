@@ -1,0 +1,3 @@
+now = $(shell /bin/date "+%Y-%m-%d %H:%M:%S %z")
+
+log = `echo -e "${COLOR_GREEN}${now}${COLOR_NONE} ${COLOR_YELLOW}[${COLOR_NONE} ${COLOR_MAGENTA}$(PROJECT_NAME)${COLOR_NONE} - ${COLOR_MAGENTA}$(PROJECT_VERSION)${COLOR_NONE} ${COLOR_YELLOW}]${COLOR_NONE} $1"`
