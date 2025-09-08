@@ -15,6 +15,7 @@ VCS_IS_DIRTY := $(shell test -n "$$(git status --porcelain)" && echo "-alpha")
 
 # colors are pretty
 # COLOR_36m
+COLOR_CYAN=\033[0;36m
 COLOR_GREEN=\033[0;32m
 COLOR_MAGENTA=\033[0;35m
 COLOR_YELLOW=\033[0;33m
@@ -35,21 +36,14 @@ include mk/lang-go.mk
 # include mk/lang-typescript.mk
 
 .PHONY: help
-help: ## display this help screen
+help: ## available targets
 	@echo -e "${COLOR_GREEN}=================================================================================${COLOR_NONE}"
 	@echo -e "                    [ ${COLOR_MAGENTA}$(OWNER_NAME)${COLOR_YELLOW}/${COLOR_MAGENTA}$(PROJECT_NAME) ${COLOR_NONE} - ${COLOR_MAGENTA}$(PROJECT_VERSION)${COLOR_NONE} ] "
 	@echo -e "${COLOR_GREEN}=================================================================================${COLOR_NONE}"
 	@grep -h -E '^[a-zA-Z0-9_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort -k1 | \
 		awk 'BEGIN {FS = ":.*?## "} \
-		{printf "\033[36m%-12s\033[0m %s %s\n", $$1, "    ..................................    ", $$2}'
-	@grep -h -E '^[a-zA-Z0-9_-]+/[a-zA-Z0-9/_-]+:.*?## .*$$' $(MAKEFILE_LIST) | \
-		awk '{print $$1}' | awk -F/ '{print $$1}' | sort -u | \
-		while read section ; do \
-			echo; \
-			grep -h -E "^$$section/[^:]+:.*?## .*$$" $(MAKEFILE_LIST) | sort -k1 | \
-			awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, "    ...................................    ", $$2}' ; \
-		done
+		{printf "${COLOR_CYAN}%-12s${COLOR_NONE} %s %s\n", $$1, "    ..................................    ", $$2}'
 
 .PHONY: version
-version: ## display project version
+version: ## display version
 	@echo $(PROJECT_VERSION)

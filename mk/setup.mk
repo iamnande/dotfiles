@@ -1,6 +1,14 @@
-SETUP_TARGET ?= ~/
+SETUP_HOME     ?= src
+SETUP_SIMULATE ?=
+SETUP_TARGET   ?= ~/
+SETUP_VERBOSE  ?= 1
 
-install = cd src && stow --verbose $(if $(SIM),--simulate) --target $(SETUP_TARGET) $(COMPONENT) && cd -
+install = cd $(SETUP_HOME) \
+					&& stow \
+					$(if $(SETUP_VERBOSE),--verbose) \
+					$(if $(SETUP_SIMULATE),--simulate) \
+					--target $(SETUP_TARGET) \
+					$(COMPONENT) && cd -
 
 install-component:
 	@echo $(log) "installing $(COMPONENT) configs"
@@ -8,22 +16,22 @@ install-component:
 
 .PHONY: arch
 arch: COMPONENT=arch
-arch: install-component ## install arch configs
+arch: install-component ## setup: arch configs
 
 .PHONY: backgrounds
 backgrounds: COMPONENT=backgrounds
-backgrounds: install-component ## install backgrounds
+backgrounds: install-component ## setup: backgrounds
 
 .PHONY: editor
 editor: COMPONENT=editor
-editor: install-component ## install editor (nvim)
+editor: install-component ## setup: editor (nvim)
 
 .PHONY: shell
 shell: COMPONENT=shell
-shell: install-component ## install shell (zsh)
+shell: install-component ## setup: shell (zsh)
 shell:
-	@cp src/shell/.gitignore $(SETUP_TARGET)
+	cp $(SETUP_HOME)/$@/.gitignore $(SETUP_TARGET)
 
 .PHONY: terminal
 terminal: COMPONENT=terminal
-terminal: install-component ## install terminal (kitty)
+terminal: install-component ## setup: terminal (kitty)
