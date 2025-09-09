@@ -1,4 +1,4 @@
-# dotfiles
+# Setup Guide
 
 > In my day, television was called 'a book'.
 
@@ -9,10 +9,9 @@ Setup Steps:
   b. 1password 
   c. brew (MacOS), hypr/wofi/waybar (aarch)
   d. zsh/kitty/starship/nvim
+  e. workstation specific software (e.g. linear, notion, etc.)
 2. Install Setup
 3. Credentials
 4. GitHub / Code
-  a. SSH key (as needed, check 1password)
-  b. GPG key
 5. Shenanigans
 

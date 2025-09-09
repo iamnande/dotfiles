@@ -1,23 +1,20 @@
 # dotfiles
 
-my dotfiles.
+> my dotfiles.
 
 ## quickstart
 
 ```sh
-$ make version
-1.0.0
-
-$ make help
-cfg-clean                      config: remove user configurations
-cfg-install                    config: install user configurations
-deps-manager                   dependencies: install dependency manager
-deps-update                    dependencies: update dependencies
-deps                           dependencies: install dependencies
-help                           help: display available targets
-lang-go-install                language: go install
-shell-install                  shell: install zsh
-version                        version: display project version
+❯ make
+=================================================================================
+                    [ iamnande/dotfiles  - 2.0.0 ] 
+=================================================================================
+arch             ..................................     setup: arch configs
+backgrounds      ..................................     setup: backgrounds
+editor           ..................................     setup: editor (nvim)
+go               ..................................     language: go
+help             ..................................     available targets
+shell            ..................................     setup: shell (zsh)
+terminal         ..................................     setup: terminal (kitty)
+version          ..................................     display version
 ```
-
-_NOTE: install shell, then configs._
