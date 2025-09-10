@@ -4,6 +4,15 @@ eval "$(starship init zsh)"
 # we are but poor, lost, circus performers
 nerdfetch
 
+# well, it just so happens that your friend here is only mostly dead.
+# there's a big difference between mostly dead and all dead.
+export HISTFILE="${HOME}/.receipts"
+export HISTSIZE=10000
+export SAVEHIST=50000
+setopt appendhistory
+setopt HIST_IGNORE_ALL_DUPS
+setopt HIST_FIND_NO_DUPS
+
 # which ways my way?
 export EDITOR=nvim
 export GOROOT=/usr/local/go
@@ -12,7 +21,6 @@ export STARSHIP_CONFIG=~/.config/starship/starship.toml
 export PATH_GOROOT="${GOROOT}/bin"
 export PATH_GOPATH="${GOPATH}/bin"
 export PATH="${PATH_GOPATH}:${PATH_GOROOT}:${PATH}"
-
 
 # once word leaks out that a pirate has gone soft, people begin to disobey you.
 # then it's nothing but work, work, work - all the time.
