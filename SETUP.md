@@ -5,13 +5,11 @@
 Setup Steps:
 
 1. Download Dependencies
-  a. zen
-  b. 1password 
-  c. brew (MacOS), hypr/wofi/waybar (aarch)
-  d. zsh/kitty/starship/nvim
-  e. workstation specific software (e.g. linear, notion, etc.)
-2. Install Setup
-3. Credentials
-4. GitHub / Code
-5. Shenanigans
+  a. Firefox
+  b. 1Password
+2. Install Setup (e.g. `make macos && make backgrounds shell terminal editor`)
+3. Reboot
+4. Credentials
+5. GitHub / Code
+6. Shenanigans
 

@@ -30,6 +30,7 @@ PROJECT_SLUG    := $(OWNER_NAME)-$(PROJECT_NAME)-$(PROJECT_VERSION)
 # modules
 include mk/log.mk
 include mk/setup.mk
+include mk/macos.mk
 include mk/lang-go.mk
 # include mk/lang-rust.mk
 # include mk/lang-zig.mk

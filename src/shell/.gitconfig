@@ -1,23 +1,26 @@
 # configure git's editor, pagination, and exclusion
 [core]
-editor = nvim
-pager = less -FNRX
-autocrlf = input
+editor       = nvim
+pager        = less -FNRX
+autocrlf     = input
 excludesfile = ~/.gitignore
 
 [init]
 defaultBranch = main
 
 [user]
-email = nick@morethq.com
-name = Nicholas Anderson
+name       = Nick Anderson
+email      = nick@morethq.com
+signingKey = ~/.ssh/id_ed25519
 
-# bring receipts
-#[commit]
-#gpgsign = true
+[gpg]
+format = ssh
 
-#[gpg]
-#program = /opt/homebrew/bin/gpg
+[commit]
+gpgsign = true
+
+[tag]
+gpgsign = true
 
 # dx
 [push]

@@ -31,6 +31,7 @@ shell: COMPONENT=shell
 shell: install-component ## setup: shell (zsh)
 shell:
 	cp $(SETUP_HOME)/$@/.gitignore $(SETUP_TARGET)
+	chsh -s /bin/zsh
 
 .PHONY: terminal
 terminal: COMPONENT=terminal
