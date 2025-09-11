@@ -14,7 +14,10 @@ backgrounds      ..................................     setup: backgrounds
 editor           ..................................     setup: editor (nvim)
 go               ..................................     language: go
 help             ..................................     available targets
+home             ..................................     profile: home
+macos            ..................................     setup: MacOS
 shell            ..................................     setup: shell (zsh)
 terminal         ..................................     setup: terminal (kitty)
 version          ..................................     display version
+work             ..................................     profile: work
 ```
