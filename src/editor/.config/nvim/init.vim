@@ -45,6 +45,10 @@ autocmd BufEnter * if tabpagenr('$') == 1 && winnr('$') == 1 && exists('b:NERDTr
 nnoremap <leader>pg :GFiles<CR>
 nnoremap <leader>pf :Files<CR>
 
+" Git workflow
+" TODO: figure this out
+" NOTE: i'm thinkin <leader>gc for git commit kind of workflow
+
 " Utility - Line go down, Line go up
 vnoremap J :m '>+1<CR>gv=gv
 vnoremap K :m '<-2<CR>gv=gv
