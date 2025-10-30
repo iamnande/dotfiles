@@ -1,4 +1,5 @@
 " Base level vim settings
+set title
 set number
 set expandtab
 set scrolloff=8
@@ -6,6 +7,7 @@ set smartindent
 set shiftwidth=4
 set relativenumber
 set tabstop=4 softtabstop=4
+set titlestring=%{fnamemodify(getcwd(),':~:.')}
 let mapleader = " "
 
 " Plugin management via Plug
