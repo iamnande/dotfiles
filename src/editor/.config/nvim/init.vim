@@ -10,6 +10,7 @@ let mapleader = " "
 
 " Plugin management via Plug
 " TODO: telescope? what does this mean for fzf?
+" TODO: preservim/tagbar? we'd want shortcuts to toggle it
 call plug#begin('~/.vim/plugged')
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
