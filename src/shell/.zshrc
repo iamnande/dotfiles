@@ -1,4 +1,5 @@
 # fencing, fighting, torture
+# eval "$(zellij setup --generate-auto-start zsh)"
 eval "$(starship init zsh)"
 eval "$(fnm env --use-on-cd --shell zsh)"
 
@@ -54,6 +55,14 @@ k() {
   kubectl "$@"
 }
 
+v() {
+  vim "$@"
+}
+
+z() {
+  zellij "$@"
+}
+
 bop() {
   if bluetoothctl show | grep -q "Powered: no"; then
     bluetoothctl power on >> /dev/null
@@ -71,3 +80,4 @@ bop() {
     bluetoothctl power off >> /dev/null
   fi
 }
+

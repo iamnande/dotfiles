@@ -18,13 +18,17 @@ install-component:
 arch: COMPONENT=arch
 arch: install-component ## setup: arch configs
 
+.PHONY: zellij
+zellij: COMPONENT=zellij
+zellij: install-component ## setup: zellij configs
+
 .PHONY: backgrounds
 backgrounds: COMPONENT=backgrounds
 backgrounds: install-component ## setup: backgrounds
 
-.PHONY: editor
-editor: COMPONENT=editor
-editor: install-component ## setup: editor (nvim)
+.PHONY: nvim
+nvim: COMPONENT=nvim
+nvim: install-component ## setup: nvim (nvim)
 
 .PHONY: shell
 shell: COMPONENT=shell
