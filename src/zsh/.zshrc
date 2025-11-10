@@ -1,7 +1,7 @@
 # fencing, fighting, torture
-# eval "$(zellij setup --generate-auto-start zsh)"
 eval "$(starship init zsh)"
 eval "$(fnm env --use-on-cd --shell zsh)"
+
 
 # we are but poor, lost, circus performers
 nerdfetch
@@ -81,3 +81,7 @@ bop() {
   fi
 }
 
+# rodents of unusual size? i don't think they exist - **rawr**
+if [[ -z "${ZELLIJ}" ]]; then
+    z a mhq
+fi

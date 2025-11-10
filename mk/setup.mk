@@ -1,14 +1,16 @@
 SETUP_HOME     ?= src
 SETUP_SIMULATE ?=
 SETUP_TARGET   ?= ~/
-SETUP_VERBOSE  ?= 1
+SETUP_VERBOSE  ?= true
+SETUP_OVERRIDE ?= true
 
 install = cd $(SETUP_HOME) \
-					&& stow \
-					$(if $(SETUP_VERBOSE),--verbose) \
-					$(if $(SETUP_SIMULATE),--simulate) \
-					--target $(SETUP_TARGET) \
-					$(COMPONENT) && cd -
+	  && stow \
+	  $(if $(SETUP_OVERRIDE),--restow) \
+	  $(if $(SETUP_VERBOSE),--verbose) \
+	  $(if $(SETUP_SIMULATE),--simulate) \
+	  --target $(SETUP_TARGET) \
+	  $(COMPONENT) && cd -
 
 install-component:
 	@echo $(log) "installing $(COMPONENT) configs"
@@ -18,25 +20,30 @@ install-component:
 arch: COMPONENT=arch
 arch: install-component ## setup: arch configs
 
-.PHONY: zellij
-zellij: COMPONENT=zellij
-zellij: install-component ## setup: zellij configs
-
 .PHONY: backgrounds
 backgrounds: COMPONENT=backgrounds
 backgrounds: install-component ## setup: backgrounds
+
+.PHONY: gitconfig
+gitconfig: COMPONENT=gitconfig
+gitconfig: install-component ## setup: gitconfig
+
+.PHONY: kitty
+kitty: COMPONENT=kitty
+kitty: install-component ## setup: kitty
 
 .PHONY: nvim
 nvim: COMPONENT=nvim
 nvim: install-component ## setup: nvim (nvim)
 
-.PHONY: shell
-shell: COMPONENT=shell
-shell: install-component ## setup: shell (zsh)
-shell:
-	cp $(SETUP_HOME)/$@/.gitignore $(SETUP_TARGET)
-	chsh -s /bin/zsh
+.PHONY: starship
+starship: COMPONENT=starship
+starship: install-component ## setup: starship (kitty)
 
-.PHONY: terminal
-terminal: COMPONENT=terminal
-terminal: install-component ## setup: terminal (kitty)
+.PHONY: zellij
+zellij: COMPONENT=zellij
+zellij: install-component ## setup: zellij configs
+
+.PHONY: zsh
+zsh: COMPONENT=zsh
+zsh: install-component ## setup: zsh configs
