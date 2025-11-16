@@ -1,30 +1,42 @@
--- base 
-vim.opt.guicursor = ""
-vim.opt.nu = true
-vim.opt.relativenumber = true
-vim.opt.termguicolors = true
-vim.g.loaded_netrw = 1
-vim.g.loaded_netrwPlugin = 1
+local vim = vim
+local config = vim.opt
+local global = vim.g
 
--- wrap & indent
-vim.opt.wrap = false
-vim.opt.tabstop = 4
-vim.opt.shiftwidth = 4
-vim.opt.softtabstop = 4
-vim.opt.expandtab = true
-vim.opt.smartindent = true
+-- GLOBALS
+global.loaded_netrw = 1
+global.loaded_netrwPlugin = 1
+global.markdown_folding = 1
 
--- scroll
-vim.opt.scrolloff = 10
-vim.opt.signcolumn = "yes"
-vim.opt.colorcolumn = "80"
-
--- search
-vim.opt.hlsearch = false
-vim.opt.incsearch = true
+-- base
+config.guicursor = ""
+config.nu = true
+config.relativenumber = true
+config.termguicolors = true
 
 -- backup
-vim.opt.backup = false
-vim.opt.undofile = true
-vim.opt.swapfile = false
-vim.opt.undodir = os.getenv("HOME") .. "/.vim/undodir"
+config.backup = false
+config.undofile = true
+config.swapfile = false
+config.undodir = os.getenv("HOME") .. "/.vim/undodir"
+
+-- folding
+-- TODO: this feels a bit circular. verify.
+config.foldmethod = "indent"
+config.foldexpr = "nvim_treesitter#foldexpr()"
+
+-- wrap & indent
+config.wrap = false
+config.tabstop = 4
+config.shiftwidth = 4
+config.softtabstop = 4
+config.expandtab = true
+config.smartindent = true
+
+-- scroll
+config.scrolloff = 10
+config.signcolumn = "yes"
+config.colorcolumn = "80"
+
+-- search
+config.hlsearch = false
+config.incsearch = true
