@@ -3,6 +3,7 @@ vim.g.mapleader = " "
 vim.opt.clipboard = "unnamedplus"
 
 -- find and explore
+-- TODO(nick): fix this
 vim.keymap.set("n", "<leader>pv", vim.cmd.Ex)
 
 -- block movement
@@ -20,12 +21,6 @@ vim.keymap.set("n", "<leader>k", "<cmd>lnext<CR>zz")
 vim.keymap.set("n", "<leader>j", "<cmd>lprev<CR>zz")
 
 -- diagnostics
-vim.keymap.set("n", "]d", vim.diagnostic.goto_next, {
-	desc = "See next message",
-})
-vim.keymap.set("n", "[d", vim.diagnostic.goto_prev, {
-	desc = "See previous message",
-})
 vim.keymap.set("n", "<leader>e", vim.diagnostic.open_float, {
 	desc = "Open floating diagnostic message",
 })
