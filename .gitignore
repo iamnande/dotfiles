@@ -2,3 +2,4 @@
 src/fish/.config/fish/fish_variables
 src/fish/.config/fish/functions/**
 src/fish/.config/fish/completions/**
+src/fish/.config/fish/conf.d/_tide_init.fish
