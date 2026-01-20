@@ -16,10 +16,6 @@ install-component:
 	@echo $(log) "installing $(COMPONENT) configs"
 	$(install)
 
-.PHONY: arch
-arch: COMPONENT=arch
-arch: install-component ## setup: arch configs
-
 .PHONY: backgrounds
 backgrounds: COMPONENT=backgrounds
 backgrounds: install-component ## setup: backgrounds
@@ -27,6 +23,10 @@ backgrounds: install-component ## setup: backgrounds
 .PHONY: gitconfig
 gitconfig: COMPONENT=gitconfig
 gitconfig: install-component ## setup: gitconfig
+
+.PHONY: hypr
+hypr: COMPONENT=hypr
+hypr: install-component ## setup: hypr
 
 .PHONY: kitty
 kitty: COMPONENT=kitty
@@ -39,6 +39,14 @@ nvim: install-component ## setup: nvim (nvim)
 .PHONY: starship
 starship: COMPONENT=starship
 starship: install-component ## setup: starship (kitty)
+
+.PHONY: waybar
+waybar: COMPONENT=waybar
+waybar: install-component ## setup: waybar
+
+.PHONY: wofi
+wofi: COMPONENT=wofi
+wofi: install-component ## setup: wofi
 
 .PHONY: zellij
 zellij: COMPONENT=zellij
