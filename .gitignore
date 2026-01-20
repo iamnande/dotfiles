@@ -1,4 +1,4 @@
 # bobby fisher, where is he? idk, idk
 src/fish/.config/fish/fish_variables
-src/fish/.config/fish/functions/fisher.fish
-src/fish/.config/fish/completions/fisher.fish
+src/fish/.config/fish/functions/**
+src/fish/.config/fish/completions/**
