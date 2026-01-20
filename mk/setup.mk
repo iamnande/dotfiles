@@ -20,6 +20,10 @@ install-component:
 backgrounds: COMPONENT=backgrounds
 backgrounds: install-component ## setup: backgrounds
 
+.PHONY: fish
+fish: COMPONENT=fish
+fish: install-component ## setup: fish
+
 .PHONY: gitconfig
 gitconfig: COMPONENT=gitconfig
 gitconfig: install-component ## setup: gitconfig
