@@ -9,14 +9,8 @@ fish_add_path "$HOME/go/bin"
 fish_add_path "$HOME/.local/bin"
 
 ## ALIAS -----------------------
-alias kns kubens
-alias ktx kubectx
-
 # TODO(nick): hook up eza
-
 alias vim nvim
-
-alias z zellij
 
 ## FUNCS -----------------------
 function hx --wraps helix --description helix
@@ -41,10 +35,6 @@ end
 
 function tre --description "happy little trees"
     tree -aC -I .git $argv | less -FRNX
-end
-
-function v --wraps nvim --description neovim
-    nvim
 end
 
 function z --wraps zellij --description zellij
