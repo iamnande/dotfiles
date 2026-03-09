@@ -1,0 +1,5 @@
+theme = "everforest_dark"
+
+[editor.file-picker]
+hidden = false
+git-ignore = true

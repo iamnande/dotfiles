@@ -28,6 +28,10 @@ fish: install-component ## setup: fish
 gitconfig: COMPONENT=gitconfig
 gitconfig: install-component ## setup: gitconfig
 
+.PHONY: helix
+helix: COMPONENT=helix
+helix: install-component ## setup: helix
+
 .PHONY: hypr
 hypr: COMPONENT=hypr
 hypr: install-component ## setup: hypr
