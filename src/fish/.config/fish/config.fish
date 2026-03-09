@@ -1,10 +1,3 @@
-# shh.. you'll wake the neighbors
-if status is-interactive
-    if not set -q ZELLIJ; and not set -q SSH_CONNECTION
-        exec zellij a -c mhq
-    end
-end
-
 ## ENV -------------------------
 set -gx EDITOR nvim
 
@@ -22,19 +15,19 @@ alias vim nvim
 alias z zellij
 
 ## FUNCS -----------------------
-function hx --wraps helix --description "helix"
+function hx --wraps helix --description helix
     helix $argv
 end
 
-function k --wraps kubectl --description "kubectl"
+function k --wraps kubectl --description kubectl
     kubectl $argv
 end
 
-function kns --wraps kubens --description "kubens"
+function kns --wraps kubens --description kubens
     kubens $argv
 end
 
-function ktx --wraps kubectx --description "kubectx"
+function ktx --wraps kubectx --description kubectx
     kubectx $argv
 end
 
@@ -46,10 +39,10 @@ function tre --description "happy little trees"
     tree -aC -I .git $argv | less -FRNX
 end
 
-function v --wraps nvim --description "neovim"
+function v --wraps nvim --description neovim
     nvim
 end
 
-function z --wraps zellij --description "zellij"
+function z --wraps zellij --description zellij
     zellij $argv
 end
