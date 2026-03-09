@@ -1,8 +1,11 @@
 ## ENV -------------------------
-set -gx EDITOR nvim
+set -gx EDITOR hx
 
 ## PATH ------------------------
-fish_add_path $HOME/.cargo/bin
+source "$HOME/.cargo/env.fish"
+
+fish_add_path /usr/local/go/bin
+fish_add_path "$HOME/go/bin"
 
 ## ALIAS -----------------------
 alias kns kubens
