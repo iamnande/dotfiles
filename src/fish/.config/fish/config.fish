@@ -2,7 +2,7 @@
 set -gx EDITOR hx
 
 ## PATH ------------------------
-source "$HOME/.cargo/env.fish"
+test -f "$HOME/.cargo/env.fish"; and source "$HOME/.cargo/env.fish"
 
 fish_add_path /usr/local/go/bin
 fish_add_path "$HOME/go/bin"
@@ -13,8 +13,10 @@ fish_add_path "$HOME/.local/bin"
 alias vim nvim
 
 ## FUNCS -----------------------
-function hx --wraps helix --description helix
-    helix $argv
+if not command -q hx
+    function hx --wraps helix --description helix
+        helix $argv
+    end
 end
 
 function k --wraps kubectl --description kubectl
