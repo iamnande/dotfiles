@@ -42,3 +42,9 @@ end
 function z --wraps zellij --description zellij
     zellij $argv
 end
+
+# remember me
+if not set -q SSH_AUTH_SOCK
+    eval (ssh-agent -c)
+    ssh-add ~/.ssh/id_ed25519
+end
