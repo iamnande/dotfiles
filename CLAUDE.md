@@ -1,42 +1,8 @@
 # CLAUDE.md - iamnande/dotfiles
 
 this file tells Claude Code how to work in this repository. read it fully before
-making any changes.
-
----
-
-## what this repo is
-
-a personal dotfiles repository managed with [GNU Stow](https://www.gnu.org/software/stow/).
-each top-level directory under `src/` is a stow package - it mirrors the structure of `$HOME`
-and gets symlinked there when stowed. the goal is a reproducible setup for Linux (NixOS) personal
-machines. macOS is work-only and isolated.
-
----
-
-## how to navigate it
-
-```
-src/
-  backgrounds/  -> ~/.config/backgrounds/
-  claude/       -> ~/.claude/
-  fish/         -> ~/.config/fish/
-  gitconfig/    -> ~/.gitconfig, ~/.gitignore
-  helix/        -> ~/.config/helix/
-  hypr/         -> ~/.config/hypr/     (Wayland/Linux only)
-  kitty/        -> ~/.config/kitty/
-  waybar/       -> ~/.config/waybar/   (Wayland/Linux only)
-  wofi/         -> ~/.config/wofi/     (Wayland/Linux only)
-  zellij/       -> ~/.config/zellij/
-Makefile
-mk/
-  log.mk        -> logging helpers
-  setup.mk      -> stow install targets (one per src/ package)
-  macos.mk      -> macOS bootstrap — work machine only
-```
-
-when you're looking for a config file, start in `src/<tool>/`. don't assume flat structure —
-always check the actual directory layout before suggesting paths.
+making any changes. for an overview of what this repo is and how it's structured,
+see [README.md](README.md).
 
 ---
 
@@ -108,31 +74,10 @@ not installing dependencies.
 
 ---
 
-## future: Nix
-
-NixOS on the incoming NUC is the near-term direction for personal machines, including a
-graphical Hyprland setup (hypr/waybar/wofi). when that lands, stow-based management will
-likely be replaced or supplemented by home-manager. for now, use make targets — but don't
-write tooling that would be painful to port to Nix.
-
----
-
 ## editor
 
 **Helix** (`hx`) is the editor of choice. VSCode/neovim/vim references are legacy.
 Helix config lives in `src/helix/.config/helix/`.
-
----
-
-## what "reproducible" means here
-
-the north star is: clone this repo on a fresh machine, run a bootstrap make target,
-and get a working environment. we're not fully there yet, but every change should move
-toward that goal, not away from it. concretely:
-
-- prefer declarative config over imperative setup steps
-- if you add a dependency, note it somewhere (a make target, a README, a comment)
-- don't suggest steps that only work on macOS — personal configs are Linux-first
 
 ---
 
@@ -142,3 +87,4 @@ toward that goal, not away from it. concretely:
 - don't assume `git` will always be the VCS (see above)
 - don't add dependencies silently - if something needs to be installed, say so explicitly
 - don't refactor working configs just to make them "cleaner" without being asked
+- don't suggest steps that only work on macOS — personal configs are Linux-first
