@@ -1,7 +1,7 @@
 # configure git's editor, pagination, and exclusion
 [core]
-editor       = nvim
-pager        = less -FNRX
+editor       = hx
+pager        = less -FRX
 autocrlf     = input
 excludesfile = ~/.gitignore
 
@@ -11,10 +11,12 @@ defaultBranch = main
 [user]
 name       = Nick Anderson
 email      = nick@morethq.com
-signingKey = ~/.ssh/id_ed25519
 
 [gpg]
 format = ssh
+
+[gpg "ssh"]
+defaultKeyCommand = ssh-add -L
 
 [commit]
 gpgsign = true
@@ -23,11 +25,14 @@ gpgsign = true
 gpgsign = true
 
 # dx
+[fetch]
+prune = true
+
 [push]
-default = matching
+default = simple
 
 [help]
-autocorrect = 1
+autocorrect = 10
 
 [diff]
 renames = copies
@@ -40,11 +45,13 @@ skippedCherryPicks = false
 # get with the times!
 up = "!f() { \
       current_branch=$(git symbolic-ref --short HEAD); \
-      git checkout main && \
-      git fetch -p && \
-      git pull origin main && \
+      default=$(git symbolic-ref refs/remotes/origin/HEAD 2>/dev/null | sed 's@^refs/remotes/origin/@@'); \
+      default=${default:-main}; \
+      git checkout $default && \
+      git fetch && \
+      git pull origin $default && \
       git checkout $current_branch && \
-      git rebase main; \
+      git rebase $default; \
       }; f"
 
 # JA: "wtf did you do? 😅" 
@@ -55,10 +62,11 @@ stat = status -s
 
 # success, let's have another
 merged = "!f() { \
-          CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD) && \
-          git checkout main && \
-          git branch -D \"$CURRENT_BRANCH\" && \
+          current_branch=$(git rev-parse --abbrev-ref HEAD); \
+          default=$(git symbolic-ref refs/remotes/origin/HEAD 2>/dev/null | sed 's@^refs/remotes/origin/@@'); \
+          default=${default:-main}; \
+          git checkout $default && \
+          git branch -D \"$current_branch\" && \
           git up && \
           git checkout -b \"$1\"; \
           }; f"
-
