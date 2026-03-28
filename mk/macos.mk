@@ -2,7 +2,7 @@ MAC_HOSTNAME := $(shell hostname)
 
 PKGMGR_CMD      := /opt/homebrew/bin/brew
 PKGMGR_EXTRAS   := font-open-dyslexic-nerd-font
-PKGMGR_PACKAGES := fontconfig neovim nerdfetch starship tree zsh
+PKGMGR_PACKAGES := fontconfig tree
 
 .PHONY: macos
 macos: ## setup: MacOS

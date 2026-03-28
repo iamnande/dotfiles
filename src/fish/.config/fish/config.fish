@@ -4,13 +4,10 @@ set -gx EDITOR hx
 ## PATH ------------------------
 test -f "$HOME/.cargo/env.fish"; and source "$HOME/.cargo/env.fish"
 
-fish_add_path /usr/local/go/bin
-fish_add_path "$HOME/go/bin"
 fish_add_path "$HOME/.local/bin"
 
 ## ALIAS -----------------------
 # TODO(nick): hook up eza
-alias vim nvim
 
 ## FUNCS -----------------------
 if not command -q hx
@@ -44,7 +41,11 @@ function z --wraps zellij --description zellij
 end
 
 # remember me
-if not set -q SSH_AUTH_SOCK
-    eval (ssh-agent -c)
-    ssh-add ~/.ssh/id_ed25519
+if status is-interactive
+    set -l agent_sock ~/.ssh/agent.sock
+    # when a live forwarded socket is present, keep the stable symlink current
+    if set -q SSH_AUTH_SOCK; and test "$SSH_AUTH_SOCK" != $agent_sock
+        ln -sf $SSH_AUTH_SOCK $agent_sock
+    end
+    set -gx SSH_AUTH_SOCK $agent_sock
 end

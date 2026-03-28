@@ -9,8 +9,8 @@ making any changes.
 
 a personal dotfiles repository managed with [GNU Stow](https://www.gnu.org/software/stow/).
 each top-level directory under `src/` is a stow package - it mirrors the structure of `$HOME`
-and gets symlinked there when stowed. the goal is a reproducible, portable setup that works
-identically on most variants of Linux operating systems.
+and gets symlinked there when stowed. the goal is a reproducible setup for Linux (NixOS) personal
+machines. macOS is work-only and isolated.
 
 ---
 
@@ -18,15 +18,21 @@ identically on most variants of Linux operating systems.
 
 ```
 src/
-  fish/       -> ~/.config/fish/
-  helix/      -> ~/.config/helix/
-  zellij/     -> ~/.config/zellij/
-  ...
+  backgrounds/  -> ~/.config/backgrounds/
+  claude/       -> ~/.claude/
+  fish/         -> ~/.config/fish/
+  gitconfig/    -> ~/.gitconfig, ~/.gitignore
+  helix/        -> ~/.config/helix/
+  hypr/         -> ~/.config/hypr/     (Wayland/Linux only)
+  kitty/        -> ~/.config/kitty/
+  waybar/       -> ~/.config/waybar/   (Wayland/Linux only)
+  wofi/         -> ~/.config/wofi/     (Wayland/Linux only)
+  zellij/       -> ~/.config/zellij/
 Makefile
 mk/
-  dev.mk      -> dev environment setup targets
-  log.mk      -> logging helpers
-  qa.mk       -> quality targets
+  log.mk        -> logging helpers
+  setup.mk      -> stow install targets (one per src/ package)
+  macos.mk      -> macOS bootstrap — work machine only
 ```
 
 when you're looking for a config file, start in `src/<tool>/`. don't assume flat structure —
@@ -41,8 +47,8 @@ before running any install, lint, or setup command, check if a make target alrea
 
 ```fish
 cat Makefile
-cat mk/dev.mk
-cat mk/qa.mk
+cat mk/setup.mk
+cat mk/log.mk
 ```
 
 if a task doesn't have a make target yet and it's something that will be run repeatedly,
@@ -83,18 +89,37 @@ preferences. specifically:
 
 ---
 
+## software management
+
+software (cli tools, languages, desktop apps) is managed via **Nix** — don't suggest
+installing packages via homebrew, apt, pacman, or manual scripts. if something needs to
+be installed, it belongs in the Nix config (`~/homelab` for current machines, dotfiles
+for future personal machines). the `mk/` targets here are for stowing configs only,
+not installing dependencies.
+
+---
+
+## platform
+
+- **personal machines: Linux (NixOS)** — primary target for all configs
+- **work machine: macOS** — isolated; `make macos` exists for bootstrap but isn't the dotfiles focus
+- when suggesting configs or tooling, default to Linux unless context is explicitly macOS
+- `hypr`, `waybar`, `wofi` are Wayland/Linux-only — don't suggest them in macOS contexts
+
+---
+
 ## future: Nix
 
-Nix is on the radar as a potential path toward fully reproducible environment management,
-but there are no current plans or timeline. don't suggest Nix-based solutions for
-immediate problems - note it as a future option at most.
+NixOS on the incoming NUC is the near-term direction for personal machines, including a
+graphical Hyprland setup (hypr/waybar/wofi). when that lands, stow-based management will
+likely be replaced or supplemented by home-manager. for now, use make targets — but don't
+write tooling that would be painful to port to Nix.
 
 ---
 
 ## editor
 
-**Helix** (`hx`) is the editor of choice. VSCode/neovim references are legacy.
-the `vim` alias points to `nvim` currently but that's transitional - don't rely on it.
+**Helix** (`hx`) is the editor of choice. VSCode/neovim/vim references are legacy.
 Helix config lives in `src/helix/.config/helix/`.
 
 ---
@@ -107,8 +132,7 @@ toward that goal, not away from it. concretely:
 
 - prefer declarative config over imperative setup steps
 - if you add a dependency, note it somewhere (a make target, a README, a comment)
-- don't suggest steps that only work on one OS without flagging it - this needs to work
-  on at least Darwin, Arch, and Ubuntu
+- don't suggest steps that only work on macOS — personal configs are Linux-first
 
 ---
 
