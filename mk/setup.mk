@@ -20,6 +20,10 @@ install-component:
 backgrounds: COMPONENT=backgrounds
 backgrounds: install-component ## setup: backgrounds
 
+.PHONY: claude
+claude: COMPONENT=claude
+claude: install-component ## setup: claude global context (~/.claude/CLAUDE.md)
+
 .PHONY: fish
 fish: COMPONENT=fish
 fish: install-component ## setup: fish
@@ -40,14 +44,6 @@ hypr: install-component ## setup: hypr
 kitty: COMPONENT=kitty
 kitty: install-component ## setup: kitty
 
-.PHONY: nvim
-nvim: COMPONENT=nvim
-nvim: install-component ## setup: nvim (nvim)
-
-.PHONY: starship
-starship: COMPONENT=starship
-starship: install-component ## setup: starship (kitty)
-
 .PHONY: waybar
 waybar: COMPONENT=waybar
 waybar: install-component ## setup: waybar
@@ -59,7 +55,3 @@ wofi: install-component ## setup: wofi
 .PHONY: zellij
 zellij: COMPONENT=zellij
 zellij: install-component ## setup: zellij configs
-
-.PHONY: zsh
-zsh: COMPONENT=zsh
-zsh: install-component ## setup: zsh configs
