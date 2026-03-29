@@ -41,6 +41,21 @@ and surprises. always improving the flow, not just the implementation.
 
 ---
 
+## branching + issue flow
+
+work is issue-driven. use `/senzu <repo>#<issue>` to start a session against
+a specific issue, or `/senzu #<issue>` when already inside the relevant repo.
+
+branch naming: `<type>/<issue-number>_<slug>`
+- type follows conventional commits: `feat`, `fix`, `refactor`, `docs`, `chore`
+- slug is kebab-case, 3-5 words
+- example: `refactor/14_nixos-modules-rename`
+
+the `/senzu` skill handles branch creation, issue comments, and PRs at the
+right phase transitions. see the skill for full details.
+
+---
+
 ## general
 
 - one step at a time. don't race ahead.
