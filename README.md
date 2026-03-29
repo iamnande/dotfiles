@@ -17,17 +17,20 @@ software (tools, languages, apps) is managed separately via Nix. this repo is co
 | `fish` | `~/.config/fish/` | shell config, aliases, functions (Tide prompt) |
 | `gitconfig` | `~/.gitconfig`, `~/.gitignore` | git identity, signing, aliases |
 | `helix` | `~/.config/helix/` | editor config (everforest dark) |
-| `hypr` | `~/.config/hypr/` | Hyprland WM, hyprlock, hyprpaper — Wayland only, NUC-pending |
+| `hypr` | `~/.config/hypr/` | Hyprland WM, hyprlock, hyprpaper — Wayland/desktop only |
 | `kitty` | `~/.config/kitty/` | terminal emulator (everforest dark, OpenDyslexic) |
-| `waybar` | `~/.config/waybar/` | status bar — Wayland only, NUC-pending |
-| `wofi` | `~/.config/wofi/` | app launcher — Wayland only, NUC-pending |
+| `waybar` | `~/.config/waybar/` | status bar — Wayland/desktop only |
+| `wofi` | `~/.config/wofi/` | app launcher — Wayland/desktop only |
 | `zellij` | `~/.config/zellij/` | terminal multiplexer |
 
 ---
 
 ## setup
 
-### linux (personal, NixOS)
+### linux (NixOS)
+
+packages are deployed via home-manager on NixOS machines. stow targets remain available
+for non-NixOS linux or bootstrapping before home-manager is in place:
 
 ```fish
 git clone <repo> && cd dotfiles
@@ -59,8 +62,8 @@ run `make help` to see all available targets.
 
 ## future
 
-NixOS on personal hardware (NUC incoming) is the near-term direction — graphical setup with
-Hyprland, waybar, and wofi. the `hypr`, `waybar`, and `wofi` packages are staged and ready.
+desktop setup (Hyprland, waybar, wofi) is still ahead — the `hypr`, `waybar`, and `wofi`
+packages are staged and ready for when dedicated hardware arrives.
 
 stow is being replaced by home-manager iteratively — this repo will evolve into a standalone
 home-manager flake, becoming the source of truth for nick's environment on any unix machine.
