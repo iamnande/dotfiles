@@ -108,6 +108,11 @@
   # tide prompt config — sourced on every shell start
   xdg.configFile."fish/conf.d/tide.fish".source = ./fish/tide.fish;
 
+  home.file = {
+    ".claude/CLAUDE.md".source          = ./claude/CLAUDE.md;
+    ".claude/skills/senzu/SKILL.md".source = ./claude/skills/senzu/SKILL.md;
+  };
+
   programs.helix = {
     enable = true;
     settings = {

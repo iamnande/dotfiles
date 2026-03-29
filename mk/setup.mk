@@ -18,11 +18,6 @@ backgrounds: ## setup: backgrounds
 	@echo $(log) "installing backgrounds configs"
 	$(install)
 
-.PHONY: claude
-claude: COMPONENT=claude
-claude: ## setup: claude global context (~/.claude/CLAUDE.md)
-	@echo $(log) "installing claude configs"
-	$(install)
 
 
 
