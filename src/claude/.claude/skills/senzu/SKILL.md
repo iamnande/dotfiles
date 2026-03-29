@@ -28,8 +28,8 @@ until the current phase is done.
 | phase | covers |
 |---|---|
 | grounding | confirm assumptions, align on nouns/verbs, research the problem space |
-| planning | concrete plan with narrative, diffs/examples, expected outcome — no surprises in execution |
-| execution | small iterations, conventional commits at each checkpoint |
+| planning | concrete plan with narrative, diffs/examples, expected outcome — no surprises in execution. includes defining how each piece will be verified during execution |
+| execution | small iterations, conventional commits at each checkpoint. run the verification steps defined in planning — don't defer correctness checks to the live deploy |
 | refinement | make it right — tests, idioms, brevity, complexity, modularity |
 | protection | security and risk assessment — flag it, don't assume it's fine |
 | release/deploy | PR, validation, staged rollout if needed |
