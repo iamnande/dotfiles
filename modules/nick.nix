@@ -1,10 +1,10 @@
 { ... }: {
 
   imports = [
-    ./git.nix
-    ./fish.nix
-    ./helix.nix
-    ./claude.nix
+    ./git
+    ./fish
+    ./helix
+    ./claude
   ];
 
 }
