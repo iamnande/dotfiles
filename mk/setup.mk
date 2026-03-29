@@ -12,18 +12,17 @@ install = cd $(SETUP_HOME) \
 	  --target $(SETUP_TARGET) \
 	  $(COMPONENT) && cd -
 
-.PHONY: install-component
-install-component:
-	@echo $(log) "installing $(COMPONENT) configs"
-	$(install)
-
 .PHONY: backgrounds
 backgrounds: COMPONENT=backgrounds
-backgrounds: install-component ## setup: backgrounds
+backgrounds: ## setup: backgrounds
+	@echo $(log) "installing backgrounds configs"
+	$(install)
 
 .PHONY: claude
 claude: COMPONENT=claude
-claude: install-component ## setup: claude global context (~/.claude/CLAUDE.md)
+claude: ## setup: claude global context (~/.claude/CLAUDE.md)
+	@echo $(log) "installing claude configs"
+	$(install)
 
 .PHONY: fish-clean
 fish-clean:
@@ -31,32 +30,48 @@ fish-clean:
 
 .PHONY: fish
 fish: COMPONENT=fish
-fish: fish-clean install-component ## setup: fish
+fish: fish-clean ## setup: fish
+	@echo $(log) "installing fish configs"
+	$(install)
 
 .PHONY: gitconfig
 gitconfig: COMPONENT=gitconfig
-gitconfig: install-component ## setup: gitconfig
+gitconfig: ## setup: gitconfig
+	@echo $(log) "installing gitconfig configs"
+	$(install)
 
 .PHONY: helix
 helix: COMPONENT=helix
-helix: install-component ## setup: helix
+helix: ## setup: helix
+	@echo $(log) "installing helix configs"
+	$(install)
 
 .PHONY: hypr
 hypr: COMPONENT=hypr
-hypr: install-component ## setup: hypr
+hypr: ## setup: hypr
+	@echo $(log) "installing hypr configs"
+	$(install)
 
 .PHONY: kitty
 kitty: COMPONENT=kitty
-kitty: install-component ## setup: kitty
+kitty: ## setup: kitty
+	@echo $(log) "installing kitty configs"
+	$(install)
 
 .PHONY: waybar
 waybar: COMPONENT=waybar
-waybar: install-component ## setup: waybar
+waybar: ## setup: waybar
+	@echo $(log) "installing waybar configs"
+	$(install)
 
 .PHONY: wofi
 wofi: COMPONENT=wofi
-wofi: install-component ## setup: wofi
+wofi: ## setup: wofi
+	@echo $(log) "installing wofi configs"
+	$(install)
 
 .PHONY: zellij
 zellij: COMPONENT=zellij
-zellij: install-component ## setup: zellij configs
+zellij: ## setup: zellij configs
+	@echo $(log) "installing zellij configs"
+	$(install)
