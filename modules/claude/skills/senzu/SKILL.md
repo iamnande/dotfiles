@@ -99,6 +99,11 @@ not wait for separate confirmation.
 if the current phase has outstanding items that aren't cleared, surface them and
 hold. otherwise, summarize and immediately begin the next phase.
 
+**exception — no-arg /senzu mid-execution:** if /senzu is called with no arg
+during a lengthy execution phase, do not auto-advance. instead, re-affirm
+current phase status and immediate next steps. advance only when the phase is
+fully cleared.
+
 ---
 
 ## output format
