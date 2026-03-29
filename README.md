@@ -1,40 +1,50 @@
 # dotfiles
 
-personal config files, managed with [GNU Stow](https://www.gnu.org/software/stow/). each
-directory under `src/` mirrors `$HOME` and gets symlinked there when stowed. the goal is a
-reproducible setup — clone, stow, done.
+personal config files. core environment (git, fish, helix, claude) is managed as a
+[home-manager](https://github.com/nix-community/home-manager) flake. desktop configs
+(Wayland/Hyprland stack) are still managed with [GNU Stow](https://www.gnu.org/software/stow/).
 
 software (tools, languages, apps) is managed separately via Nix. this repo is configs only.
 
 ---
 
-## packages
+## home-manager flake
+
+exposes `homeManagerModules.nick` — consumed by the homelab compute flake:
+
+```nix
+# in homelab compute/flake.nix
+inputs.dotfiles.url = "github:iamnande/dotfiles";
+
+# in a host config
+imports = [ inputs.dotfiles.homeManagerModules.nick ];
+```
+
+### components
+
+| module | manages |
+|---|---|
+| `modules/git/` | git identity, signing (1Password SSH), aliases |
+| `modules/fish/` | shell config, functions, Tide prompt |
+| `modules/helix/` | editor config (everforest dark) |
+| `modules/claude/` | global Claude Code context + senzu skill |
+
+---
+
+## stow (desktop only)
+
+Wayland/desktop configs not yet on home-manager. only relevant on dedicated desktop hardware.
 
 | package | installs to | description |
 |---|---|---|
 | `backgrounds` | `~/.config/backgrounds/` | wallpapers |
-| `claude` | `~/.claude/` | global Claude Code context |
-| `fish` | `~/.config/fish/` | shell config, aliases, functions (Tide prompt) |
-| `gitconfig` | `~/.gitconfig`, `~/.gitignore` | git identity, signing, aliases |
-| `helix` | `~/.config/helix/` | editor config (everforest dark) |
-| `hypr` | `~/.config/hypr/` | Hyprland WM, hyprlock, hyprpaper — Wayland/desktop only |
+| `hypr` | `~/.config/hypr/` | Hyprland WM, hyprlock, hyprpaper |
 | `kitty` | `~/.config/kitty/` | terminal emulator (everforest dark, OpenDyslexic) |
-| `waybar` | `~/.config/waybar/` | status bar — Wayland/desktop only |
-| `wofi` | `~/.config/wofi/` | app launcher — Wayland/desktop only |
-| `zellij` | `~/.config/zellij/` | terminal multiplexer |
-
----
-
-## setup
-
-### linux (NixOS)
-
-packages are deployed via home-manager on NixOS machines. stow targets remain available
-for non-NixOS linux or bootstrapping before home-manager is in place:
+| `waybar` | `~/.config/waybar/` | status bar |
+| `wofi` | `~/.config/wofi/` | app launcher |
 
 ```fish
-git clone <repo> && cd dotfiles
-make fish helix zellij gitconfig claude  # or any combination
+make hypr waybar wofi kitty backgrounds  # or any combination
 ```
 
 ### macos (work)
@@ -49,22 +59,15 @@ make gitconfig    # or any other packages as needed
 ## structure
 
 ```
-src/          stow packages — one per tool, mirrors $HOME
+flake.nix     home-manager flake — exposes homeManagerModules.nick
+modules/      home-manager components
+  nick.nix    thin aggregator (imports the four below)
+  git/        programs.git
+  fish/       programs.fish + tide prompt config
+  helix/      programs.helix
+  claude/     home.file — CLAUDE.md + senzu skill
+src/          stow packages — desktop/Wayland only
 mk/           makefile modules
-  log.mk      logging helpers
-  setup.mk    stow install targets
-  macos.mk    macOS bootstrap (work only)
 ```
 
-run `make help` to see all available targets.
-
----
-
-## future
-
-desktop setup (Hyprland, waybar, wofi) is still ahead — the `hypr`, `waybar`, and `wofi`
-packages are staged and ready for when dedicated hardware arrives.
-
-stow is being replaced by home-manager iteratively — this repo will evolve into a standalone
-home-manager flake, becoming the source of truth for nick's environment on any unix machine.
-configs migrate one component at a time.
+run `make help` to see available stow targets.
