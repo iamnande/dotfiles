@@ -36,6 +36,6 @@
   };
 
   # tide prompt config — sourced on every shell start
-  xdg.configFile."fish/conf.d/tide.fish".source = ./fish/tide.fish;
+  xdg.configFile."fish/conf.d/tide.fish".source = ./tide.fish;
 
 }

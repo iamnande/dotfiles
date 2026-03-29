@@ -1,11 +1,9 @@
 {
   description = "nick's dotfiles — home-manager module";
 
-  inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
-  };
+  inputs = { };
 
-  outputs = { self, ... }: {
+  outputs = { self }: {
     homeManagerModules.nick = import ./modules/nick.nix;
   };
 }

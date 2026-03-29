@@ -30,7 +30,7 @@ until the current phase is done.
 | grounding | confirm assumptions, align on nouns/verbs, research the problem space |
 | planning | concrete plan with narrative, diffs/examples, expected outcome — no surprises in execution. includes defining how each piece will be verified during execution |
 | execution | small iterations, conventional commits at each checkpoint. run the verification steps defined in planning — don't defer correctness checks to the live deploy |
-| refinement | make it right — tests, idioms, brevity, complexity, modularity |
+| refinement | make it right — don't just review what was built. actively ask: (1) are there more idiomatic patterns? (2) what's absent that should be there? (3) what's present that shouldn't be? surface tradeoffs before declaring done |
 | protection | security and risk assessment — flag it, don't assume it's fine |
 | release/deploy | PR, validation, staged rollout if needed |
 | learnings | reflect on what worked, what didn't, what to carry forward |
