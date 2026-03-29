@@ -50,8 +50,3 @@ wofi: ## setup: wofi
 	@echo $(log) "installing wofi configs"
 	$(install)
 
-.PHONY: zellij
-zellij: COMPONENT=zellij
-zellij: ## setup: zellij configs
-	@echo $(log) "installing zellij configs"
-	$(install)
