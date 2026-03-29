@@ -24,16 +24,6 @@ claude: ## setup: claude global context (~/.claude/CLAUDE.md)
 	@echo $(log) "installing claude configs"
 	$(install)
 
-.PHONY: fish-clean
-fish-clean:
-	@rm -rf ~/.config/fish
-
-.PHONY: fish
-fish: COMPONENT=fish
-fish: fish-clean ## setup: fish
-	@echo $(log) "installing fish configs"
-	$(install)
-
 
 .PHONY: helix
 helix: COMPONENT=helix
