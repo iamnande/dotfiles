@@ -24,9 +24,13 @@ backgrounds: install-component ## setup: backgrounds
 claude: COMPONENT=claude
 claude: install-component ## setup: claude global context (~/.claude/CLAUDE.md)
 
+.PHONY: fish-clean
+fish-clean:
+	@rm -rf ~/.config/fish
+
 .PHONY: fish
 fish: COMPONENT=fish
-fish: install-component ## setup: fish
+fish: fish-clean install-component ## setup: fish
 
 .PHONY: gitconfig
 gitconfig: COMPONENT=gitconfig
