@@ -85,6 +85,8 @@
     '';
 
     interactiveShellInit = ''
+      set -g fish_greeting
+
       set -l agent_sock ~/.ssh/agent.sock
       # when a live forwarded socket is present, keep the stable symlink current
       if set -q SSH_AUTH_SOCK; and test "$SSH_AUTH_SOCK" != $agent_sock
