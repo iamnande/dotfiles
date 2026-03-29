@@ -12,6 +12,7 @@ install = cd $(SETUP_HOME) \
 	  --target $(SETUP_TARGET) \
 	  $(COMPONENT) && cd -
 
+.PHONY: install-component
 install-component:
 	@echo $(log) "installing $(COMPONENT) configs"
 	$(install)
