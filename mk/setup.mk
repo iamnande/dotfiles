@@ -25,11 +25,6 @@ claude: ## setup: claude global context (~/.claude/CLAUDE.md)
 	$(install)
 
 
-.PHONY: helix
-helix: COMPONENT=helix
-helix: ## setup: helix
-	@echo $(log) "installing helix configs"
-	$(install)
 
 .PHONY: hypr
 hypr: COMPONENT=hypr

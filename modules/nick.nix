@@ -108,4 +108,15 @@
   # tide prompt config — sourced on every shell start
   xdg.configFile."fish/conf.d/tide.fish".source = ./fish/tide.fish;
 
+  programs.helix = {
+    enable = true;
+    settings = {
+      theme = "everforest_dark";
+      editor.file-picker = {
+        hidden = false;
+        git-ignore = true;
+      };
+    };
+  };
+
 }
