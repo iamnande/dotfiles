@@ -1,22 +1,22 @@
 ---
-description: phase checkpoint — invoking this is the go-ahead signal; summarize completed phase and begin the next
+description: phase status check — summarize where we are, draft what's next, wait for approval before acting
 argument-hint: "[<repo>#<issue> | #<issue> | phase-name]"
 ---
 
 ## invocation modes
 
 **`/senzu <repo>#<issue>`** — start a new issue. fetch the issue from github,
-set it as the working context for this session, and begin grounding.
+set it as the working context, and present a grounding draft for review.
 
 **`/senzu #<issue>`** — same, but infer the repo from the current git context.
 only valid when the working directory is inside a git repo.
 
-**`/senzu [phase-name]`** — phase checkpoint. identify the completed phase
-(from arg or infer from conversation), summarize it, and begin the next.
-issue context carries forward from earlier in the session.
+**`/senzu [phase-name]`** — phase checkpoint. summarize the completed phase,
+draft the next, and wait for approval. issue context carries forward.
 
-**`/senzu`** (no arg, fresh session) — no issue context. ask: "what are we
-working on?" before doing anything else.
+**`/senzu`** (no arg) — where are we / what's next. summarize current state and
+draft the next action. if there's no active issue context, ask: "what are we
+working on?"
 
 ---
 
@@ -39,7 +39,8 @@ until the current phase is done.
 
 ## issue-aware actions
 
-these fire automatically at specific phase transitions when an issue is in context.
+these actions occur at specific phase transitions when an issue is in context.
+each is drafted for review before executing — nothing fires automatically.
 
 ### planning → execution
 
@@ -82,27 +83,35 @@ create a PR for each branch → main:
 
 ### learnings → done
 
-1. post a completion comment to the issue:
+1. draft a completion comment:
    - what shipped
    - tradeoffs accepted
    - anything surprising or worth carrying forward
+   present the draft to the user. they may add, edit, or cut. post only after
+   explicit sign-off — never auto-post.
 
-2. close the issue
+2. close the issue only after the PR is merged. confirm merge before closing.
 
 ---
 
 ## behavior
 
-invoking /senzu is itself the go-ahead — do not ask "ready to proceed?" and do
-not wait for separate confirmation.
+`/senzu` is a status check, not a go-ahead. every invocation follows the same
+pattern:
 
-if the current phase has outstanding items that aren't cleared, surface them and
-hold. otherwise, summarize and immediately begin the next phase.
+1. **where are we** — summarize the current phase and what's been completed
+2. **what's next** — draft the next action or set of actions
+3. **wait** — user reviews, adjusts if needed, then explicitly approves before
+   anything executes
 
-**exception — no-arg /senzu mid-execution:** if /senzu is called with no arg
-during a lengthy execution phase, do not auto-advance. instead, re-affirm
-current phase status and immediate next steps. advance only when the phase is
-fully cleared.
+the user's approval is what triggers action. the /senzu invocation is what
+triggers the draft.
+
+this applies universally — code changes, commits, branch creation, github
+comments, issue closes. if it's an action, it gets drafted and reviewed first.
+
+if the current phase has outstanding items, surface them and hold. don't advance
+until they're cleared.
 
 ---
 
@@ -118,4 +127,4 @@ use this structure exactly (lowercase, terse, no filler):
 **next: <name>** — <one sentence on what this phase covers>
 ---
 
-then immediately begin that phase.
+then draft the first action for the next phase and wait for approval.
