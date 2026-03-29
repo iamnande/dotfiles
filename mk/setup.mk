@@ -34,11 +34,6 @@ fish: fish-clean ## setup: fish
 	@echo $(log) "installing fish configs"
 	$(install)
 
-.PHONY: gitconfig
-gitconfig: COMPONENT=gitconfig
-gitconfig: ## setup: gitconfig
-	@echo $(log) "installing gitconfig configs"
-	$(install)
 
 .PHONY: helix
 helix: COMPONENT=helix
