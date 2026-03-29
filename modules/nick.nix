@@ -70,12 +70,10 @@
     };
   };
 
+  home.packages = [ pkgs.fishPlugins.tide ];
+
   programs.fish = {
     enable = true;
-
-    plugins = [
-      { name = "tide"; src = pkgs.fishPlugins.tide; }
-    ];
 
     shellInit = ''
       # ENV
