@@ -59,9 +59,13 @@ preferences. specifically:
 
 software (cli tools, languages, desktop apps) is managed via **Nix** — don't suggest
 installing packages via homebrew, apt, pacman, or manual scripts. if something needs to
-be installed, it belongs in the Nix config (`~/homelab` for current machines, dotfiles
-for future personal machines). the `mk/` targets here are for stowing configs only,
-not installing dependencies.
+be installed, it belongs in the Nix config (`~/homelab` for current machines). the `mk/`
+targets here are for stowing configs only, not installing dependencies.
+
+this repo is migrating from stow to home-manager iteratively — it will become a standalone
+home-manager flake (source of truth for nick's environment on any unix machine). don't
+architect ahead of what's been migrated. when adding new components, use stow unless
+specifically asked to add a home-manager module.
 
 ---
 

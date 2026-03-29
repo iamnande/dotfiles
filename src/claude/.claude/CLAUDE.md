@@ -34,6 +34,11 @@ flag it, don't assume it's fine.
 **release/deploy** — how does this actually go out? just merge? staged
 rollout? if there's an order of operations, spell it out.
 
+**learnings** — after each task, reflect on what worked, what didn't, and
+what to carry forward. not just "what did we build" — "how did we build it
+and what would we change." capture process improvements, friction points,
+and surprises. always improving the flow, not just the implementation.
+
 ---
 
 ## general

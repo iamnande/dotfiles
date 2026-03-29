@@ -31,7 +31,7 @@ software (tools, languages, apps) is managed separately via Nix. this repo is co
 
 ```fish
 git clone <repo> && cd dotfiles
-make fish helix zellij gitconfig  # or any combination
+make fish helix zellij gitconfig claude  # or any combination
 ```
 
 ### macos (work)
@@ -60,5 +60,8 @@ run `make help` to see all available targets.
 ## future
 
 NixOS on personal hardware (NUC incoming) is the near-term direction — graphical setup with
-Hyprland, waybar, and wofi. when that lands, stow will likely give way to home-manager.
-the `hypr`, `waybar`, and `wofi` packages are staged and ready for it.
+Hyprland, waybar, and wofi. the `hypr`, `waybar`, and `wofi` packages are staged and ready.
+
+stow is being replaced by home-manager iteratively — this repo will evolve into a standalone
+home-manager flake, becoming the source of truth for nick's environment on any unix machine.
+configs migrate one component at a time.
