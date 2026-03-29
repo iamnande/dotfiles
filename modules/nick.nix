@@ -2,8 +2,6 @@
 
   programs.git = {
     enable = true;
-    userName = "Nick Anderson";
-    userEmail = "nick@morethq.com";
 
     # global gitignore — HM writes ~/.config/git/ignore and sets core.excludesfile
     ignores = [
@@ -16,38 +14,43 @@
       signByDefault = true;
     };
 
-    aliases = {
-      # get with the times!
-      up = "!f() { \
-        current_branch=$(git symbolic-ref --short HEAD); \
-        default=$(git symbolic-ref refs/remotes/origin/HEAD 2>/dev/null | sed 's@^refs/remotes/origin/@@'); \
-        default=\${default:-main}; \
-        git checkout $default && \
-        git fetch && \
-        git pull origin $default && \
-        git checkout $current_branch && \
-        git rebase $default; \
-        }; f";
+    settings = {
+      user = {
+        name  = "Nick Anderson";
+        email = "nick@morethq.com";
+      };
 
-      # JA: "wtf did you do? 😅"
-      lg = "log --pretty=oneline -n 10 --graph --abbrev-commit";
+      alias = {
+        # get with the times!
+        up = "!f() { \
+          current_branch=$(git symbolic-ref --short HEAD); \
+          default=$(git symbolic-ref refs/remotes/origin/HEAD 2>/dev/null | sed 's@^refs/remotes/origin/@@'); \
+          default=\${default:-main}; \
+          git checkout $default && \
+          git fetch && \
+          git pull origin $default && \
+          git checkout $current_branch && \
+          git rebase $default; \
+          }; f";
 
-      # dude, where am i?
-      stat = "status -s";
+        # JA: "wtf did you do? 😅"
+        lg = "log --pretty=oneline -n 10 --graph --abbrev-commit";
 
-      # success, let's have another
-      merged = "!f() { \
-        current_branch=$(git rev-parse --abbrev-ref HEAD); \
-        default=$(git symbolic-ref refs/remotes/origin/HEAD 2>/dev/null | sed 's@^refs/remotes/origin/@@'); \
-        default=\${default:-main}; \
-        git checkout $default && \
-        git branch -D \"$current_branch\" && \
-        git up && \
-        git checkout -b \"$1\"; \
-        }; f";
-    };
+        # dude, where am i?
+        stat = "status -s";
 
-    extraConfig = {
+        # success, let's have another
+        merged = "!f() { \
+          current_branch=$(git rev-parse --abbrev-ref HEAD); \
+          default=$(git symbolic-ref refs/remotes/origin/HEAD 2>/dev/null | sed 's@^refs/remotes/origin/@@'); \
+          default=\${default:-main}; \
+          git checkout $default && \
+          git branch -D \"$current_branch\" && \
+          git up && \
+          git checkout -b \"$1\"; \
+          }; f";
+      };
+
       core = {
         editor   = "hx";
         pager    = "less -FRX";
