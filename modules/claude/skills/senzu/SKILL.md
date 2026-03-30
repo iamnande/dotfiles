@@ -1,6 +1,6 @@
 ---
 description: phase status check — summarize where we are, draft what's next, wait for approval before acting
-argument-hint: "[<repo>#<issue> | #<issue> | phase-name]"
+argument-hint: "[<repo>#<issue> | #<issue> | phase-name | compact | clear]"
 ---
 
 ## invocation modes
@@ -20,6 +20,44 @@ phase is in progress (grounding has started, facts are established in the sessio
 produce a fresh summary regardless of whether an issue is filed. only ask "what are
 we working on?" on a true cold start (no phase context at all).
 
+**`/senzu compact`** — write a session state block to `~/.claude/CLAUDE.md`, then
+prompt the user to run `/compact`. the new session opens with the block already in
+context — no wake prompt needed. first `/senzu` in the new session reads it and
+resumes cleanly.
+
+**`/senzu clear`** — remove the session state block from `~/.claude/CLAUDE.md`.
+use this to clean up after an unplanned session end or any time the stashed state
+is stale. also fires automatically at learnings → done.
+
+---
+
+## compact + resume
+
+context pressure is the main reason to compact. the failure mode without this
+pattern: resume state lives in conversation context, which compact destroys —
+leading to cold-start behavior or lost decisions in the new session.
+
+**`/senzu compact` writes this block to `~/.claude/CLAUDE.md`:**
+
+```markdown
+<!-- senzu:session:start -->
+## current session
+
+- **phase:** <current phase>
+- **issue:** <repo#issue or "none">
+- **branches:** <branch names per repo, or "n/a">
+- **decisions:** <key grounding/planning decisions, 3-5 bullets>
+- **completed:** <what's been executed so far>
+- **next:** <what was queued up>
+<!-- senzu:session:end -->
+```
+
+`~/.claude/CLAUDE.md` is always auto-loaded — the new session sees this immediately,
+no manual wake prompt required.
+
+**`/senzu clear` removes the block.** fires automatically at learnings → done.
+also available explicitly for stale state or unplanned session ends.
+
 ---
 
 ## updating this skill
@@ -30,7 +68,7 @@ senzu edits commit directly to dotfiles main (no branch). after committing:
 2. `git add flake.lock && git commit -m "chore(flake): update dotfiles input" && git push`
 3. `nh os switch ~/homelab/compute`
 4. start a fresh claude session — the loaded skill is stale until the switch completes
-5. resume with a wake prompt (see compact+resume pattern)
+5. `/senzu compact` before the old session ends if work is in flight
 
 ---
 
@@ -105,6 +143,8 @@ create a PR for each branch → main:
    explicit sign-off — never auto-post.
 
 2. close the issue only after the PR is merged. confirm merge before closing.
+
+3. run `/senzu clear` to remove the session state block from `~/.claude/CLAUDE.md`.
 
 ---
 
