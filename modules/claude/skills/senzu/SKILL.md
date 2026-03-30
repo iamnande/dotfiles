@@ -15,8 +15,10 @@ only valid when the working directory is inside a git repo.
 draft the next, and wait for approval. issue context carries forward.
 
 **`/senzu`** (no arg) — where are we / what's next. summarize current state and
-draft the next action. if there's no active issue context, ask: "what are we
-working on?"
+draft the next action. **phase state takes precedence over issue context** — if a
+phase is in progress (grounding has started, facts are established in the session),
+produce a fresh summary regardless of whether an issue is filed. only ask "what are
+we working on?" on a true cold start (no phase context at all).
 
 ---
 
