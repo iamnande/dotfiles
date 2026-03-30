@@ -22,6 +22,18 @@ we working on?" on a true cold start (no phase context at all).
 
 ---
 
+## updating this skill
+
+senzu edits commit directly to dotfiles main (no branch). after committing:
+
+1. `cd ~/homelab && nix flake update dotfiles`
+2. `git add flake.lock && git commit -m "chore(flake): update dotfiles input" && git push`
+3. `nh os switch ~/homelab/compute`
+4. start a fresh claude session — the loaded skill is stale until the switch completes
+5. resume with a wake prompt (see compact+resume pattern)
+
+---
+
 ## phase model
 
 phases run in order. each phase iterates until fully cleared — don't advance
