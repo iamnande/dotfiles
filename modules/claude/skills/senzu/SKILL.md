@@ -64,7 +64,7 @@ also available explicitly for stale state or unplanned session ends.
 
 senzu edits commit directly to dotfiles main (no branch). after committing:
 
-1. `cd ~/homelab && nix flake update dotfiles`
+1. `cd ~/homelab/compute && nix flake update dotfiles`
 2. `git add flake.lock && git commit -m "chore(flake): update dotfiles input" && git push`
 3. `nh os switch ~/homelab/compute`
 4. start a fresh claude session — the loaded skill is stale until the switch completes
