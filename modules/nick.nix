@@ -5,6 +5,7 @@
     ./fish
     ./helix
     ./claude
+    ./zellij
   ];
 
 }
