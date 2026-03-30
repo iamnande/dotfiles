@@ -144,7 +144,13 @@ create a PR for each branch → main:
 
 2. close the issue only after the PR is merged. confirm merge before closing.
 
-3. run `/senzu clear` to remove the session state block from `~/.claude/CLAUDE.md`.
+3. delete each feature branch after merge:
+   ```
+   git push origin --delete <branch>
+   git branch -d <branch>
+   ```
+
+4. run `/senzu clear` to remove the session state block from `~/.claude/CLAUDE.md`.
 
 ---
 
