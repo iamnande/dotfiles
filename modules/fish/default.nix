@@ -19,7 +19,7 @@
 
       set -l agent_sock ~/.ssh/agent.sock
       # when a live forwarded socket is present, keep the stable symlink current
-      if set -q SSH_AUTH_SOCK; and test "$SSH_AUTH_SOCK" != $agent_sock
+      if set -q SSH_AUTH_SOCK; and test "$SSH_AUTH_SOCK" != $agent_sock; and test -S $SSH_AUTH_SOCK
           ln -sf $SSH_AUTH_SOCK $agent_sock
       end
       set -gx SSH_AUTH_SOCK $agent_sock
