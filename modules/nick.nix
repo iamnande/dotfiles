@@ -1,6 +1,7 @@
 { ... }: {
 
   imports = [
+    ./backgrounds
     ./git
     ./fish
     ./helix
