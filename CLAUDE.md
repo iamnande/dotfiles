@@ -6,22 +6,6 @@ see [README.md](README.md).
 
 ---
 
-## task runner
-
-**use `make` targets, not raw commands.** the `Makefile` composes targets from `mk/*.mk`.
-before running any install, lint, or setup command, check if a make target already exists:
-
-```fish
-cat Makefile
-cat mk/setup.mk
-cat mk/log.mk
-```
-
-if a task doesn't have a make target yet and it's something that will be run repeatedly,
-suggest adding one rather than just running the raw command ad-hoc.
-
----
-
 ## version control
 
 this repo currently uses **git**, but the intent is to migrate to
@@ -59,29 +43,26 @@ preferences. specifically:
 
 software (cli tools, languages, desktop apps) is managed via **Nix** — don't suggest
 installing packages via homebrew, apt, pacman, or manual scripts. if something needs to
-be installed, it belongs in the Nix config (`~/homelab` for current machines). the `mk/`
-targets here are for stowing configs only, not installing dependencies.
+be installed, it belongs in the Nix config (`~/homelab` for current machines).
 
-this repo is migrating from stow to home-manager iteratively — it will become a standalone
-home-manager flake (source of truth for nick's environment on any unix machine). don't
-architect ahead of what's been migrated. when adding new components, use stow unless
-specifically asked to add a home-manager module.
+this repo is a home-manager flake. when adding new components, add a module under
+`modules/` and import it in `modules/nick.nix`.
 
 ---
 
 ## platform
 
-- **personal machines: Linux (NixOS)** — primary target for all configs
-- **work machine: macOS** — isolated; `make macos` exists for bootstrap but isn't the dotfiles focus
+- **personal + work devbox: Linux (NixOS)** — primary target for all configs
+- **work laptop: macOS** — not a dev machine, not a focus
 - when suggesting configs or tooling, default to Linux unless context is explicitly macOS
-- `hypr`, `waybar`, `wofi` are Wayland/Linux-only — don't suggest them in macOS contexts
+- `hypr`, `waybar`, `wofi`, `kitty` are Wayland/Linux-only — don't suggest them in macOS contexts
 
 ---
 
 ## editor
 
 **Helix** (`hx`) is the editor of choice. VSCode/neovim/vim references are legacy.
-Helix config lives in `src/helix/.config/helix/`.
+Helix config lives in `modules/helix/`.
 
 ---
 
