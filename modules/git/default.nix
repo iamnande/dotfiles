@@ -11,6 +11,7 @@
 
     signing = {
       key = null; # resolved via ssh-add -L / defaultKeyCommand
+      format = "ssh";
       signByDefault = true;
     };
 
