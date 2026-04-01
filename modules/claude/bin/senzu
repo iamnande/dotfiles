@@ -1,117 +1,121 @@
-#!/usr/bin/env bash
+#!/usr/bin/env fish
 # senzu <identifier> [close]
 # Start a senzu session for a Linear ticket, or close one.
 # Usage:
 #   senzu ADMIN-376        — fetch ticket, inject context, launch claude
 #   senzu ADMIN-376 close  — transition ticket to done in Linear
-set -euo pipefail
 
-IDENTIFIER="${1:?usage: senzu <identifier> [close]}"
-SUBCOMMAND="${2:-}"
+set identifier $argv[1]
+set subcommand $argv[2]
 
-_linear_post() {
-  local payload="$1"
-  curl -sf \
-    -X POST \
-    -H "Authorization: ${LINEAR_TOKEN}" \
-    -H "Content-Type: application/json" \
-    -d "$payload" \
-    https://api.linear.app/graphql
-}
-
-cmd_start() {
-  : "${LINEAR_TOKEN:?LINEAR_TOKEN is not set}"
-
-  local tmpfile
-  tmpfile=$(mktemp /tmp/senzu-XXXXXX.txt)
-  trap 'rm -f "$tmpfile"' EXIT
-
-  senzu-fetch "$IDENTIFIER" > "$tmpfile"
-  claude --append-system-prompt-file "$tmpfile"
-}
-
-cmd_close() {
-  : "${LINEAR_TOKEN:?LINEAR_TOKEN is not set}"
-
-  # fetch issue UUID + team ID
-  local fetch_payload
-  fetch_payload=$(jq -cn \
-    --arg identifier "$IDENTIFIER" \
-    '{
-      query: "query($identifier: String!) {
-        issues(filter: { identifier: { eq: $identifier } }) {
-          nodes { id team { id } }
-        }
-      }",
-      variables: { identifier: $identifier }
-    }')
-
-  local issue
-  issue=$(_linear_post "$fetch_payload" | jq -r '.data.issues.nodes[0] // empty')
-
-  if [[ -z "$issue" ]]; then
-    echo "error: issue ${IDENTIFIER} not found" >&2
-    exit 1
-  fi
-
-  local issue_id team_id
-  issue_id=$(echo "$issue" | jq -r '.id')
-  team_id=$(echo "$issue" | jq -r '.team.id')
-
-  # find the done state for this team
-  local states_payload
-  states_payload=$(jq -cn \
-    --arg teamId "$team_id" \
-    '{
-      query: "query($teamId: String!) {
-        workflowStates(filter: { team: { id: { eq: $teamId } }, type: { eq: \"completed\" } }) {
-          nodes { id name }
-        }
-      }",
-      variables: { teamId: $teamId }
-    }')
-
-  local done_state_id
-  done_state_id=$(_linear_post "$states_payload" \
-    | jq -r '.data.workflowStates.nodes[0].id // empty')
-
-  if [[ -z "$done_state_id" ]]; then
-    echo "error: could not find a completed state for this team" >&2
-    exit 1
-  fi
-
-  read -rp "close ${IDENTIFIER} in Linear? [y/n] " confirm
-  [[ "$confirm" == "y" ]] || { echo "aborted"; exit 0; }
-
-  local update_payload
-  update_payload=$(jq -cn \
-    --arg id "$issue_id" \
-    --arg stateId "$done_state_id" \
-    '{
-      query: "mutation($id: String!, $stateId: String!) {
-        issueUpdate(id: $id, input: { stateId: $stateId }) {
-          success
-        }
-      }",
-      variables: { id: $id, stateId: $stateId }
-    }')
-
-  local result
-  result=$(_linear_post "$update_payload" | jq -r '.data.issueUpdate.success')
-
-  if [[ "$result" == "true" ]]; then
-    echo "${IDENTIFIER} closed"
-  else
-    echo "error: update failed" >&2
-    exit 1
-  fi
-}
-
-case "$SUBCOMMAND" in
-  close) cmd_close ;;
-  "")    cmd_start ;;
-  *)
+if test -z "$identifier"
     echo "usage: senzu <identifier> [close]" >&2
     exit 1
-    ;;
-esac
+end
+
+if test -z "$LINEAR_TOKEN"
+    echo "error: LINEAR_TOKEN is not set" >&2
+    exit 1
+end
+
+function _linear_post
+    curl -sf \
+        -X POST \
+        -H "Authorization: $LINEAR_TOKEN" \
+        -H "Content-Type: application/json" \
+        -d $argv[1] \
+        https://api.linear.app/graphql
+end
+
+function cmd_start
+    set tmpfile (mktemp /tmp/senzu-XXXXXX.txt)
+
+    senzu-fetch $identifier > $tmpfile
+    if test $status -ne 0
+        rm -f $tmpfile
+        exit 1
+    end
+
+    claude --append-system-prompt-file $tmpfile
+    rm -f $tmpfile
+end
+
+function cmd_close
+    # fetch issue UUID + team ID
+    set fetch_payload (jq -cn \
+        --arg identifier $identifier \
+        '{
+            query: "query($identifier: String!) {
+                issues(filter: { identifier: { eq: $identifier } }) {
+                    nodes { id team { id } }
+                }
+            }",
+            variables: { identifier: $identifier }
+        }')
+
+    set issue (_linear_post $fetch_payload | jq -r '.data.issues.nodes[0] // empty')
+
+    if test -z "$issue"
+        echo "error: issue $identifier not found" >&2
+        exit 1
+    end
+
+    set issue_id (echo $issue | jq -r '.id')
+    set team_id  (echo $issue | jq -r '.team.id')
+
+    # find the completed state for this team
+    set states_payload (jq -cn \
+        --arg teamId $team_id \
+        '{
+            query: "query($teamId: String!) {
+                workflowStates(filter: { team: { id: { eq: $teamId } }, type: { eq: \"completed\" } }) {
+                    nodes { id name }
+                }
+            }",
+            variables: { teamId: $teamId }
+        }')
+
+    set done_state_id (_linear_post $states_payload | jq -r '.data.workflowStates.nodes[0].id // empty')
+
+    if test -z "$done_state_id"
+        echo "error: could not find a completed state for this team" >&2
+        exit 1
+    end
+
+    read -P "close $identifier in Linear? [y/n] " confirm
+    if test "$confirm" != "y"
+        echo "aborted"
+        exit 0
+    end
+
+    set update_payload (jq -cn \
+        --arg id $issue_id \
+        --arg stateId $done_state_id \
+        '{
+            query: "mutation($id: String!, $stateId: String!) {
+                issueUpdate(id: $id, input: { stateId: $stateId }) {
+                    success
+                }
+            }",
+            variables: { id: $id, stateId: $stateId }
+        }')
+
+    set result (_linear_post $update_payload | jq -r '.data.issueUpdate.success')
+
+    if test "$result" = "true"
+        echo "$identifier closed"
+    else
+        echo "error: update failed" >&2
+        exit 1
+    end
+end
+
+switch $subcommand
+    case close
+        cmd_close
+    case ''
+        cmd_start
+    case '*'
+        echo "usage: senzu <identifier> [close]" >&2
+        exit 1
+end
