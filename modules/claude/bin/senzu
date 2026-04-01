@@ -41,8 +41,7 @@ function cmd_start
 
     exec claude \
         --name $identifier \
-        --append-system-prompt $context \
-        /senzu
+        --append-system-prompt $context
 end
 
 function cmd_close
