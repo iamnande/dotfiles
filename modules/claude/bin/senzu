@@ -46,14 +46,12 @@ function cmd_close
         --arg identifier $identifier \
         '{
             query: "query($identifier: String!) {
-                issues(filter: { identifier: { eq: $identifier } }) {
-                    nodes { id team { id } }
-                }
+                issue(id: $identifier) { id team { id } }
             }",
             variables: { identifier: $identifier }
         }')
 
-    set issue (_linear_post $fetch_payload | jq -r '.data.issues.nodes[0] // empty')
+    set issue (_linear_post $fetch_payload | jq -r '.data.issue // empty')
 
     if test -z "$issue"
         echo "error: issue $identifier not found" >&2

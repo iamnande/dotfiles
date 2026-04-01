@@ -19,16 +19,14 @@ set payload (jq -cn \
     --arg identifier "$identifier" \
     '{
         query: "query($identifier: String!) {
-            issues(filter: { identifier: { eq: $identifier } }) {
-                nodes {
-                    id
-                    identifier
-                    title
-                    description
-                    priority
-                    state { name }
-                    assignee { name }
-                }
+            issue(id: $identifier) {
+                id
+                identifier
+                title
+                description
+                priority
+                state { name }
+                assignee { name }
             }
         }",
         variables: { identifier: $identifier }
@@ -46,7 +44,7 @@ if test $status -ne 0
     exit 1
 end
 
-set issue (echo $response | jq -r '.data.issues.nodes[0] // empty')
+set issue (echo $response | jq -r '.data.issue // empty')
 
 if test -z "$issue"
     echo "error: issue $identifier not found" >&2
