@@ -36,8 +36,10 @@ function cmd_start
         exit 1
     end
 
-    claude --append-system-prompt-file $tmpfile
+    set context (cat $tmpfile | string collect)
     rm -f $tmpfile
+
+    claude --append-system-prompt $context
 end
 
 function cmd_close
