@@ -1,15 +1,9 @@
 ---
 description: phase status check — summarize where we are, draft what's next, wait for approval before acting
-argument-hint: "[<repo>#<issue> | #<issue> | phase-name | compact | clear]"
+argument-hint: "[phase-name | compact | clear]"
 ---
 
 ## invocation modes
-
-**`/senzu <repo>#<issue>`** — start a new issue. fetch the issue from github,
-set it as the working context, and present a grounding draft for review.
-
-**`/senzu #<issue>`** — same, but infer the repo from the current git context.
-only valid when the working directory is inside a git repo.
 
 **`/senzu [phase-name]`** — phase checkpoint. summarize the completed phase,
 draft the next, and wait for approval. issue context carries forward.
@@ -19,6 +13,9 @@ draft the next action. **phase state takes precedence over issue context** — i
 phase is in progress (grounding has started, facts are established in the session),
 produce a fresh summary regardless of whether an issue is filed. only ask "what are
 we working on?" on a true cold start (no phase context at all).
+
+> sessions are started via the `senzu <identifier>` CLI, which pre-loads ticket
+> context into the system prompt. the skill does not fetch issues directly.
 
 **`/senzu compact`** — write a session state block to `~/.claude/CLAUDE.md`, then
 prompt the user to run `/compact`. the new session opens with the block already in

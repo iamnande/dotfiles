@@ -1,0 +1,68 @@
+#!/usr/bin/env bash
+# senzu-fetch <identifier>
+# Fetches a Linear issue by identifier and writes a formatted system prompt to stdout.
+# Usage: senzu-fetch ADMIN-376
+set -euo pipefail
+
+IDENTIFIER="${1:?usage: senzu-fetch <identifier>}"
+: "${LINEAR_TOKEN:?LINEAR_TOKEN is not set}"
+
+PRIORITY_LABEL() {
+  case "$1" in
+    0) echo "none" ;;
+    1) echo "urgent" ;;
+    2) echo "high" ;;
+    3) echo "medium" ;;
+    4) echo "low" ;;
+    *) echo "unknown" ;;
+  esac
+}
+
+PAYLOAD=$(jq -cn \
+  --arg identifier "$IDENTIFIER" \
+  '{
+    query: "query($identifier: String!) {
+      issues(filter: { identifier: { eq: $identifier } }) {
+        nodes {
+          id
+          identifier
+          title
+          description
+          priority
+          state { name }
+          assignee { name }
+        }
+      }
+    }",
+    variables: { identifier: $identifier }
+  }')
+
+RESPONSE=$(curl -sf \
+  -X POST \
+  -H "Authorization: ${LINEAR_TOKEN}" \
+  -H "Content-Type: application/json" \
+  -d "$PAYLOAD" \
+  https://api.linear.app/graphql)
+
+ISSUE=$(echo "$RESPONSE" | jq -r '.data.issues.nodes[0] // empty')
+
+if [[ -z "$ISSUE" ]]; then
+  echo "error: issue ${IDENTIFIER} not found" >&2
+  exit 1
+fi
+
+TITLE=$(echo "$ISSUE" | jq -r '.title')
+STATE=$(echo "$ISSUE" | jq -r '.state.name')
+PRIORITY=$(echo "$ISSUE" | jq -r '.priority')
+ASSIGNEE=$(echo "$ISSUE" | jq -r '.assignee.name // "unassigned"')
+DESCRIPTION=$(echo "$ISSUE" | jq -r '.description // ""' | head -c 800)
+
+cat <<EOF
+# senzu session
+
+ticket: ${IDENTIFIER} — ${TITLE}
+state: ${STATE} | priority: $(PRIORITY_LABEL "$PRIORITY") | assignee: ${ASSIGNEE}
+
+## description
+${DESCRIPTION}
+EOF
