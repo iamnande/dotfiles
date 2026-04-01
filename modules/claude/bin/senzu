@@ -39,7 +39,10 @@ function cmd_start
     set context (cat $tmpfile | string collect)
     rm -f $tmpfile
 
-    claude --append-system-prompt $context
+    exec claude \
+        --name $identifier \
+        --append-system-prompt $context \
+        /senzu
 end
 
 function cmd_close

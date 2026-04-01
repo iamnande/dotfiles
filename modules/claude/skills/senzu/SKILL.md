@@ -14,8 +14,10 @@ phase is in progress (grounding has started, facts are established in the sessio
 produce a fresh summary regardless of whether an issue is filed. only ask "what are
 we working on?" on a true cold start (no phase context at all).
 
-> sessions are started via the `senzu <identifier>` CLI, which pre-loads ticket
-> context into the system prompt. the skill does not fetch issues directly.
+> sessions are started via the `senzu <identifier>` CLI, which fetches ticket
+> context and injects it into the system prompt, then fires `/senzu` as the
+> opening prompt. on session start, read the ticket context from the system
+> prompt and begin grounding.
 
 **`/senzu compact`** — write a session state block to `~/.claude/CLAUDE.md`, then
 prompt the user to run `/compact`. the new session opens with the block already in
@@ -61,11 +63,10 @@ also available explicitly for stale state or unplanned session ends.
 
 senzu edits commit directly to dotfiles main (no branch). after committing:
 
-1. `cd ~/homelab/compute && nix flake update dotfiles`
-2. `git add flake.lock && git commit -m "chore(flake): update dotfiles input" && git push`
-3. `nh os switch ~/homelab/compute`
-4. start a fresh claude session — the loaded skill is stale until the switch completes
-5. `/senzu compact` before the old session ends if work is in flight
+1. `cd ~/.config/home-manager && nix flake update dotfiles`
+2. `nix run home-manager -- switch --flake ~/.config/home-manager`
+3. start a fresh claude session — the loaded skill is stale until the switch completes
+4. `/senzu compact` before the old session ends if work is in flight
 
 ---
 
