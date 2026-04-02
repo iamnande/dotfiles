@@ -3,6 +3,7 @@
   programs.zellij = {
     enable = true;
     enableFishIntegration = true;
+    attachExistingSession = true;
     settings = {
       theme = "everforest-dark";
       show_startup_tips = false;
