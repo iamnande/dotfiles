@@ -29,6 +29,20 @@ imports = [ inputs.dotfiles.homeManagerModules.nick ];
 | `modules/claude/` | global Claude Code context + senzu skill |
 | `modules/zellij/` | multiplexer config (everforest dark) |
 
+## activation
+
+on a fresh machine, bootstrap directly from github — no local wrapper needed:
+
+```fish
+nix run home-manager -- switch --flake github:iamnande/dotfiles
+```
+
+for subsequent switches from a local clone:
+
+```fish
+home-manager switch --flake ~/dotfiles
+```
+
 ---
 
 ## structure
