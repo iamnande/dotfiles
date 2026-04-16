@@ -47,6 +47,7 @@ leading to cold-start behavior or lost decisions in the new session.
 - **branches:** <branch names per repo, or "n/a">
 - **decisions:** <key grounding/planning decisions, 3-5 bullets>
 - **completed:** <what's been executed so far>
+- **phase-progress:** <checklist items completed within the current phase, if mid-phase>
 - **next:** <what was queued up>
 <!-- senzu:session:end -->
 ```
@@ -59,43 +60,58 @@ also available explicitly for stale state or unplanned session ends.
 
 ---
 
-## updating this skill
-
-senzu edits commit directly to dotfiles main (no branch). after committing:
-
-1. `cd ~/.config/home-manager && nix flake update dotfiles`
-2. `nix run home-manager -- switch --flake ~/.config/home-manager`
-3. start a fresh claude session — the loaded skill is stale until the switch completes
-4. `/senzu compact` before the old session ends if work is in flight
-
----
-
 ## phase model
 
 phases run in order. each phase iterates until fully cleared — don't advance
-until the current phase is done.
+until the current phase is done. the spec phase is conditional — assess at the
+end of grounding whether it's warranted, then skip or run it before planning.
 
-| phase | covers |
-|---|---|
-| grounding | confirm assumptions, align on nouns/verbs, research the problem space |
-| planning | concrete plan with narrative, diffs/examples, expected outcome — no surprises in execution. includes defining how each piece will be verified during execution |
-| execution | small iterations, conventional commits at each checkpoint. run the verification steps defined in planning — don't defer correctness checks to the live deploy |
-| refinement | make it right — don't just review what was built. actively ask: (1) are there more idiomatic patterns? (2) what's absent that should be there? (3) what's present that shouldn't be? surface tradeoffs before declaring done |
-| protection | security and risk assessment — flag it, don't assume it's fine |
-| release/deploy | PR, validation, staged rollout if needed |
-| learnings | reflect on what worked, what didn't, what to carry forward |
+### grounding
 
----
+surface open questions, analyze for ambiguities, confirm assumptions, align on
+nouns/verbs, research the problem space.
 
-## issue-aware actions
+- list all open questions explicitly — don't carry them forward unresolved
+- identify ambiguities in requirements, scope, or key terms
+- confirm assumptions with the user
+- align on nouns and verbs — shared vocabulary prevents drift
+- research prior art in the codebase (existing patterns, related work)
 
-these actions occur at specific phase transitions when an issue is in context.
-each is drafted for review before executing — nothing fires automatically.
+*exit: no unresolved open questions; key terms and scope agreed*
 
-### planning → execution
+### spec *(conditional)*
+
+assess whether a tech spec is warranted. if yes: scope, interfaces, data flows,
+unknowns, migration path — use the write-product-spec skill. if no: skip to planning.
+
+warranted when: change is cross-team, cross-service, irreversible, or large enough
+to need alignment before execution.
+
+- define scope explicitly (what's in, what's out)
+- document interfaces (API contracts, data shapes)
+- trace data flows end-to-end
+- list unknowns and how they'll be resolved
+- include migration path if existing behavior changes
+
+*exit: spec document written and agreed, or skip decision confirmed*
+
+### planning
+
+concrete plan with narrative, diffs/examples, expected outcome — no surprises in
+execution. includes defining how each piece will be verified during execution.
+
+- write a step-by-step plan with narrative, not just a task list
+- include diffs or pseudocode for non-obvious changes
+- define verification steps per piece — how will we know each part worked?
+- identify rollback path
+
+*exit: plan reviewed and approved; verification steps defined; rollback path identified*
+
+*if issue in context — at planning → execution:*
 
 1. post a grounding + plan summary comment to the issue:
    - what we confirmed in grounding (assumptions, key facts, decisions made)
+   - spec decisions if the spec phase ran (scope, interfaces, key unknowns resolved)
    - the plan: what we're doing and why, tradeoffs accepted
    - terse — decisions and rationale only, not a transcript
 
@@ -111,7 +127,79 @@ each is drafted for review before executing — nothing fires automatically.
    - for multi-repo work, create a branch in each affected repo and note them
      in the issue comment
 
+### execution
+
+small iterations, conventional commits at each checkpoint. run the verification
+steps defined in planning — don't defer correctness checks to the live deploy.
+
+- one logical change per commit, conventional commit message
+- run defined verification steps at each checkpoint
+- surface blockers immediately — don't work around them silently
+
+*exit: all verification steps passed; no outstanding blockers*
+
+### refinement
+
+make it right — don't just review what was built.
+
+*idiomatic patterns*
+- more natural ways to express this in the language/framework?
+- follows existing codebase conventions?
+
+*completeness*
+- unhappy paths handled?
+- edge cases covered?
+- error handling present at the right boundaries?
+
+*DRY* *(Pragmatic Programmer)*
+- duplicated patterns that should be extracted?
+- shared logic centralized or scattered?
+
+*YAGNI / overengineering* *(XP principles)*
+- abstraction serving no current requirement?
+- solution more complex than the problem warrants?
+- dead code paths or unused parameters?
+
+*exit: all sub-sections checked; tradeoffs surfaced and accepted*
+
+### protection
+
+flag it, don't assume it's fine.
+
+*security* *(OWASP Top 10 2021)*
+- A01 broken access control — authz gaps, privilege escalation, missing ownership checks
+- A02 cryptographic failures — secrets in logs, unencrypted storage, weak algorithms
+- A03 injection — SQL, command, template; XSS if rendering user input
+- A04 insecure design — missing rate limiting, insecure direct object references
+- A05 security misconfiguration — insecure defaults, verbose error responses, unnecessary features enabled
+- A06 vulnerable and outdated components — dependency audit, known CVEs
+- A07 identification and authentication failures — session management, credential handling, token expiry
+- A08 software and data integrity failures — deserialization of untrusted data, CI/CD pipeline integrity
+- A09 security logging and monitoring failures — are security events logged and alertable?
+- A10 SSRF — if making outbound requests: is the target URL user-controlled?
+
+*resiliency* *(AWS Well-Architected Reliability + SRE)*
+- SPOF — what breaks if this component goes down?
+- retry behavior — idempotent? backoff with jitter?
+- timeout handling — all external calls bounded?
+- circuit breaker — protection against cascading failures?
+- error propagation — does failure surface correctly or get swallowed?
+- graceful degradation — system degrades gracefully under partial failure?
+- stateless design — instances replaceable without state loss?
+- dependency resilience — behavior if a backing service is unavailable?
+- observability — logging, metrics, alerting sufficient to detect and diagnose failures?
+
+*exit: all items assessed; flagged risks acknowledged and accepted or mitigated*
+
 ### release/deploy
+
+PR, validation, staged rollout if needed.
+
+- staged rollout if the change has broad blast radius
+- run the verification steps from planning against the deployed change
+- confirm merge before closing the issue
+
+*if issue in context:*
 
 create a PR for each branch → main:
 
@@ -131,7 +219,19 @@ create a PR for each branch → main:
   is closed manually after learnings
 - prefer rebase merge
 
-### learnings → done
+*exit: PR merged; validation complete*
+
+### learnings
+
+reflect on what worked, what didn't, what to carry forward.
+
+- what went well that should be repeated?
+- what went wrong or took longer than expected?
+- anything surprising worth carrying forward?
+
+*exit: learnings captured; session closed*
+
+*if issue in context — at learnings → done:*
 
 1. draft a completion comment:
    - what shipped
@@ -183,6 +283,16 @@ use this structure exactly (lowercase, terse, no filler):
 - <what was accomplished, 2-4 bullets, terse>
 
 **next: <name>** — <one sentence on what this phase covers>
+---
+
+for a skipped conditional phase, inline the skip rather than announcing a phase:
+
+---
+**phase complete: grounding**
+
+- <bullets>
+
+**spec: skipping** — <one-line reason> → **next: planning** — <one sentence>
 ---
 
 then draft the first action for the next phase and wait for approval.
