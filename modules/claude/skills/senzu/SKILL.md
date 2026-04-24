@@ -97,15 +97,29 @@ to need alignment before execution.
 
 ### planning
 
-concrete plan with narrative, diffs/examples, expected outcome — no surprises in
-execution. includes defining how each piece will be verified during execution.
+planning runs in two mandatory sub-gates. execution must not begin until both
+artifacts are committed to the target repo.
 
-- write a step-by-step plan with narrative, not just a task list
-- include diffs or pseudocode for non-obvious changes
-- define verification steps per piece — how will we know each part worked?
-- identify rollback path
+**sub-gate 1 — PRD:**
 
-*exit: plan reviewed and approved; verification steps defined; rollback path identified*
+fill `templates/prd.md` for the current work. write to `plan/<YYYY-MM-DD>_<slug>/prd.md`
+in the target repo. show git diff, wait for explicit approval, then commit.
+PRD must be committed before tech spec drafting begins.
+
+- all sections must be present; inapplicable sections marked `N/A — <reason>`, never dropped
+- requirements block must enumerate at least one Rn entry
+- `<YYYY-MM-DD>` is the session date; `<slug>` is kebab-case, 3-5 words
+
+**sub-gate 2 — tech spec:**
+
+fill `templates/tech-spec.md` for the current work. write to `plan/<YYYY-MM-DD>_<slug>/tech-spec.md`
+in the target repo. show git diff, wait for explicit approval, then commit.
+tech spec must be committed before execution begins.
+
+- all sections must be present; inapplicable sections marked `N/A — <reason>`, never dropped
+- Requirements Coverage table must map every Rn from the PRD to at least one section
+
+*exit: both artifacts committed; all Rn entries defined; verification steps and rollback path identified*
 
 *if issue in context — at planning → execution:*
 
