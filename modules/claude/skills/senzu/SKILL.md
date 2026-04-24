@@ -19,12 +19,12 @@ we working on?" on a true cold start (no phase context at all).
 > opening prompt. on session start, read the ticket context from the system
 > prompt and begin grounding.
 
-**`/senzu compact`** — write a session state block to `~/.claude/CLAUDE.md`, then
+**`/senzu compact`** — write a session state block to `~/.claude/CLAUDE.local.md`, then
 prompt the user to run `/compact`. the new session opens with the block already in
 context — no wake prompt needed. first `/senzu` in the new session reads it and
 resumes cleanly.
 
-**`/senzu clear`** — remove the session state block from `~/.claude/CLAUDE.md`.
+**`/senzu clear`** — remove the session state block from `~/.claude/CLAUDE.local.md`.
 use this to clean up after an unplanned session end or any time the stashed state
 is stale. also fires automatically at learnings → done.
 
@@ -36,7 +36,7 @@ context pressure is the main reason to compact. the failure mode without this
 pattern: resume state lives in conversation context, which compact destroys —
 leading to cold-start behavior or lost decisions in the new session.
 
-**`/senzu compact` writes this block to `~/.claude/CLAUDE.md`:**
+**`/senzu compact` writes this block to `~/.claude/CLAUDE.local.md`:**
 
 ```markdown
 <!-- senzu:session:start -->
@@ -52,7 +52,7 @@ leading to cold-start behavior or lost decisions in the new session.
 <!-- senzu:session:end -->
 ```
 
-`~/.claude/CLAUDE.md` is always auto-loaded — the new session sees this immediately,
+`~/.claude/CLAUDE.local.md` is always auto-loaded — the new session sees this immediately,
 no manual wake prompt required.
 
 **`/senzu clear` removes the block.** fires automatically at learnings → done.
@@ -248,7 +248,7 @@ reflect on what worked, what didn't, what to carry forward.
    git branch -d <branch>
    ```
 
-4. run `/senzu clear` to remove the session state block from `~/.claude/CLAUDE.md`.
+4. run `/senzu clear` to remove the session state block from `~/.claude/CLAUDE.local.md`.
 
 ---
 
