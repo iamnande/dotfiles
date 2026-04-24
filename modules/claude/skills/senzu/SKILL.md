@@ -103,8 +103,8 @@ artifacts are committed to the target repo.
 **sub-gate 1 — PRD:**
 
 fill `templates/prd.md` for the current work. write to `plan/<YYYY-MM-DD>_<slug>/prd.md`
-in the target repo. show git diff, wait for explicit approval, then commit.
-PRD must be committed before tech spec drafting begins.
+in the target repo. show git diff, wait for explicit approval, then commit with
+`git add -f` (`plan/` is gitignored). PRD must be committed before tech spec drafting begins.
 
 - all sections must be present; inapplicable sections marked `N/A — <reason>`, never dropped
 - requirements block must enumerate at least one Rn entry
@@ -113,8 +113,8 @@ PRD must be committed before tech spec drafting begins.
 **sub-gate 2 — tech spec:**
 
 fill `templates/tech-spec.md` for the current work. write to `plan/<YYYY-MM-DD>_<slug>/tech-spec.md`
-in the target repo. show git diff, wait for explicit approval, then commit.
-tech spec must be committed before execution begins.
+in the target repo. show git diff, wait for explicit approval, then commit with
+`git add -f`. tech spec must be committed before execution begins.
 
 - all sections must be present; inapplicable sections marked `N/A — <reason>`, never dropped
 - Requirements Coverage table must map every Rn from the PRD to at least one section
