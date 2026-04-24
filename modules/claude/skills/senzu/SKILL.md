@@ -174,7 +174,12 @@ make it right — don't just review what was built.
 - solution more complex than the problem warrants?
 - dead code paths or unused parameters?
 
-*exit: all sub-sections checked; tradeoffs surfaced and accepted*
+*requirements coverage*
+- walk each Rn from the PRD — is it implemented?
+- walk each Rn — is there a test or manual verification step covering it?
+- surface any Rn with no implementation or no coverage as a blocker
+
+*exit: all sub-sections checked; all Rn entries confirmed implemented and covered; tradeoffs surfaced and accepted*
 
 ### protection
 
