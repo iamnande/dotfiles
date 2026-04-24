@@ -7,6 +7,7 @@
     ignores = [
       ".DS_Store"
       ".idea/"
+      "plan/"
     ];
 
     signing = {
