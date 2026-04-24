@@ -1,8 +1,12 @@
 { ... }: {
 
   home.file = {
-    ".claude/CLAUDE.md".source             = ./CLAUDE.md;
-    ".claude/skills/senzu/SKILL.md".source = ./skills/senzu/SKILL.md;
+    ".claude/CLAUDE.md".source = ./CLAUDE.md;
+
+    ".claude/skills/senzu" = {
+      source    = ./skills/senzu;
+      recursive = true;
+    };
 
     ".local/bin/senzu" = {
       source     = ./bin/senzu;
