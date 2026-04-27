@@ -149,6 +149,9 @@ steps defined in planning — don't defer correctness checks to the live deploy.
 - one logical change per commit, conventional commit message
 - run defined verification steps at each checkpoint
 - surface blockers immediately — don't work around them silently
+- before any `git add`: explicitly state which changed files belong to which
+  commit and why. before any `--amend`: run `git log --oneline` to confirm
+  which commit is HEAD.
 
 *exit: all verification steps passed; no outstanding blockers*
 
@@ -184,6 +187,13 @@ make it right — don't just review what was built.
 ### protection
 
 flag it, don't assume it's fine.
+
+**default approach:** spawn 3-5 parallel sub-agents. anchor reviewer perspectives
+to the in-scope tech spec sections (core logic, interfaces, validation, integration
+tests) — skip any marked N/A. add security/resilience as a constant regardless of
+scope. synthesize findings, separate signal from noise, and surface only actionable
+items for resolution. do not wait to be asked — parallel agents are the default for
+this phase on any non-trivial code change.
 
 *security* *(OWASP Top 10 2021)*
 - A01 broken access control — authz gaps, privilege escalation, missing ownership checks
@@ -237,6 +247,11 @@ create a PR for each branch → main:
 - reference the issue (`<repo>#<issue>`) but do NOT use `Closes` — the issue
   is closed manually after learnings
 - prefer rebase merge
+- prose paragraphs must not be hard-wrapped — GitHub renders raw newlines as
+  visible line breaks in PR descriptions
+
+after PR creation: wait ~2 minutes, then poll for automated review comments
+(copilot, CI). address any open comments before declaring the phase complete.
 
 *exit: PR merged; validation complete*
 
@@ -289,6 +304,12 @@ comments, issue closes. if it's an action, it gets drafted and reviewed first.
 
 if the current phase has outstanding items, surface them and hold. don't advance
 until they're cleared.
+
+**phase progression does not require a /senzu invocation.** after an approved
+action executes cleanly, immediately announce the result and propose the next
+step. /senzu is a status check and explicit checkpoint — not the gate for every
+transition. waiting silently for the user to prompt the next phase is the wrong
+default.
 
 ---
 
