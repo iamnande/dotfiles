@@ -8,6 +8,11 @@
       recursive = true;
     };
 
+    ".claude/skills/kami" = {
+      source    = ./skills/kami;
+      recursive = true;
+    };
+
     ".local/bin/senzu" = {
       source     = ./bin/senzu;
       executable = true;
