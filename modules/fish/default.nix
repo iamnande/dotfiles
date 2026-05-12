@@ -26,12 +26,14 @@
     '';
 
     functions = {
-      k   = { wraps = "kubectl";  description = "kubectl";  body = "kubectl $argv"; };
-      kns = { wraps = "kubens";   description = "kubens";   body = "kubens $argv"; };
-      ktx = { wraps = "kubectx";  description = "kubectx";  body = "kubectx $argv"; };
-      mkd = { wraps = "mkdir";    description = "no really, make the dirs"; body = "mkdir -p $argv"; };
-      tre = {                     description = "happy little trees"; body = "tree -aC -I .git $argv | less -FRNX"; };
-      z   = { wraps = "zellij";   description = "zellij";   body = "zellij $argv"; };
+      k          = { wraps = "kubectl";  description = "kubectl";  body = "kubectl $argv"; };
+      kns        = { wraps = "kubens";   description = "kubens";   body = "kubens $argv"; };
+      ktx        = { wraps = "kubectx";  description = "kubectx";  body = "kubectx $argv"; };
+      mkd        = { wraps = "mkdir";    description = "no really, make the dirs"; body = "mkdir -p $argv"; };
+      tre        = {                     description = "happy little trees"; body = "tree -aC -I .git $argv | less -FRNX"; };
+      z          = { wraps = "zellij";   description = "zellij";   body = "zellij $argv"; };
+      giddy-fr              = { description = "pull latest, then launch claude"; body = "git up && claude $argv"; };
+      git-up-and-dance-fr   = { description = "pull latest, then launch claude"; body = "git up && claude $argv"; };
     };
   };
 
