@@ -6,6 +6,7 @@
       theme = "everforest-dark";
       show_startup_tips = false;
       session_name = "mhq";
+      default_shell = "fish";
     };
   };
 

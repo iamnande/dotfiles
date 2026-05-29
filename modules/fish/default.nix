@@ -23,6 +23,9 @@
           ln -sf $SSH_AUTH_SOCK $agent_sock
       end
       set -gx SSH_AUTH_SOCK $agent_sock
+
+      # direnv: auto-load .envrc on cd. no-op where direnv isn't installed.
+      command -v direnv >/dev/null; and direnv hook fish | source
     '';
 
     functions = {
