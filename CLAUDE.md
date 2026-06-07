@@ -35,41 +35,44 @@ preferences. specifically:
 
 - **default shell: fish** (`/usr/bin/fish`)
 - when suggesting shell snippets, default to **fish syntax** unless the context is
-  clearly a different shell (e.g., editing a `.zshrc` or a bash script)
+  clearly a different shell (e.g., editing a bash script or a makefile recipe)
 
 ---
 
 ## software management
 
-software (cli tools, languages, desktop apps) is managed via **Nix** — don't suggest
-installing packages via homebrew, apt, pacman, or manual scripts. if something needs to
-be installed, it belongs in the Nix config (`~/homelab` for current machines).
+software (cli tools, languages, desktop apps) is managed via **pacman** and **yay** (AUR).
+dotfiles and configs are managed via **stow**.
 
-this repo is a home-manager flake. when adding new components, add a module under
-`modules/` and import it in `modules/nick.nix`.
+structure: `src/<component>/` mirrors the home directory. to add a new component:
+1. create `src/<component>/` with the config files in their target paths
+2. add a target to `mk/setup.mk`
+3. run `make <component>` to stow it
+
+don't suggest nix, home-manager, or nixos - this machine is arch + stow.
 
 ---
 
 ## platform
 
-- **personal + work devbox: Linux (NixOS)** — primary target for all configs
-- **work laptop: macOS** — not a dev machine, not a focus
+- **personal devbox: Arch Linux (Hyprland/Wayland)** - primary target for all configs
+- **work laptop: macOS** - not a dev machine, not a focus
 - when suggesting configs or tooling, default to Linux unless context is explicitly macOS
-- `hypr`, `waybar`, `wofi`, `kitty` are Wayland/Linux-only — don't suggest them in macOS contexts
+- `hypr`, `waybar`, `wofi`, `kitty` are Wayland/Linux-only - don't suggest them in macOS contexts
 
 ---
 
 ## editor
 
-**Helix** (`hx`) is the editor of choice. VSCode/neovim/vim references are legacy.
-Helix config lives in `modules/helix/`.
+**Zed** is the editor of choice. Helix/neovim/vim references are legacy.
 
 ---
 
 ## what to avoid
 
 - don't suggest VSCode extensions, settings.json, or `.vscode/` anything
+- don't suggest nix, home-manager, or nixos
 - don't assume `git` will always be the VCS (see above)
 - don't add dependencies silently - if something needs to be installed, say so explicitly
 - don't refactor working configs just to make them "cleaner" without being asked
-- don't suggest steps that only work on macOS — personal configs are Linux-first
+- don't suggest steps that only work on macOS - personal configs are Linux-first
