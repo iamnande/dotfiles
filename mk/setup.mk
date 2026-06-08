@@ -13,7 +13,7 @@ install = cd $(SETUP_HOME) \
 	$(COMPONENT) && cd -
 
 .PHONY: all
-all: claude hypr git fish ## setup: install all components
+all: claude fish git hypr kitty ## setup: install all components
 
 .PHONY: claude
 claude: COMPONENT=claude
@@ -37,4 +37,10 @@ git: ## setup: git config + identity
 fish: COMPONENT=fish
 fish: ## setup: fish shell config
 	@echo $(log) "installing fish configs"
+	$(install)
+
+.PHONY: kitty
+kitty: COMPONENT=kitty
+kitty: ## setup: kitty terminal config
+	@echo $(log) "installing kitty configs"
 	$(install)
