@@ -1,0 +1,85 @@
+@define-color green   #a7c080;
+@define-color mauve   #d699b6;
+@define-color red     #e67e80;
+@define-color text    #d3c6aa;
+@define-color base    #2d353b;
+@define-color surface #3d484d;
+
+* {
+  font-family: "OpenDyslexicM Nerd Font Mono";
+  font-size: 16px;
+}
+
+window {
+  margin: 0px;
+  padding: 10px;
+  border: 2px solid @green;
+  border-radius: 8px;
+  background-color: @base;
+}
+
+#inner-box {
+  margin: 5px;
+  padding: 10px;
+  border: none;
+  background-color: @base;
+}
+
+#outer-box {
+  margin: 5px;
+  padding: 10px;
+  border: none;
+  background-color: @base;
+}
+
+#scroll {
+  margin: 0px;
+  padding: 10px;
+  border: none;
+  background-color: @base;
+}
+
+#input {
+  margin: 5px 20px;
+  padding: 10px;
+  border: none;
+  border-radius: 0.1em;
+  color: @text;
+  background-color: @surface;
+}
+
+#input image {
+  border: none;
+  color: @red;
+}
+
+#input * {
+  outline: 4px solid @red !important;
+}
+
+#text {
+  margin: 5px;
+  border: none;
+  color: @text;
+}
+
+#entry {
+  background-color: @base;
+}
+
+#entry arrow {
+  border: none;
+  color: @green;
+}
+
+#entry:selected {
+  border: 0.11em solid @green;
+}
+
+#entry:selected #text {
+  color: @mauve;
+}
+
+#entry:drop(active) {
+  background-color: @green !important;
+}

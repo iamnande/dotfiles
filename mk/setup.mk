@@ -13,7 +13,7 @@ install = cd $(SETUP_HOME) \
 	$(COMPONENT) && cd -
 
 .PHONY: all
-all: backgrounds claude fish git hypr kitty waybar ## setup: install all components
+all: backgrounds claude fish git hypr kitty waybar wofi ## setup: install all components
 
 .PHONY: backgrounds
 backgrounds: COMPONENT=backgrounds
@@ -55,4 +55,10 @@ kitty: ## setup: kitty terminal config
 waybar: COMPONENT=waybar
 waybar: ## setup: waybar status bar config
 	@echo $(log) "installing waybar configs"
+	$(install)
+
+.PHONY: wofi
+wofi: COMPONENT=wofi
+wofi: ## setup: wofi launcher config
+	@echo $(log) "installing wofi configs"
 	$(install)
