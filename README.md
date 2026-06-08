@@ -1,46 +1,37 @@
 # dotfiles
 
-personal config files managed as a [home-manager](https://github.com/nix-community/home-manager) flake.
+personal config files managed with [stow](https://www.gnu.org/software/stow/).
 
-software (tools, languages, apps) is managed separately via Nix. this repo is configs only.
+software (tools, languages, apps) is managed via pacman/yay. this repo is configs only.
 
 ---
 
-## home-manager flake
+## components
 
-exposes `homeManagerModules.nick` — consumed by the homelab compute flake:
-
-```nix
-# in homelab compute/flake.nix
-inputs.dotfiles.url = "github:iamnande/dotfiles";
-
-# in a host config
-imports = [ inputs.dotfiles.homeManagerModules.nick ];
-```
-
-### components
-
-| module | manages |
+| component | manages |
 |---|---|
-| `modules/backgrounds/` | wallpapers (`~/.config/backgrounds/`) |
-| `modules/git/` | git identity, signing (1Password SSH), aliases |
-| `modules/fish/` | shell config, functions, Tide prompt |
-| `modules/helix/` | editor config (everforest dark) |
-| `modules/claude/` | global Claude Code context + senzu skill |
-| `modules/zellij/` | multiplexer config (everforest dark) |
+| `src/claude/` | global Claude Code context + skills (senzu, kami) |
+| `src/fish/` | shell config + functions |
+| `src/git/` | git identity, aliases, per-directory overrides |
+| `src/hypr/` | hyprland compositor config |
 
 ## activation
 
-on a fresh machine, bootstrap directly from github — no local wrapper needed:
+on a fresh machine:
 
-```fish
-nix run home-manager -- switch --flake github:iamnande/dotfiles
+```bash
+git clone git@github.com:iamnande/dotfiles.git ~/dotfiles
+cd ~/dotfiles
+make all
 ```
 
-for subsequent switches from a local clone:
+individual components:
 
-```fish
-home-manager switch --flake ~/dotfiles
+```bash
+make claude
+make fish
+make git
+make hypr
 ```
 
 ---
@@ -48,13 +39,13 @@ home-manager switch --flake ~/dotfiles
 ## structure
 
 ```
-flake.nix       home-manager flake — exposes homeManagerModules.nick
-modules/        home-manager components
-  nick.nix      thin aggregator (imports all modules below)
-  backgrounds/  home.file — wallpapers
-  git/          programs.git
-  fish/         programs.fish + tide prompt config
-  helix/        programs.helix
-  claude/       home.file — CLAUDE.md + senzu skill
-  zellij/       programs.zellij
+Makefile        entry point — wraps stow commands
+mk/
+  log.mk        timestamp + colored log helper
+  setup.mk      stow targets
+src/            stow source — mirrors home directory
+  claude/       -> ~/.claude/
+  fish/         -> ~/.config/fish/
+  git/          -> ~/
+  hypr/         -> ~/.config/hypr/
 ```
