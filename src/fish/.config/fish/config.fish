@@ -11,6 +11,8 @@ set -gx EDITOR nvim
 # change agents, change this line.
 set -gx SSH_AUTH_SOCK ~/.1password/agent.sock
 
+fnm env --use-on-cd --shell fish | source
+
 function k --wraps kubectl --description kubectl
     kubectl $argv
 end
