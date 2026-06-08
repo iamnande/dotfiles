@@ -13,6 +13,10 @@ set -gx SSH_AUTH_SOCK ~/.1password/agent.sock
 
 fnm env --use-on-cd --shell fish | source
 
+if status is-interactive && not set -q ZELLIJ
+    zellij attach -c mhq
+end
+
 function k --wraps kubectl --description kubectl
     kubectl $argv
 end
