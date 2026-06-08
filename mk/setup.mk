@@ -13,7 +13,7 @@ install = cd $(SETUP_HOME) \
 	$(COMPONENT) && cd -
 
 .PHONY: all
-all: backgrounds claude fish git hypr kitty waybar wofi zellij ## setup: install all components
+all: backgrounds claude fish git hypr kitty waybar wofi zed zellij ## setup: install all components
 
 .PHONY: backgrounds
 backgrounds: COMPONENT=backgrounds
@@ -61,6 +61,12 @@ waybar: ## setup: waybar status bar config
 wofi: COMPONENT=wofi
 wofi: ## setup: wofi launcher config
 	@echo $(log) "installing wofi configs"
+	$(install)
+
+.PHONY: zed
+zed: COMPONENT=zed
+zed: ## setup: zed editor config
+	@echo $(log) "installing zed configs"
 	$(install)
 
 .PHONY: zellij
