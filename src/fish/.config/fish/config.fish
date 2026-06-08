@@ -1,5 +1,10 @@
 set -g fish_greeting
 
+# auto-launch hyprland via uwsm on tty1 login
+if status is-login && test (tty) = /dev/tty1
+    exec uwsm start hyprland.desktop
+end
+
 set -gx EDITOR nvim
 
 # the path is fixed. 1password does not move it. auth and signing both depend on it.
