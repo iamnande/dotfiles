@@ -13,7 +13,7 @@ install = cd $(SETUP_HOME) \
 	$(COMPONENT) && cd -
 
 .PHONY: all
-all: backgrounds claude fish git hypr kitty ## setup: install all components
+all: backgrounds claude fish git hypr kitty waybar ## setup: install all components
 
 .PHONY: backgrounds
 backgrounds: COMPONENT=backgrounds
@@ -49,4 +49,10 @@ fish: ## setup: fish shell config
 kitty: COMPONENT=kitty
 kitty: ## setup: kitty terminal config
 	@echo $(log) "installing kitty configs"
+	$(install)
+
+.PHONY: waybar
+waybar: COMPONENT=waybar
+waybar: ## setup: waybar status bar config
+	@echo $(log) "installing waybar configs"
 	$(install)
