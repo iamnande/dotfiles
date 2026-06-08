@@ -13,7 +13,13 @@ install = cd $(SETUP_HOME) \
 	$(COMPONENT) && cd -
 
 .PHONY: all
-all: claude fish git hypr kitty ## setup: install all components
+all: backgrounds claude fish git hypr kitty ## setup: install all components
+
+.PHONY: backgrounds
+backgrounds: COMPONENT=backgrounds
+backgrounds: ## setup: background images
+	@echo $(log) "installing backgrounds"
+	$(install)
 
 .PHONY: claude
 claude: COMPONENT=claude
