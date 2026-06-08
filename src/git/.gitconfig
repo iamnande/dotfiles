@@ -1,0 +1,6 @@
+[user]
+	name = nick anderson
+	email = nick@morethq.com
+
+[includeIf "gitdir:~/ngrok/"]
+	path = ~/.gitconfig-ngrok
