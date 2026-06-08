@@ -5,5 +5,17 @@
 [alias]
 	up = pull --rebase --autostash
 
+[commit]
+	gpgSign = true
+
+[gpg]
+	format = ssh
+
+[gpg "ssh"]
+	allowedSignersFile = ~/.ssh/allowed_signers
+
+[user]
+	signingKey = ~/.ssh/iamnande.pub
+
 [includeIf "gitdir:~/ngrok/"]
 	path = ~/.gitconfig-ngrok
