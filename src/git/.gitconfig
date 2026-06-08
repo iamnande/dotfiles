@@ -2,5 +2,8 @@
 	name = nick anderson
 	email = nick@morethq.com
 
+[alias]
+	up = pull --rebase --autostash
+
 [includeIf "gitdir:~/ngrok/"]
 	path = ~/.gitconfig-ngrok
