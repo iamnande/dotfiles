@@ -1,5 +1,7 @@
 set -g fish_greeting
 
+set -gx EDITOR nvim
+
 # the path is fixed. 1password does not move it. auth and signing both depend on it.
 # change agents, change this line.
 set -gx SSH_AUTH_SOCK ~/.1password/agent.sock
