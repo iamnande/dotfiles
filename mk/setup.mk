@@ -13,7 +13,7 @@ install = cd $(SETUP_HOME) \
 	$(COMPONENT) && cd -
 
 .PHONY: all
-all: claude hypr ## setup: install all components
+all: claude hypr git ## setup: install all components
 
 .PHONY: claude
 claude: COMPONENT=claude
@@ -25,4 +25,10 @@ claude: ## setup: claude skills + context
 hypr: COMPONENT=hypr
 hypr: ## setup: hyprland configs
 	@echo $(log) "installing hypr configs"
+	$(install)
+
+.PHONY: git
+git: COMPONENT=git
+git: ## setup: git config + identity
+	@echo $(log) "installing git configs"
 	$(install)
