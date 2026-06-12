@@ -19,3 +19,5 @@
 
 [includeIf "gitdir:~/ngrok/"]
 	path = ~/.gitconfig-ngrok
+[init]
+	defaultBranch = main
