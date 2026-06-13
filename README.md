@@ -7,8 +7,18 @@ stow-managed configs. software via pacman/yay (for now - we'll figure something 
 ```fish
 git clone git@github.com:iamnande/dotfiles.git ~/dotfiles
 cd ~/dotfiles
-make all          # all components
-make <component>  # single component
+make <component>
+```
+
+## structure
+
+```
+Makefile
+mk/
+  log.mk
+  setup.mk
+src/
+  <component>/    mirrors home directory
 ```
 
 ## components
@@ -26,13 +36,3 @@ make <component>  # single component
 | `zed` | `~/.config/zed/` |
 | `zellij` | `~/.config/zellij/` |
 
-## structure
-
-```
-Makefile
-mk/
-  log.mk
-  setup.mk
-src/
-  <component>/    mirrors home directory
-```
