@@ -1,0 +1,26 @@
+theme = "everforest_dark"
+
+[editor]
+mouse = false
+line-number = "relative"
+bufferline = "multiple"
+end-of-line-diagnostics = "hint"
+
+[editor.cursor-shape]
+insert = "bar"
+normal = "block"
+select = "underline"
+
+[editor.inline-diagnostics]
+cursor-line = "error"
+
+[editor.statusline]
+right = ["total-line-numbers", "diagnostics", "selections", "position", "file-type"]
+
+[keys.normal]
+C-k = ["extend_to_line_bounds", "delete_selection", "move_line_up", "paste_before"]
+C-j = ["extend_to_line_bounds", "delete_selection", "paste_after"]
+C-g = [":new", ":insert-output lazygit", ":buffer-close!", ":redraw"]
+C-r = ":redraw"
+C-v = "vsplit"
+C-h = "hsplit"
