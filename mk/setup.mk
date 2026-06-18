@@ -4,7 +4,7 @@ SETUP_TARGET   ?= ~/
 SETUP_VERBOSE  ?= true
 SETUP_OVERRIDE ?= true
 
-install = cd $(SETUP_HOME) \
+_install_component = cd $(SETUP_HOME) \
 	&& stow \
 	$(if $(SETUP_OVERRIDE),--restow) \
 	$(if $(SETUP_VERBOSE),--verbose) \
@@ -12,62 +12,42 @@ install = cd $(SETUP_HOME) \
 	--target $(SETUP_TARGET) \
 	$(COMPONENT) && cd -
 
+.PHONY: install
+install:
+	@echo $(log) "installing $(COMPONENT)"
+	$(_install_component)
+
 .PHONY: backgrounds
 backgrounds: COMPONENT=backgrounds
-backgrounds: ## setup: backgrounds
-	@echo $(log) "installing backgrounds"
-	$(install)
-
+backgrounds: install ## setup: backgrounds (weeb)
 .PHONY: hypr
 hypr: COMPONENT=hypr
-hypr: ## setup: hyprland
-	@echo $(log) "installing hypr"
-	$(install)
+hypr: install ## setup: hyprland (twm)
 
 .PHONY: git
 git: COMPONENT=git
-git: ## setup: git config
-	@echo $(log) "installing git"
-	$(install)
+git: install ## setup: git (vcs)
 
 .PHONY: fish
 fish: COMPONENT=fish
-fish: ## setup: fish shell
-	@echo $(log) "installing fish"
-	$(install)
+fish: install ## setup: fish (shell)
 
 .PHONY: kitty
 kitty: COMPONENT=kitty
-kitty: ## setup: kitty
-	@echo $(log) "installing kitty"
-	$(install)
+kitty:  install## setup: kitty (terminal)
 
-.PHONY: nvim
-nvim: COMPONENT=nvim
-nvim: ## setup: neovim
-	@echo $(log) "installing neovim"
-	$(install)
+.PHONY: helix
+helix: COMPONENT=helix
+helix:  install## setup: helix (editor)
 
 .PHONY: waybar
 waybar: COMPONENT=waybar
-waybar: ## setup: waybar
-	@echo $(log) "installing waybar"
-	$(install)
+waybar: install ## setup: waybar (status)
 
 .PHONY: wofi
 wofi: COMPONENT=wofi
-wofi: ## setup: wofi
-	@echo $(log) "installing wofi"
-	$(install)
-
-.PHONY: zed
-zed: COMPONENT=zed
-zed: ## setup: zed
-	@echo $(log) "installing zed"
-	$(install)
+wofi: install ## setup: wofi (nav)
 
 .PHONY: zellij
 zellij: COMPONENT=zellij
-zellij: ## setup: zellij
-	@echo $(log) "installing zellij"
-	$(install)
+zellij: install ## setup: zellij (sessions)
