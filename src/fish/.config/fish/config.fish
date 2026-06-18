@@ -29,6 +29,10 @@ function ktx --wraps kubectx --description kubectx
     kubectx $argv
 end
 
+function hx --wraps helix --description helix
+    helix $argv
+end
+
 function mkd --wraps mkdir --description "no really, make the dirs"
     mkdir -p $argv
 end
