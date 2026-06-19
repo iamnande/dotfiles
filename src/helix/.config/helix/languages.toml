@@ -1,4 +1,9 @@
 [[language]]
+name = "markdown"
+auto-format = true
+formatter = {command = "prettier", args = ["--prose-wrap", "always", "--parser", "markdown"]}
+
+[[language]]
 name = "bash"
 scope = "source.bash"
 injection-regex = "(shell|bash|zsh|sh)"

@@ -1,6 +1,7 @@
 # dotfiles
 
-stow-managed configs. software via pacman/yay (for now - we'll figure something out here soon).
+stow-managed configs. software via pacman/yay(for now - we'll figure something
+out here soon (probably brew).
 
 ## setup
 
@@ -23,16 +24,15 @@ src/
 
 ## components
 
-| component | target |
-|---|---|
+| component     | target                   |
+| ------------- | ------------------------ |
 | `backgrounds` | `~/.config/backgrounds/` |
-| `fish` | `~/.config/fish/` |
-| `git` | `~/` |
-| `hypr` | `~/.config/hypr/` |
-| `kitty` | `~/.config/kitty/` |
-| `nvim` | `~/.config/nvim/` |
-| `waybar` | `~/.config/waybar/` |
-| `wofi` | `~/.config/wofi/` |
-| `zed` | `~/.config/zed/` |
-| `zellij` | `~/.config/zellij/` |
-
+| `fish`        | `~/.config/fish/`        |
+| `git`         | `~/`                     |
+| `hypr`        | `~/.config/hypr/`        |
+| `kitty`       | `~/.config/kitty/`       |
+| `nvim`        | `~/.config/nvim/`        |
+| `waybar`      | `~/.config/waybar/`      |
+| `wofi`        | `~/.config/wofi/`        |
+| `zed`         | `~/.config/zed/`         |
+| `zellij`      | `~/.config/zellij/`      |
