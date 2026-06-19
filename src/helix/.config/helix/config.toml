@@ -17,9 +17,18 @@ cursor-line = "error"
 [editor.statusline]
 right = ["total-line-numbers", "diagnostics", "selections", "position", "file-type"]
 
+[keys.insert]
+C-c = "normal_mode"
+
 [keys.normal]
+# reload helix
+C-r = [":config-reload", ":redraw"]
+
+# move lines up/down
 C-k = ["extend_to_line_bounds", "delete_selection", "move_line_up", "paste_before"]
 C-j = ["extend_to_line_bounds", "delete_selection", "paste_after"]
+
+# git integration
 C-g = [
     ":write",
     ":new",
@@ -28,6 +37,7 @@ C-g = [
     ":redraw",
     ":reload-all"
 ]
-C-r = ":redraw"
+
+# jean-claude van damme
 C-v = "vsplit"
 C-h = "hsplit"
