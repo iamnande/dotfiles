@@ -20,7 +20,14 @@ right = ["total-line-numbers", "diagnostics", "selections", "position", "file-ty
 [keys.normal]
 C-k = ["extend_to_line_bounds", "delete_selection", "move_line_up", "paste_before"]
 C-j = ["extend_to_line_bounds", "delete_selection", "paste_after"]
-C-g = [":new", ":insert-output lazygit", ":buffer-close!", ":redraw"]
+C-g = [
+    ":write",
+    ":new",
+    ":insert-output lazygit",
+    ":buffer-close!",
+    ":redraw",
+    ":reload-all"
+]
 C-r = ":redraw"
 C-v = "vsplit"
 C-h = "hsplit"

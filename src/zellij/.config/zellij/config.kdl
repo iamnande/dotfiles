@@ -1,2 +1,24 @@
 theme "everforest-dark"
 show_startup_tips false
+
+session_name "mhq"
+attach_to_session true
+default_layout "mhq"
+
+keybinds {
+	normal {
+		unbind "Ctrl g"
+		bind "Ctrl Space" { SwitchToMode "locked"; }
+	}
+	locked {
+		unbind "Ctrl g"
+		bind "Ctrl Space" { SwitchToMode "normal"; }
+	}
+}
+
+ui {
+    pane_frames {
+        rounded_corners true
+    }
+}
+

@@ -1,0 +1,40 @@
+layout {
+    default_tab_template {
+        pane size=1 borderless=true {
+            plugin location="zellij:tab-bar"
+        }
+        children
+        pane size=2 borderless=true {
+            plugin location="zellij:status-bar"
+        }
+    }
+
+    // tardis plan
+    tab name="plan & research" cwd="/home/iamnande/tardis" {
+        pane name="plan"
+    }
+
+    // tardis build
+    tab name="build" cwd="/home/iamnande/tardis" {
+        pane name="editor"
+    }
+
+    // tardis run
+    tab name="run" cwd="/home/iamnande/tardis" {
+        pane split_direction="vertical" {
+            pane name="svc / client"
+            pane name="svc / server"
+        }
+    }
+
+    // tardis shell
+    tab name="shell" cwd="/home/iamnande/tardis" {
+        pane name="terminal"
+    }
+    
+    // tardis git
+    tab name="git" cwd="/home/iamnande/tardis" {
+        pane name="git" command="lazygit"
+    }
+    
+}
