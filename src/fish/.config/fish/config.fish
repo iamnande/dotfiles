@@ -5,13 +5,15 @@ if status is-login && test (tty) = /dev/tty1
     exec uwsm start hyprland.desktop
 end
 
-set -gx EDITOR nvim
+set -gx EDITOR hx
 
 # the path is fixed. 1password does not move it. auth and signing both depend on it.
 # change agents, change this line.
 set -gx SSH_AUTH_SOCK ~/.1password/agent.sock
 
 fnm env --use-on-cd --shell fish | source
+
+fish_add_path $HOME/.local/bin
 
 if status is-interactive && not set -q ZELLIJ
     zellij attach -c mhq
