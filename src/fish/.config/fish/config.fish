@@ -42,8 +42,21 @@ end
 
 # like, it's just a lot of letters jan. "zellij" is super cute and oui french -
 # ain't nobody got time for all that.
-function z --wraps zellij --description zellij
-    zellij $argv
+function z --wraps zellij --description "workspace management"
+    test (count $argv) -eq 1
+    or begin
+        echo "usage: z <ws>"
+        return 1
+    end
+
+    set -l ws $argv[1]
+
+    if contains -- $ws (zellij list-sessions --short)
+        zellij attach $ws
+    else
+        zellij --session $ws \
+            --new-session-with-layout $ws
+    end
 end
 
 # claim your fighter! (helix atm)
@@ -60,5 +73,5 @@ set -gx SSH_AUTH_SOCK ~/.1password/agent.sock
 # m: show me.
 fish_add_path $HOME/.local/bin
 if status is-interactive && not set -q ZELLIJ
-    z a -c mhq
+    z mhq
 end

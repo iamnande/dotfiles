@@ -9,48 +9,31 @@ layout {
         }
     }
 
-    // setup
-    tab name="setup" cwd="/home/iamnande/dotfiles" {
+    // dotfiles
+    tab name="dotfiles" cwd="/home/iamnande/dotfiles" {
         pane stacked=true {
-            pane name="editor" command="helix"
+            pane name="editor" command="helix" expanded=true focus=true
             pane name="shell"
         }
     }
 
-    // tardis plan
-    tab name="plan" cwd="/home/iamnande/tardis" {
+    // website
+    tab name="website" cwd="/home/iamnande/iamnande" {
         pane stacked=true {
-            pane name="plan"
+            pane name="editor" command="helix" expanded=true focus=true
             pane name="shell"
+            pane name="pnpm dev" start_suspended=true {
+                command "pnpm"
+                args "run" "dev"
+            }
         }
     }
 
-    // tardis build
-    tab name="build" cwd="/home/iamnande/tardis" {
+    // homelab
+    tab name="homelab" cwd="/home/iamnande/homelab" {
         pane stacked=true {
-            pane name="editor" command="helix"
+            pane name="editor" command="helix" expanded=true focus=true
             pane name="shell"
         }
     }
-
-    // tardis run
-    // TODO: once commands are added, start_suspended=true
-    tab name="run" cwd="/home/iamnande/tardis" {
-        pane stacked=true {
-            pane name="svc / worker"
-        }
-        pane name="runtime" split_direction="vertical" {
-            pane name="svc / client"
-            pane name="svc / server"
-        }
-    }
-
-    // tardis vcs
-    tab name="vcs" cwd="/home/iamnande/tardis" {
-        pane stacked=true {
-            pane name="shell"
-            pane name="vcs" command="lazygit"
-        }
-    }
-    
 }

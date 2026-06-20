@@ -1,0 +1,39 @@
+layout {
+    default_tab_template {
+        pane size=1 borderless=true {
+            plugin location="zellij:tab-bar"
+        }
+        children
+        pane size=2 borderless=true {
+            plugin location="zellij:status-bar"
+        }
+    }
+
+    // tardis plan
+    tab name="plan" cwd="/home/iamnande/tardis" {
+        pane stacked=true {
+            pane name="plan"
+            pane name="shell"
+        }
+    }
+
+    // tardis build (+vcs via lazygit)
+    tab name="build" cwd="/home/iamnande/tardis" {
+        pane stacked=true {
+            pane name="editor" command="helix"
+            pane name="shell"
+        }
+    }
+
+    // tardis run
+    // TODO: once commands are added, start_suspended=true
+    tab name="run" cwd="/home/iamnande/tardis" {
+        pane stacked=true {
+            pane name="svc / worker"
+        }
+        pane name="runtime" split_direction="vertical" {
+            pane name="svc / client"
+            pane name="svc / server"
+        }
+    }
+}
