@@ -9,23 +9,32 @@ layout {
         }
     }
 
+    // setup
+    tab name="setup" cwd="/home/iamnande/dotfiles" {
+        pane stacked=true {
+            pane name="editor" command="hx"
+            pane name="shell"
+        }
+    }
+
     // tardis plan
     tab name="plan" cwd="/home/iamnande/tardis" {
         pane stacked=true {
-            pane name="shell"
             pane name="plan"
+            pane name="shell"
         }
     }
 
     // tardis build
     tab name="build" cwd="/home/iamnande/tardis" {
         pane stacked=true {
-            pane name="editor"
+            pane name="editor" command="hx"
             pane name="shell"
         }
     }
 
     // tardis run
+    // TODO: once commands are added, start_suspended=true
     tab name="run" cwd="/home/iamnande/tardis" {
         pane stacked=true {
             pane name="svc / worker"
