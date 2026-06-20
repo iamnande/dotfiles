@@ -10,31 +10,38 @@ layout {
     }
 
     // tardis plan
-    tab name="plan & research" cwd="/home/iamnande/tardis" {
-        pane name="plan"
+    tab name="plan" cwd="/home/iamnande/tardis" {
+        pane stacked=true {
+            pane name="shell"
+            pane name="plan"
+        }
     }
 
     // tardis build
     tab name="build" cwd="/home/iamnande/tardis" {
-        pane name="editor"
+        pane stacked=true {
+            pane name="editor"
+            pane name="shell"
+        }
     }
 
     // tardis run
     tab name="run" cwd="/home/iamnande/tardis" {
-        pane split_direction="vertical" {
+        pane stacked=true {
+            pane name="svc / worker"
+        }
+        pane name="runtime" split_direction="vertical" {
             pane name="svc / client"
             pane name="svc / server"
         }
     }
 
-    // tardis shell
-    tab name="shell" cwd="/home/iamnande/tardis" {
-        pane name="terminal"
-    }
-    
-    // tardis git
-    tab name="git" cwd="/home/iamnande/tardis" {
-        pane name="git" command="lazygit"
+    // tardis vcs
+    tab name="vcs" cwd="/home/iamnande/tardis" {
+        pane stacked=true {
+            pane name="shell"
+            pane name="vcs" command="lazygit"
+        }
     }
     
 }
