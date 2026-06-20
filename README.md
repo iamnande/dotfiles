@@ -34,5 +34,4 @@ src/
 | `kitty`       | `~/.config/kitty/`       |
 | `waybar`      | `~/.config/waybar/`      |
 | `wofi`        | `~/.config/wofi/`        |
-| `zed`         | `~/.config/zed/`         |
 | `zellij`      | `~/.config/zellij/`      |
