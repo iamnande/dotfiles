@@ -1,48 +1,64 @@
+# yeah, no. thanks though.
 set -g fish_greeting
 
-# auto-launch hyprland via uwsm on tty1 login
+# ludicrous speed! now!!!
 if status is-login && test (tty) = /dev/tty1
     exec uwsm start hyprland.desktop
 end
 
+# claim your fighter! (it's helix atm)
 set -gx EDITOR hx
-
-# the path is fixed. 1password does not move it. auth and signing both depend on it.
-# change agents, change this line.
-set -gx SSH_AUTH_SOCK ~/.1password/agent.sock
-
-fnm env --use-on-cd --shell fish | source
-
 fish_add_path $HOME/.local/bin
 
-if status is-interactive && not set -q ZELLIJ
-    zellij attach -c mhq
-end
+# okay, so like - friends don't let friends distribute their identity across
+# machines.. or really, anywhere outside a secure vault.
+#
+# here we're using 1password agent forwarding to make sure <me> is kept locked
+# away in a vault.
+set -gx SSH_AUTH_SOCK ~/.1password/agent.sock
 
-function k --wraps kubectl --description kubectl
-    kubectl $argv
-end
-
-function kns --wraps kubens --description kubens
-    kubens $argv
-end
-
-function ktx --wraps kubectx --description kubectx
-    kubectx $argv
-end
-
+# my (current) ride or die
 function hx --wraps helix --description helix
     helix $argv
 end
 
+# we don't talk about that dark place over there - where YAML goes to die.
+function k --wraps kubectl --description k8s
+    kubectl $argv
+end
+
+function kns --wraps kubens --description "kube namespace"
+    kubens $argv
+end
+
+function ktx --wraps kubectx --description "kube context"
+    kubectx $argv
+end
+
+# release the files
+function ls --wraps eza --description "list the files"
+    eza -lh --group-directories-first --time-style=long-iso --git
+end
+
+# ermergerhd... make the damn dirs
 function mkd --wraps mkdir --description "no really, make the dirs"
     mkdir -p $argv
 end
 
+# go make some trees, some happy little trees
+# (if we're using tre, we have done messed up ay-ay-ron)
 function tre --description "happy little trees"
-    tree -aC -I .git $argv | less -FRNX
+    eza --tree --level=2
 end
 
+# like, it's just a lot of letters jan. "zellij" is super cute and oui french -
+# ain't nobody got time for all that.
 function z --wraps zellij --description zellij
     zellij $argv
+end
+
+# n: i know kung-fu.
+# m: show me.
+if status is-interactive && not set -q ZELLIJ
+    z a -c mhq
 end
