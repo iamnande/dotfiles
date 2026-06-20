@@ -6,17 +6,6 @@ if status is-login && test (tty) = /dev/tty1
     exec uwsm start hyprland.desktop
 end
 
-# claim your fighter! (it's helix atm)
-set -gx EDITOR hx
-fish_add_path $HOME/.local/bin
-
-# okay, so like - friends don't let friends distribute their identity across
-# machines.. or really, anywhere outside a secure vault.
-#
-# here we're using 1password agent forwarding to make sure <me> is kept locked
-# away in a vault.
-set -gx SSH_AUTH_SOCK ~/.1password/agent.sock
-
 # my (current) ride or die
 function hx --wraps helix --description helix
     helix $argv
@@ -57,8 +46,19 @@ function z --wraps zellij --description zellij
     zellij $argv
 end
 
+# claim your fighter! (helix atm)
+set -gx EDITOR hx
+
+# okay, so like - friends don't let friends distribute their identity across
+# machines.. or really, anywhere outside a secure vault.
+#
+# here we're using 1password agent forwarding to make sure <me> is kept locked
+# away in a vault.
+set -gx SSH_AUTH_SOCK ~/.1password/agent.sock
+
 # n: i know kung-fu.
 # m: show me.
+fish_add_path $HOME/.local/bin
 if status is-interactive && not set -q ZELLIJ
     z a -c mhq
 end

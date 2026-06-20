@@ -29,9 +29,6 @@ language-id = "terraform"
 name = "protobuf"
 language-servers = ["buf"]
 
-[[language-server.buf]]
-args = ["lsp", "serve", "--timeout", "30"]
-
 [[language]]
 name = "tfvars"
 language-servers = [ "terraform-ls" ]

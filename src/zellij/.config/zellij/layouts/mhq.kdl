@@ -12,7 +12,7 @@ layout {
     // setup
     tab name="setup" cwd="/home/iamnande/dotfiles" {
         pane stacked=true {
-            pane name="editor" command="hx"
+            pane name="editor" command="helix"
             pane name="shell"
         }
     }
@@ -28,7 +28,7 @@ layout {
     // tardis build
     tab name="build" cwd="/home/iamnande/tardis" {
         pane stacked=true {
-            pane name="editor" command="hx"
+            pane name="editor" command="helix"
             pane name="shell"
         }
     }
