@@ -17,6 +17,14 @@ layout {
         }
     }
 
+    // way
+    tab name="way" cwd="/home/iamnande/way" {
+        pane stacked=true {
+            pane name="editor" command="helix" expanded=true focus=true
+            pane name="shell"
+        }
+    }
+
     // website
     tab name="website" cwd="/home/iamnande/iamnande" {
         pane stacked=true {
@@ -31,6 +39,14 @@ layout {
 
     // homelab
     tab name="homelab" cwd="/home/iamnande/homelab" {
+        pane stacked=true {
+            pane name="editor" command="helix" expanded=true focus=true
+            pane name="shell"
+        }
+    }
+
+    // rawr
+    tab name="rawr" cwd="/home/iamnande/rawr" {
         pane stacked=true {
             pane name="editor" command="helix" expanded=true focus=true
             pane name="shell"
