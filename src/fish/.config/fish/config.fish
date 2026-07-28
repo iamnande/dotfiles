@@ -40,27 +40,17 @@ function tre --description "happy little trees"
     eza --tree --level=2
 end
 
+# my alliegance is to the republic... to DEMOCRACY!
 # like, it's just a lot of letters jan. "zellij" is super cute and oui french -
 # ain't nobody got time for all that.
 function z --wraps zellij --description "workspace management"
-    test (count $argv) -eq 1
-    or begin
-        echo "usage: z <ws>"
-        return 1
-    end
-
-    set -l ws $argv[1]
-
-    if contains -- $ws (zellij list-sessions --short)
-        zellij attach $ws
-    else
-        zellij --session $ws \
-            --new-session-with-layout $ws
-    end
+    zellij $argv
 end
+alias mhq='z -d -l mhq -n mhq a -c mhq'
+alias tardis='z -d -l tardis -n tardis a -c tardis'
 
 # claim your fighter! (helix atm)
-set -gx EDITOR hx
+set -gx EDITOR helix
 
 # okay, so like - friends don't let friends distribute their identity across
 # machines.. or really, anywhere outside a secure vault.
@@ -71,7 +61,8 @@ set -gx SSH_AUTH_SOCK ~/.1password/agent.sock
 
 # n: i know kung-fu.
 # m: show me.
+fish_add_path /home/linuxbrew/.linuxbrew/bin
 fish_add_path $HOME/.local/bin
 if status is-interactive && not set -q ZELLIJ
-    z mhq
+    mhq
 end
