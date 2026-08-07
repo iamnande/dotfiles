@@ -4,6 +4,10 @@ auto-format = true
 formatter = {command = "prettier", args = ["--prose-wrap", "always", "--parser", "markdown"]}
 
 [[language]]
+name = "make"
+indent = { tab-width = 4, unit = "\t" }
+
+[[language]]
 name = "go"
 auto-format = true
 formatter = { command = "goimports" }
@@ -11,32 +15,6 @@ language-servers = ["gopls", "golangci-lint-langserver"]
 
 [language-server.rust-analyzer.config.check]
 command = "clippy"
-
-[language-server.sql-language-server]
-command = "sql-language-server"
-args = ["up", "--method", "stdio"]
-
-[[language]]
-name = "sql"
-language-servers = [ "sql-language-server" ]
-
-[[language]]
-name = "hcl"
-language-servers = [ "terraform-ls" ]
-language-id = "terraform"
-
-[[language]]
-name = "protobuf"
-language-servers = ["buf"]
-
-[[language]]
-name = "tfvars"
-language-servers = [ "terraform-ls" ]
-language-id = "terraform-vars"
-
-[language-server.terraform-ls]
-command = "terraform-ls"
-args = ["serve"]
 
 [language-server.yaml-language-server.config.yaml]
 format = { enable = true }

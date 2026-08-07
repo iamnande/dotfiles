@@ -14,6 +14,9 @@ select = "underline"
 [editor.inline-diagnostics]
 cursor-line = "error"
 
+[editor.whitespace]
+render = { space = "all", tab = "all", newline = "none", nbsp = "none" }
+
 [editor.statusline]
 right = ["total-line-numbers", "diagnostics", "selections", "position", "file-type"]
 
