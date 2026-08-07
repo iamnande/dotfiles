@@ -17,6 +17,9 @@ cursor-line = "error"
 [editor.whitespace]
 render = { space = "all", tab = "all", newline = "none", nbsp = "none" }
 
+[editor.file-picker]
+hidden = false
+
 [editor.statusline]
 right = ["total-line-numbers", "diagnostics", "selections", "position", "file-type"]
 
