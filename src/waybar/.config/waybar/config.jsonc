@@ -1,11 +1,52 @@
 {
   "position": "top",
   "modules-left": ["hyprland/workspaces"],
-  "modules-center": ["hyprland/window"],
-  "modules-right": ["cpu", "memory", "clock"],
+  "modules-center": ["custom/hostname"],
+  "modules-right": ["clock", "group/dashboard"],
+  "hyprland/workspaces": {
+    "persistent-workspaces": {
+      "*": [1, 2, 3, 4, 5, 6]
+    }
+  },
+  "custom/hostname": {
+    "exec": "uname -n",
+    "interval": "once",
+    "format": "  {}",
+    "tooltip": false
+  },
+  "group/dashboard": {
+    "orientation": "inherit",
+    "drawer": {
+      "transition-duration": 300,
+      "children-class": "dashboard-drawer",
+      "transition-left-to-right": false
+    },
+    "modules": ["custom/dashboard-toggle", "cpu", "memory", "disk", "network", "pulseaudio"]
+  },
+  "custom/dashboard-toggle": {
+    "format": "󰕮",
+    "tooltip-format": "Click for system dashboard"
+  },
+  "disk": {
+    "format": "  {percentage_used}% used ({free} free)",
+    "path": "/",
+    "tooltip-format": "{used} used / {total} total on {path}\n{percentage_free}% free"
+  },
+  "cpu": {
+    "format": "CPU {usage}%",
+    "tooltip": false
+  },
+  "memory": {
+    "format": "MEM {percentage}%",
+    "tooltip-format": "{used:0.1f}GB / {total:0.1f}GB used"
+  },
   "clock": {
-    "format": "<span foreground='#f5c2e7'>   </span>{:%a %d %H:%M}",
-    "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>"
+    "format": "<span foreground='#f5c2e7'>   </span>{:%H:%M}",
+    "format-alt": "<span foreground='#f5c2e7'>   </span>{:%Y-%m-%dT%H:%M:%S%Ez}",
+    "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>",
+    "actions": {
+      "on-click": "mode"
+    }
   },
   "battery": {
     "states": {
@@ -24,17 +65,15 @@
   },
   "network": {
     "format-wifi": "<span size='13000' foreground='#f5e0dc'>  </span>{essid}",
-    "format-ethernet": "<span size='13000' foreground='#f5e0dc'>󰤭  </span> Disconnected",
+    "format-ethernet": "<span size='13000' foreground='#f5e0dc'>  </span>{ifname}",
     "format-linked": "{ifname} (No IP) ",
     "format-disconnected": "<span size='13000' foreground='#f5e0dc'>  </span>Disconnected",
-    "tooltip-format-wifi": "Signal Strenght: {signalStrength}%"
+    "tooltip-format-wifi": "Signal Strength: {signalStrength}%",
+    "tooltip-format-ethernet": "{ifname}: {ipaddr}/{cidr}"
   },
   "pulseaudio": {
-      "format": "{icon}  {volume}%",
-      "format-muted": "",
-      "format-icons": {
-          "default": ["", "", " "]
-      },
+      "format": "VOL {volume}%",
+      "format-muted": "VOL muted",
       "on-click": "pavucontrol"
   }
 }
