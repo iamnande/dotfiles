@@ -8,11 +8,15 @@ default_layout "mhq"
 keybinds {
 	normal {
 		unbind "Ctrl g"
-		bind "Ctrl Space" { SwitchToMode "locked"; }
+		unbind "Ctrl h"
+		bind "Alt g" { SwitchToMode "locked"; }
 	}
 	locked {
 		unbind "Ctrl g"
-		bind "Ctrl Space" { SwitchToMode "normal"; }
+		bind "Alt g" { SwitchToMode "normal"; }
+	}
+	pane {
+		bind "m" { SwitchToMode "Move"; }
 	}
 }
 
