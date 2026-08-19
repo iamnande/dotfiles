@@ -26,6 +26,7 @@ src/
 
 | component     | target                   |
 | ------------- | ------------------------ |
+| `agents`      | global agent instructions |
 | `backgrounds` | `~/.config/backgrounds/` |
 | `bin`         | `~/.local/bin/`          |
 | `fish`        | `~/.config/fish/`        |

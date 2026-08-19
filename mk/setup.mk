@@ -21,6 +21,10 @@ install:
 backgrounds: COMPONENT=backgrounds
 backgrounds: install ## setup: backgrounds (weeb)
 
+.PHONY: agents
+agents: COMPONENT=agents
+agents: install ## setup: global agent instructions
+
 .PHONY: bin
 bin: COMPONENT=bin
 bin: install ## setup: command-line utilities
