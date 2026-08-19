@@ -10,25 +10,25 @@ layout {
     }
 
     // dotfiles
-    tab name="dotfiles" cwd="/home/iamnande/dotfiles" {
+    tab name="dotfiles" cwd="$HOME/dotfiles" {
         pane stacked=true {
-            pane name="editor" command="helix" expanded=true focus=true
+            pane name="editor" command="hx" expanded=true focus=true
             pane name="shell"
         }
     }
 
     // way
-    tab name="way" cwd="/home/iamnande/way" {
+    tab name="way" cwd="$HOME/way" {
         pane stacked=true {
-            pane name="editor" command="helix" expanded=true focus=true
+            pane name="editor" command="hx" expanded=true focus=true
             pane name="shell"
         }
     }
 
     // website
-    tab name="website" cwd="/home/iamnande/iamnande" {
+    tab name="website" cwd="$HOME/iamnande" {
         pane stacked=true {
-            pane name="editor" command="helix" expanded=true focus=true
+            pane name="editor" command="hx" expanded=true focus=true
             pane name="shell"
             pane name="pnpm dev" start_suspended=true {
                 command "pnpm"
@@ -38,17 +38,17 @@ layout {
     }
 
     // homelab
-    tab name="homelab" cwd="/home/iamnande/homelab" {
+    tab name="homelab" cwd="$HOME/homelab" {
         pane stacked=true {
-            pane name="editor" command="helix" expanded=true focus=true
+            pane name="editor" command="hx" expanded=true focus=true
             pane name="shell"
         }
     }
 
     // rawr
-    tab name="rawr" cwd="/home/iamnande/rawr" {
+    tab name="rawr" cwd="$HOME/rawr" {
         pane stacked=true {
-            pane name="editor" command="helix" expanded=true focus=true
+            pane name="editor" command="hx" expanded=true focus=true
             pane name="shell"
         }
     }

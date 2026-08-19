@@ -3,7 +3,6 @@ show_startup_tips false
 
 session_name "mhq"
 attach_to_session true
-default_layout "mhq"
 
 keybinds {
 	normal {
@@ -25,4 +24,3 @@ ui {
         rounded_corners true
     }
 }
-

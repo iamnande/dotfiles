@@ -6,11 +6,6 @@ if status is-login && test (tty) = /dev/tty1
     exec uwsm start hyprland.desktop
 end
 
-# my (current) ride or die
-function hx --wraps helix --description helix
-    helix $argv
-end
-
 # we don't talk about that dark place over there - where YAML goes to die.
 function k --wraps kubectl --description k8s
     kubectl $argv
@@ -46,18 +41,27 @@ end
 function z --wraps zellij --description "workspace management"
     zellij $argv
 end
-alias mhq='z -d -l mhq -n mhq a -c mhq'
+if test -d "$HOME/way"
+    alias mhq='z -d -l mhq -n mhq a -c mhq'
+else
+    alias mhq='z -d -n mhq a -c mhq'
+end
 alias tardis='z -d -l tardis -n tardis a -c tardis'
 
 # claim your fighter! (helix atm)
-set -gx EDITOR helix
+set -gx EDITOR hx
 
 # okay, so like - friends don't let friends distribute their identity across
 # machines.. or really, anywhere outside a secure vault.
 #
 # here we're using 1password agent forwarding to make sure <me> is kept locked
 # away in a vault.
-set -gx SSH_AUTH_SOCK ~/.1password/agent.sock
+set -l onepassword_agent ~/.1password/agent.sock
+if set -q SSH_CONNECTION; and test -S "$SSH_AUTH_SOCK"; and test "$SSH_AUTH_SOCK" != "$onepassword_agent"
+    mkdir -p ~/.1password
+    ln -sfn "$SSH_AUTH_SOCK" "$onepassword_agent"
+end
+set -gx SSH_AUTH_SOCK "$onepassword_agent"
 
 # n: i know kung-fu.
 # m: show me.

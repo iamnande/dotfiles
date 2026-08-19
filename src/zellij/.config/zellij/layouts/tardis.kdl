@@ -10,7 +10,7 @@ layout {
     }
 
     // tardis plan
-    tab name="plan" cwd="/home/iamnande/tardis" {
+    tab name="plan" cwd="$HOME/tardis" {
         pane stacked=true {
             pane name="plan"
             pane name="shell"
@@ -18,16 +18,16 @@ layout {
     }
 
     // tardis build (+vcs via lazygit)
-    tab name="build" cwd="/home/iamnande/tardis" {
+    tab name="build" cwd="$HOME/tardis" {
         pane stacked=true {
-            pane name="editor" command="helix"
+            pane name="editor" command="hx"
             pane name="shell"
         }
     }
 
     // tardis run
     // TODO: once commands are added, start_suspended=true
-    tab name="run" cwd="/home/iamnande/tardis" {
+    tab name="run" cwd="$HOME/tardis" {
         pane stacked=true {
             pane name="svc / worker"
         }
