@@ -1,5 +1,6 @@
 theme "everforest-dark"
 show_startup_tips false
+default_shell "fish"
 
 session_name "mhq"
 attach_to_session true
