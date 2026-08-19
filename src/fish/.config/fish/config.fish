@@ -6,6 +6,13 @@ if status is-login && test (tty) = /dev/tty1
     exec uwsm start hyprland.desktop
 end
 
+# Arch exposes Helix as `helix`; Homebrew provides the canonical `hx`.
+if not type -q hx; and type -q helix
+    function hx --wraps helix --description helix
+        helix $argv
+    end
+end
+
 # we don't talk about that dark place over there - where YAML goes to die.
 function k --wraps kubectl --description k8s
     kubectl $argv
