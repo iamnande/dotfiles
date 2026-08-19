@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+# Use the real Wayland clipboard when one is available. In a terminal
+# multiplexer or headless session, relay the copy through OSC 52 instead.
+if [[ -n "${WAYLAND_DISPLAY:-}" && -x /usr/bin/wl-copy && -z "${ZELLIJ:-}${SSH_CONNECTION:-}${SSH_TTY:-}${MOSH_IP:-}" ]]; then
+	exec /usr/bin/wl-copy "$@"
+fi
+
+if (( $# )); then
+	printf 'wl-copy: options are not supported by the OSC 52 relay\n' >&2
+	exit 2
+fi
+
+if [[ ! -w /dev/tty ]]; then
+	printf 'wl-copy: no Wayland clipboard or terminal is available\n' >&2
+	exit 1
+fi
+
+{
+	printf '\033]52;c;'
+	base64 | tr -d '\r\n'
+	printf '\033\\'
+} > /dev/tty

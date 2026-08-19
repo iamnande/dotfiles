@@ -27,6 +27,7 @@ src/
 | component     | target                   |
 | ------------- | ------------------------ |
 | `backgrounds` | `~/.config/backgrounds/` |
+| `bin`         | `~/.local/bin/`          |
 | `fish`        | `~/.config/fish/`        |
 | `git`         | `~/`                     |
 | `helix`       | `~/.config/helix/`       |

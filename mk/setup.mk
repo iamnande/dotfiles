@@ -20,6 +20,11 @@ install:
 .PHONY: backgrounds
 backgrounds: COMPONENT=backgrounds
 backgrounds: install ## setup: backgrounds (weeb)
+
+.PHONY: bin
+bin: COMPONENT=bin
+bin: install ## setup: command-line utilities
+
 .PHONY: hypr
 hypr: COMPONENT=hypr
 hypr: install ## setup: hyprland (twm)
