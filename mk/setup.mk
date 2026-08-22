@@ -41,6 +41,14 @@ git: install ## setup: git (vcs)
 fish: COMPONENT=fish
 fish: install ## setup: fish (shell)
 
+.PHONY: fisher
+fisher: fish ## setup: fisher + fish plugins (tide, etc.)
+	@echo $(log) "installing fisher"
+	@fish -c 'functions -q fisher; or begin; curl -sL https://raw.githubusercontent.com/jorgebucaran/fisher/main/functions/fisher.fish | source; and fisher install jorgebucaran/fisher; end'
+	@echo $(log) "syncing fish plugins"
+	@fish -c 'fisher update'
+	@echo $(log) "if the prompt still looks bare, run: tide configure"
+
 .PHONY: kitty
 kitty: COMPONENT=kitty
 kitty:  install## setup: kitty (terminal)

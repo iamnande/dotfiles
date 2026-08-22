@@ -30,6 +30,7 @@ src/
 | `backgrounds` | `~/.config/backgrounds/` |
 | `bin`         | `~/.local/bin/`          |
 | `fish`        | `~/.config/fish/`        |
+| `fisher`      | fish plugins (fisher, tide, ...) |
 | `git`         | `~/`                     |
 | `helix`       | `~/.config/helix/`       |
 | `hypr`        | `~/.config/hypr/`        |

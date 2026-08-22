@@ -61,14 +61,29 @@ set -gx EDITOR hx
 # okay, so like - friends don't let friends distribute their identity across
 # machines.. or really, anywhere outside a secure vault.
 #
-# here we're using 1password agent forwarding to make sure <me> is kept locked
-# away in a vault.
+# 1password is the single ssh-agent source of truth, always reachable at this
+# same canonical socket path no matter the host or how the agent got here
+# (native app locally, forwarded over ssh remotely). native socket location
+# differs per platform, so resolve that first.
 set -l onepassword_agent ~/.1password/agent.sock
-if set -q SSH_CONNECTION; and test -S "$SSH_AUTH_SOCK"; and test "$SSH_AUTH_SOCK" != "$onepassword_agent"
-    mkdir -p ~/.1password
-    ln -sfn "$SSH_AUTH_SOCK" "$onepassword_agent"
+set -l onepassword_source ~/.1password/agent.sock
+if set -q SSH_CONNECTION
+    set onepassword_source $SSH_AUTH_SOCK
+else if test (uname) = Darwin
+    set onepassword_source "$HOME/Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock"
 end
-set -gx SSH_AUTH_SOCK "$onepassword_agent"
+
+if test -S "$onepassword_source"; and test "$onepassword_source" != "$onepassword_agent"
+    mkdir -p ~/.1password
+    ln -sfn "$onepassword_source" "$onepassword_agent"
+end
+
+# only point at it if it actually resolves to a live socket - a dead path
+# here silently breaks every ssh/git-signing call, so leave SSH_AUTH_SOCK
+# alone rather than clobbering it with something unusable.
+if test -S "$onepassword_agent"
+    set -gx SSH_AUTH_SOCK "$onepassword_agent"
+end
 
 # n: i know kung-fu.
 # m: show me.
