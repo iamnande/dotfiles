@@ -31,10 +31,10 @@ src/
 | `bin`         | `~/.local/bin/`          |
 | `fish`        | `~/.config/fish/`        |
 | `fisher`      | fish plugins (fisher, tide, ...) |
+| `ghostty`     | `~/.config/ghostty/`     |
 | `git`         | `~/`                     |
 | `helix`       | `~/.config/helix/`       |
 | `hypr`        | `~/.config/hypr/`        |
-| `kitty`       | `~/.config/kitty/`       |
 | `waybar`      | `~/.config/waybar/`      |
 | `wofi`        | `~/.config/wofi/`        |
 | `zellij`      | `~/.config/zellij/`      |

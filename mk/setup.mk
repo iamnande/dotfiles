@@ -49,9 +49,9 @@ fisher: fish ## setup: fisher + fish plugins (tide, etc.)
 	@fish -c 'fisher update'
 	@echo $(log) "if the prompt still looks bare, run: tide configure"
 
-.PHONY: kitty
-kitty: COMPONENT=kitty
-kitty:  install## setup: kitty (terminal)
+.PHONY: ghostty
+ghostty: COMPONENT=ghostty
+ghostty: install ## setup: ghostty (terminal)
 
 .PHONY: helix
 helix: COMPONENT=helix
