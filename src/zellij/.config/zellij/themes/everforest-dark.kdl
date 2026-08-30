@@ -34,7 +34,7 @@ themes {
         }
         table_title {
             base 167 192 128
-            background 0
+            background 75 86 92
             emphasis_0 255 158 100
             emphasis_1 131 192 146
             emphasis_2 167 192 128
@@ -74,7 +74,7 @@ themes {
         }
         frame_selected {
             base 167 192 128
-            background 0
+            background 75 86 92
             emphasis_0 255 158 100
             emphasis_1 131 192 146
             emphasis_2 214 153 182
@@ -82,7 +82,7 @@ themes {
         }
         frame_highlight {
             base 255 158 100
-            background 0
+            background 75 86 92
             emphasis_0 214 153 182
             emphasis_1 255 158 100
             emphasis_2 255 158 100
@@ -90,7 +90,7 @@ themes {
         }
         exit_code_success {
             base 167 192 128
-            background 0
+            background 75 86 92
             emphasis_0 131 192 146
             emphasis_1 75 86 92
             emphasis_2 214 153 182
@@ -98,7 +98,7 @@ themes {
         }
         exit_code_error {
             base 230 126 128
-            background 0
+            background 75 86 92
             emphasis_0 219 188 127
             emphasis_1 0
             emphasis_2 0
