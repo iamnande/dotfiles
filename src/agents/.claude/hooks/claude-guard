@@ -1,0 +1,415 @@
+#!/usr/bin/python3
+"""claude-guard: PreToolUse hook for Bash and Monitor commands.
+
+exits 2, a hard block that wins over allow rules, for:
+- NGROK_ENV set to prod or stage, in any form
+- branch deletes, local or remote
+- pushes outside github.com/ngrok-private, and rewiring where remotes point
+- nd ctl, nd db (except lint), publishing, git worktree remove --force
+- sudo and friends
+
+anything it can't parse or resolve is blocked too (fail closed). these are
+text checks, not a sandbox: a script file's contents are invisible here.
+"""
+import json
+import os
+import re
+import shlex
+import subprocess
+import sys
+
+HOME = os.path.expanduser("~")
+MAX_DEPTH = 8
+
+PUSH_OK = re.compile(r"^(?:git@github\.com:|ssh://git@github\.com/|https://github\.com/)ngrok-private/[\w.-]+/?$", re.I)
+ENV_RES = [
+    # NGROK_ENV=prod, export/env forms, ['NGROK_ENV']='stage', "NGROK_ENV": "prod"
+    re.compile(r"NGROK_ENV[\"']?\s*\]?\s*[=:,]\s*[\"']?\s*(?:prod|stage)", re.I),
+    # a value the guard can't see: NGROK_ENV=$X, NGROK_ENV=`x`
+    re.compile(r"NGROK_ENV\s*=\s*[\"']?\s*[$`]"),
+    # fish: set -gx NGROK_ENV prod
+    re.compile(r"\bset\b[^;&|\n]*\bNGROK_ENV\s+[\"']?\s*(?:prod|stage|[$`(])", re.I),
+]
+URL_KEY = re.compile(r"^(?:remote\..+\.(?:url|pushurl)|url\..+\.(?:insteadof|pushinsteadof)|remote\.pushdefault|branch\..+\.(?:remote|pushremote))$", re.I)
+ASSIGN = re.compile(r"^[A-Za-z_][A-Za-z0-9_]*=")
+HEREDOC = re.compile(r"<<(-?)\s*([\"']?)([A-Za-z_][\w-]*)\2")
+SHELL_FED = re.compile(r"(?:^|[\s;&|(])(?:\S*/)?(?:bash|sh|zsh|fish|dash|ksh|eval|source)(?=\s|$)")
+PUNCT = set("();<>|&\n")
+
+SHELLS = {"bash", "sh", "zsh", "fish", "dash", "ksh", "mksh", "ash"}
+ROOT = {"sudo", "doas", "su", "pkexec", "run0"}
+# wrapper -> (short options that take an argument, positional args before the command)
+WRAPPERS = {
+    "command": ("", 0), "builtin": ("", 0), "exec": ("a", 0), "nohup": ("", 0), "time": ("fo", 0),
+    "noglob": ("", 0), "nice": ("n", 0), "ionice": ("cnp", 0), "stdbuf": ("ioe", 0), "timeout": ("sk", 1),
+    "setsid": ("", 0), "chrt": ("", 1), "taskset": ("", 1), "xargs": ("IiLlnPdEsa", 0), "unbuffer": ("", 0),
+    "npx": ("p", 0), "pnpx": ("", 0), "bunx": ("", 0),
+}
+PUBLISH = {
+    "npm": {"publish"}, "pnpm": {"publish"}, "yarn": {"publish"}, "bun": {"publish"}, "cargo": {"publish"},
+    "poetry": {"publish"}, "uv": {"publish"}, "twine": {"upload"}, "gem": {"push"}, "helm": {"push"},
+    "docker": {"push"}, "podman": {"push"}, "buildah": {"push"}, "crane": {"push", "copy"}, "skopeo": {"copy"},
+    "goreleaser": {"release", "publish"}, "vsce": {"publish"}, "ovsx": {"publish"},
+}
+# git builtins can't be shadowed by aliases, so only other subcommands need an alias lookup
+GIT_BUILTINS = set("""
+add am annotate apply archive bisect blame branch bundle cat-file check-ignore checkout cherry cherry-pick
+clean clone commit config count-objects credential describe diff diff-tree difftool fast-export fast-import
+fetch filter-branch for-each-ref format-patch fsck gc grep hash-object help http-push init interpret-trailers
+log ls-files ls-remote ls-tree maintenance merge merge-base mergetool mv name-rev notes prune pull push
+range-diff rebase reflog remote repack replace request-pull reset restore rev-list rev-parse revert rm
+send-pack shortlog show show-branch show-ref sparse-checkout stash status submodule switch symbolic-ref tag
+update-index update-ref var verify-commit version whatchanged worktree
+""".split())
+
+
+class Blocked(Exception):
+    pass
+
+
+def short_flags(a):
+    """letters of a short-option cluster like -fu, or '' for anything else."""
+    return a[1:] if a.startswith("-") and not a.startswith("--") else ""
+
+
+def resolve(cwd, path):
+    if cwd is None or path == "-":
+        return None
+    path = re.sub(r"^~(?=/|$)", HOME, path).replace("${HOME}", HOME).replace("$HOME", HOME)
+    if any(c in path for c in "$`*?"):
+        return None
+    return os.path.normpath(os.path.join(cwd, path))
+
+
+def git(args, cwd, gopts):
+    if cwd is None:
+        raise Blocked("a git command in a directory the guard can't resolve")
+    p = subprocess.run(["git", *gopts, *args], cwd=cwd, capture_output=True, text=True, timeout=10)
+    return p.stdout.strip() if p.returncode == 0 else None
+
+
+def substitutions(text):
+    """bodies of $(...), <(...), >(...), balanced on parens."""
+    out = []
+    for m in re.finditer(r"[$<>]\(", text):
+        depth, j = 1, m.end()
+        while j < len(text) and depth:
+            depth += {"(": 1, ")": -1}.get(text[j], 0)
+            j += 1
+        out.append(text[m.end():j - 1])
+    return out
+
+
+def split_heredocs(text):
+    """drop heredoc bodies from the text; return bodies fed to a shell for checking."""
+    lines, kept, fed, i = text.split("\n"), [], [], 0
+    while i < len(lines):
+        line = lines[i]
+        kept.append(line)
+        i += 1
+        for m in HEREDOC.finditer(line):
+            if m.start() > 0 and line[m.start() - 1] == "<":
+                continue  # <<< here-string
+            body = []
+            while i < len(lines):
+                cur = lines[i]
+                i += 1
+                if (cur.lstrip("\t") if m.group(1) else cur) == m.group(3):
+                    break
+                body.append(cur)
+            if SHELL_FED.search(line):
+                fed.append("\n".join(body))
+    return "\n".join(kept), fed
+
+
+def commands(text):
+    """yield (words, redirects, separator before) per simple command."""
+    lex = shlex.shlex(text, posix=True, punctuation_chars="();<>|&\n")
+    lex.whitespace = " \t\r"
+    lex.whitespace_split = True
+    lex.commenters = ""
+    toks = list(lex)
+    words, redirs, sep, i = [], [], None, 0
+    while i < len(toks):
+        t = toks[i]
+        if t and set(t) <= PUNCT:
+            if "<" in t or ">" in t:
+                redirs.append((t, toks[i + 1] if i + 1 < len(toks) else ""))
+                i += 2
+                continue
+            yield words, redirs, sep
+            words, redirs, sep = [], [], t
+        else:
+            words.append(t)
+        i += 1
+    yield words, redirs, sep
+
+
+def check(text, cwd, depth=0):
+    if depth > MAX_DEPTH:
+        raise Blocked("a command nested too deep to check")
+    for rx in ENV_RES:
+        if rx.search(text):
+            raise Blocked("NGROK_ENV set to prod or stage (or to a value the guard can't see)")
+    for inner in re.findall(r"`([^`]*)`", text) + substitutions(text):
+        check(inner, cwd, depth + 1)
+    text, fed = split_heredocs(text)
+    for body in fed:
+        check(body, cwd, depth + 1)
+    prev = None
+    for words, redirs, sep in commands(text.replace("`", " ")):
+        if words:
+            cwd = check_simple(words, redirs, sep, prev, cwd, depth)
+            prev = words
+    return cwd
+
+
+def unwrap(rest, argopts, npos):
+    i = 0
+    while i < len(rest) and rest[i].startswith("-") and rest[i] != "-":
+        if rest[i] == "--":
+            i += 1
+            break
+        if len(rest[i]) == 2 and rest[i][1] in argopts:
+            i += 1
+        i += 1
+    return rest[i + npos:]
+
+
+def shell_script(words):
+    """the -c script of a shell invocation, or None (stdin or a script file)."""
+    i = 1
+    while i < len(words):
+        w = words[i]
+        if w in ("-c", "--command") or "c" in short_flags(w):
+            return words[i + 1] if i + 1 < len(words) else ""
+        if w.startswith("--command="):
+            return w.split("=", 1)[1]
+        if w in ("-o", "-O", "+o", "+O"):
+            i += 1
+        elif not w.startswith(("-", "+")):
+            return None
+        i += 1
+    return None
+
+
+def check_simple(words, redirs, sep, prev, cwd, depth):
+    words = list(words)
+    while True:
+        while words and ASSIGN.match(words[0]):
+            words.pop(0)
+        if not words:
+            return cwd
+        prog = os.path.basename(words[0])
+        if prog in ROOT:
+            raise Blocked(f"{prog}: agents don't run commands as root")
+        if prog in SHELLS:
+            script = shell_script(words)
+            if script is not None:
+                check(script, cwd, depth + 1)
+            elif prev and sep == "|" and os.path.basename(prev[0]) in ("echo", "printf"):
+                check(" ".join(prev[1:]), cwd, depth + 1)
+            for r, v in redirs:
+                if r == "<<<":
+                    check(v, cwd, depth + 1)
+            return cwd
+        if prog in ("eval", "watch"):
+            check(" ".join(unwrap(words[1:], "n", 0) if prog == "watch" else words[1:]), cwd, depth + 1)
+            return cwd
+        if prog == "env":
+            rest = words[1:]
+            while rest and (rest[0].startswith("-") or ASSIGN.match(rest[0])):
+                if rest[0] in ("-S", "--split-string") or rest[0].startswith("--split-string="):
+                    check(" ".join(rest[1:]), cwd, depth + 1)
+                    return cwd
+                rest = rest[2:] if rest[0] in ("-u", "-C", "--unset", "--chdir") else rest[1:]
+            words = rest
+            continue
+        if prog in WRAPPERS:
+            words = unwrap(words[1:], *WRAPPERS[prog])
+            continue
+        if prog == "flock":
+            rest = unwrap(words[1:], "wE", 0)[1:]
+            if rest[:1] in (["-c"], ["--command"]):
+                check(" ".join(rest[1:]), cwd, depth + 1)
+                return cwd
+            words = rest
+            continue
+        if prog == "direnv" and words[1:2] == ["exec"]:
+            words = words[3:]
+            continue
+        if prog == "devbox" and words[1:2] == ["run"]:
+            words = words[2:]
+            continue
+        if prog == "mise" and words[1:2] in (["exec"], ["x"]):
+            words = words[words.index("--") + 1:] if "--" in words else words[2:]
+            continue
+        if prog in ("npm", "pnpm", "yarn", "bun") and words[1:2] in (["exec"], ["dlx"], ["x"]):
+            words = unwrap(words[2:], "", 0)
+            continue
+        if prog == "nix" and ("-c" in words or "--command" in words):
+            i = words.index("-c") if "-c" in words else words.index("--command")
+            words = words[i + 1:]
+            continue
+        break
+    args = words[1:]
+    if prog in ("cd", "pushd"):
+        return resolve(cwd, args[0] if args else "~")
+    if prog == "git":
+        check_git(args, cwd, depth)
+    elif prog == "gh":
+        check_gh(args)
+    elif prog == "nd":
+        check_nd(args)
+    check_publish(prog, args)
+    return cwd
+
+
+def check_git(args, cwd, depth):
+    if depth > MAX_DEPTH:
+        raise Blocked("a git alias nested too deep to check")
+    gopts, i = [], 0
+    while i < len(args) and args[i].startswith("-"):
+        a = args[i]
+        if a == "-C":
+            cwd = resolve(cwd, args[i + 1] if i + 1 < len(args) else "")
+            i += 2
+        elif a in ("-c", "--config-env") or a.startswith("--config-env="):
+            kv = a.split("=", 1)[1] if "=" in a else (args[i + 1] if i + 1 < len(args) else "")
+            if URL_KEY.match(kv.split("=", 1)[0]):
+                raise Blocked("git -c overriding where a remote points")
+            i += 1 if "=" in a else 2
+        elif a in ("--git-dir", "--work-tree", "--namespace"):
+            gopts += args[i:i + 2]
+            i += 2
+        else:
+            if a.startswith(("--git-dir=", "--work-tree=", "--namespace=")):
+                gopts.append(a)
+            i += 1
+    if i >= len(args):
+        return
+    sub, rest = args[i], args[i + 1:]
+    if sub not in GIT_BUILTINS:
+        alias = git(["config", "--get", f"alias.{sub}"], cwd, gopts)
+        if alias and alias.startswith("!"):
+            check(alias[1:] + " " + " ".join(map(shlex.quote, rest)), cwd, depth + 1)
+        elif alias:
+            check_git(shlex.split(alias) + rest, cwd, depth + 1)
+        return
+    if sub == "push":
+        check_push(rest, cwd, gopts)
+    elif sub in ("send-pack", "http-push"):
+        raise Blocked(f"git {sub}")
+    elif sub == "branch" and any(a == "--delete" or set(short_flags(a)) & set("dD") for a in rest):
+        raise Blocked("deleting a branch")
+    elif sub == "update-ref" and ("-d" in rest or "--stdin" in rest):
+        raise Blocked("deleting a ref")
+    elif sub == "remote" and rest[:1] and rest[0] in ("add", "set-url", "rename"):
+        raise Blocked(f"git remote {rest[0]}")
+    elif sub == "worktree" and rest[:1] == ["remove"] and any(a == "--force" or "f" in short_flags(a) for a in rest[1:]):
+        raise Blocked("git worktree remove --force")
+    elif sub == "config":
+        reading = {"--get", "--get-all", "--get-regexp", "--get-urlmatch", "--list", "-l", "get", "list"}
+        writing = {"--unset", "--unset-all", "--add", "--replace-all", "unset", "set"}
+        keys = [a for a in rest if not a.startswith("-") and a not in reading | writing]
+        if keys and URL_KEY.match(keys[0]) and not reading & set(rest) and (len(keys) > 1 or writing & set(rest)):
+            raise Blocked("changing where a git remote points")
+
+
+def check_push(rest, cwd, gopts):
+    repo, pos, i = None, [], 0
+    while i < len(rest):
+        a = rest[i]
+        if a == "--":
+            pos += rest[i + 1:]
+            break
+        if a in ("--delete", "--mirror", "--prune") or a.startswith(("--receive-pack", "--exec")) or "d" in short_flags(a):
+            raise Blocked("a push that deletes remote refs or runs a custom receive-pack")
+        if a.startswith("--repo="):
+            repo = a.split("=", 1)[1]
+        elif a in ("--repo", "-o", "--push-option"):
+            if a == "--repo":
+                repo = rest[i + 1] if i + 1 < len(rest) else ""
+            i += 1
+        elif not a.startswith("-"):
+            pos.append(a)
+        i += 1
+    if pos:
+        repo, pos = pos[0], pos[1:]
+    for ref in pos:
+        if ref.lstrip("+").startswith(":"):
+            raise Blocked("deleting a remote branch")
+    for url in push_urls(repo, cwd, gopts):
+        if not PUSH_OK.match(url):
+            raise Blocked(f"pushing to {url}, which is outside github.com/ngrok-private")
+
+
+def push_urls(repo, cwd, gopts):
+    if repo is None:
+        branch = git(["symbolic-ref", "--quiet", "--short", "HEAD"], cwd, gopts)
+        repo = ((branch and git(["config", f"branch.{branch}.pushRemote"], cwd, gopts))
+                or git(["config", "remote.pushDefault"], cwd, gopts)
+                or (branch and git(["config", f"branch.{branch}.remote"], cwd, gopts))
+                or "origin")
+    urls = git(["remote", "get-url", "--push", "--all", repo], cwd, gopts)
+    if urls is None:  # not a named remote: a URL or a path
+        if git(["config", "--get-regexp", r"^url\..*\.pushinsteadof$"], cwd, gopts):
+            raise Blocked("a push through pushInsteadOf rewrites the guard can't resolve")
+        urls = git(["ls-remote", "--get-url", repo], cwd, gopts) or repo
+    return urls.splitlines() or [repo]
+
+
+def check_gh(args):
+    pos = [a for a in args if not a.startswith("-")]
+    sub, sub2 = (pos + ["", ""])[:2]
+    if sub == "repo" and (sub2 in ("create", "fork", "rename", "delete") or (sub2 == "edit" and any(a.startswith("--visibility") for a in args))):
+        raise Blocked(f"gh repo {sub2}")
+    if sub == "release" and sub2 in ("create", "upload", "edit", "delete"):
+        raise Blocked(f"gh release {sub2} (publishing)")
+    if sub == "pr" and sub2 == "merge" and any(a == "-d" or a.startswith("--delete-branch") for a in args):
+        raise Blocked("gh pr merge --delete-branch")
+    if sub == "api":
+        joined = " ".join(args)
+        method = re.search(r"(?:-X|--method)[= ]?\s*(\w+)", joined)
+        if method and method.group(1).upper() == "DELETE" and "git/refs" in joined:
+            raise Blocked("deleting a branch through the GitHub API")
+        if re.search(r"(?:^|\s)(?:-f|-F|--field|--raw-field)[= ]?\s*[\"']?(?:visibility|private)=", joined) or "deleteRef" in joined:
+            raise Blocked("changing repo visibility or deleting refs through the GitHub API")
+
+
+def check_nd(args):
+    pos = [a for a in args if not a.startswith("-")]
+    if pos[:1] == ["ctl"]:
+        raise Blocked("nd ctl")
+    if pos[:1] == ["db"] and pos[1:2] != ["lint"]:
+        raise Blocked("nd db (only nd db lint is allowed)")
+    if "publish" in pos:
+        raise Blocked("nd publish")
+
+
+def check_publish(prog, args):
+    if prog in PUBLISH and set(args) & PUBLISH[prog]:
+        raise Blocked(f"{prog} publishing")
+    if prog in ("docker", "podman", "buildah") and "--push" in args:
+        raise Blocked(f"{prog} --push (publishing)")
+    if prog == "goreleaser" and not [a for a in args if not a.startswith("-")]:
+        raise Blocked("goreleaser (defaults to release)")
+
+
+def main():
+    try:
+        data = json.load(sys.stdin)
+        cmd = (data.get("tool_input") or {}).get("command") or ""
+        if cmd.strip():
+            check(cmd, data.get("cwd") or os.getcwd())
+    except Blocked as e:
+        print(f"claude-guard blocked this: {e}. this is a hard rule; don't retry it another way. hand the command to the user.", file=sys.stderr)
+        return 2
+    except Exception as e:
+        print(f"claude-guard couldn't check this command ({type(e).__name__}: {e}), so it's blocked. simplify it, or hand it to the user.", file=sys.stderr)
+        return 2
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

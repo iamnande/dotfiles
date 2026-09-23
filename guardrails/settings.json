@@ -1,0 +1,70 @@
+{
+  "env": {
+    "NGROK_ENV": "local"
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash|Monitor",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$HOME/.claude/hooks/claude-guard",
+            "timeout": 30
+          }
+        ]
+      }
+    ]
+  },
+  "permissions": {
+    "deny": [
+      "Bash(sudo *)",
+      "Bash(doas *)",
+      "Bash(*NGROK_ENV=prod*)",
+      "Bash(*NGROK_ENV=stage*)",
+      "Bash(git branch -d *)",
+      "Bash(git branch -D *)",
+      "Bash(git branch --delete *)",
+      "Bash(git push --delete *)",
+      "Bash(git push -d *)",
+      "Bash(git push * --delete *)",
+      "Bash(git push --mirror *)",
+      "Bash(git update-ref -d *)",
+      "Bash(git remote add *)",
+      "Bash(git remote set-url *)",
+      "Bash(git remote rename *)",
+      "Bash(git worktree remove --force *)",
+      "Bash(git worktree remove -f *)",
+      "Bash(gh repo create *)",
+      "Bash(gh repo fork *)",
+      "Bash(gh repo delete *)",
+      "Bash(gh repo rename *)",
+      "Bash(gh pr merge * --delete-branch*)",
+      "Bash(gh release create *)",
+      "Bash(gh release upload *)",
+      "Bash(nd ctl *)",
+      "Bash(npm publish*)",
+      "Bash(pnpm publish*)",
+      "Bash(yarn publish*)",
+      "Bash(cargo publish*)",
+      "Bash(docker push *)",
+      "Edit(~/.claude/settings.json)",
+      "Edit(~/.claude/settings.local.json)",
+      "Edit(~/.claude/hooks/**)",
+      "Edit(~/dotfiles/guardrails/**)",
+      "Edit(~/dotfiles/src/agents/.claude/hooks/**)"
+    ]
+  },
+  "autoMode": {
+    "hard_deny": [
+      "Running any command with NGROK_ENV set to prod or stage, in any form: inline, export, env, fish set, a script, or a subprocess.",
+      "Deleting a git branch, local or remote: git branch -d/-D, git push --delete or :ref, git update-ref -d, gh pr merge --delete-branch, or the GitHub API.",
+      "Pushing to any remote outside github.com/ngrok-private, or changing where a remote points: git remote add/set-url, url.insteadOf, gh repo create/fork, repo visibility changes.",
+      "nd ctl, and any nd db command other than nd db lint.",
+      "Publishing packages, images, or releases: npm/pnpm/yarn publish, docker push, gh release create/upload, cargo publish, and similar.",
+      "git worktree remove --force.",
+      "Running anything as root: sudo, doas, su, pkexec.",
+      "Changing Claude Code settings, hooks, or guardrails: ~/.claude/settings*.json, ~/.claude/hooks, ~/dotfiles/guardrails, or the claude-guard source."
+    ]
+  }
+}

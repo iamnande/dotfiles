@@ -68,3 +68,9 @@ wofi: install ## setup: wofi (nav)
 .PHONY: zellij
 zellij: COMPONENT=zellij
 zellij: install ## setup: zellij (sessions)
+
+.PHONY: guardrails
+guardrails: agents ## setup: claude guardrails (hook + ~/.claude/settings.json)
+	test -f ~/.claude/settings.json || echo '{}' > ~/.claude/settings.json
+	jq -s '.[0] * .[1]' ~/.claude/settings.json guardrails/settings.json > ~/.claude/settings.json.tmp
+	mv ~/.claude/settings.json.tmp ~/.claude/settings.json

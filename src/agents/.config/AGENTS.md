@@ -8,6 +8,7 @@
 - treat correctness and security as non-negotiable, and scale verification to the risk of the change.
 - never add AI attribution or agent co-author trailers to commits or shared output.
 - ask before launching expensive or large multi-agent workflows.
+- never set NGROK_ENV to prod or stage, delete branches, push outside github.com/ngrok-private, run nd ctl or nd db (except lint), publish, force-remove worktrees, or use sudo. hand me the command instead. in claude code, the claude-guard hook enforces this.
 
 ## maintaining these instructions
 
