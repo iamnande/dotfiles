@@ -15,6 +15,8 @@ make <component>
 
 ```
 Makefile
+docs/             guides (agents.md: skills, senzu, guardrails)
+guardrails/       claude settings fragment (make guardrails)
 mk/
   log.mk
   setup.mk
@@ -26,7 +28,7 @@ src/
 
 | component     | target                   |
 | ------------- | ------------------------ |
-| `agents`      | global agent instructions |
+| `agents`      | global agent instructions, `~/.claude/skills/` ([guide](docs/agents.md)) |
 | `backgrounds` | `~/.config/backgrounds/` |
 | `bin`         | `~/.local/bin/`          |
 | `fish`        | `~/.config/fish/`        |
