@@ -24,7 +24,7 @@ state: `~/opord/senzu/<slug>.md`. slug from the argument, else the issue id or s
 ## work
 
 - work in the tech spec's Services & Ordering order. if it defines a PR stack, one branch per stack item, each based on the one below; record them in state `repos`.
-- conventional commit message per commit.
+- commit messages: `type(scope): subject [<ISSUE>]`, with the issue id from state.
 - run the tech spec's verification at each checkpoint. don't defer correctness checks to the deploy.
 
 exit: all verification passes; no open blockers.

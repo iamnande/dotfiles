@@ -7,6 +7,7 @@
 - make surgical changes that preserve intent and useful comments. do not modify unrelated or generated files.
 - treat correctness and security as non-negotiable, and scale verification to the risk of the change.
 - never add AI attribution or agent co-author trailers to commits or shared output.
+- write every commit as a conventional commit with the ticket last: `type(scope): subject [ISSUE]`, e.g. `fix(iam): handle an empty role list [ADMIN-123]`. drop `[ISSUE]` only when there's no ticket.
 - ask before launching expensive or large multi-agent workflows.
 - never set NGROK_ENV to prod or stage, delete branches, push outside github.com/ngrok-private, run nd ctl or nd db (except lint), publish, force-remove worktrees, or use sudo. hand me the command instead. in claude code, the claude-guard hook enforces this.
 
