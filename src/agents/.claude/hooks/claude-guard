@@ -278,6 +278,8 @@ def check_git(args, cwd, depth):
             kv = a.split("=", 1)[1] if "=" in a else (args[i + 1] if i + 1 < len(args) else "")
             if URL_KEY.match(kv.split("=", 1)[0]):
                 raise Blocked("git -c overriding where a remote points")
+            if kv.lower().startswith("alias."):
+                raise Blocked("an inline git alias the guard can't follow")
             i += 1 if "=" in a else 2
         elif a in ("--git-dir", "--work-tree", "--namespace"):
             gopts += args[i:i + 2]
@@ -289,6 +291,18 @@ def check_git(args, cwd, depth):
     if i >= len(args):
         return
     sub, rest = args[i], args[i + 1:]
+    if sub in ("subtree", "lfs") and "push" in rest:
+        # git subtree push -P <prefix> <repository> <ref>, git lfs push <remote> [ref]
+        push_args, rest, j = [], rest[rest.index("push") + 1:], 0
+        while j < len(rest):
+            if rest[j] in ("-P", "--prefix", "-m", "--message", "--annotate"):
+                j += 2
+                continue
+            if not rest[j].startswith(("--prefix=", "--message=", "--annotate=")):
+                push_args.append(rest[j])
+            j += 1
+        check_push(push_args, cwd, gopts)
+        return
     if sub not in GIT_BUILTINS:
         alias = git(["config", "--get", f"alias.{sub}"], cwd, gopts)
         if alias and alias.startswith("!"):
