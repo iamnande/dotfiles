@@ -57,6 +57,10 @@ ghostty: install ## setup: ghostty (terminal)
 helix: COMPONENT=helix
 helix:  install## setup: helix (editor)
 
+.PHONY: mako
+mako: COMPONENT=mako
+mako: install ## setup: mako (notifications)
+
 .PHONY: waybar
 waybar: COMPONENT=waybar
 waybar: install ## setup: waybar (status)

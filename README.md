@@ -37,6 +37,7 @@ src/
 | `git`         | `~/`                     |
 | `helix`       | `~/.config/helix/`       |
 | `hypr`        | `~/.config/hypr/`        |
+| `mako`        | `~/.config/mako/`        |
 | `waybar`      | `~/.config/waybar/`      |
 | `wofi`        | `~/.config/wofi/`        |
 | `zellij`      | `~/.config/zellij/`      |
