@@ -8,7 +8,8 @@ out here soon (probably brew).
 ```fish
 git clone git@github.com:iamnande/dotfiles.git ~/dotfiles
 cd ~/dotfiles
-make <component>
+make all          # every component
+make <component>  # or just one
 ```
 
 ## structure
