@@ -1,6 +1,6 @@
 ---
 name: iam-plan
-description: senzu phase 1. creates branches, writes and commits the PRD and tech spec (rollout, services, ordering), posts the plan to the issue.
+description: senzu phase 1. creates branches, writes and commits the PRD and tech spec (rollout, services, ordering), publishes them as one page, posts the plan to the issue.
 argument-hint: "[<slug>]"
 disable-model-invocation: true
 ---
@@ -44,11 +44,19 @@ for each, in order: fill the template, write to `docs/prds/<YYYY-MM-DD>_<slug>/`
 
 push each branch with `git push -u origin <branch>`.
 
-## 3. issue comment
+## 3. plan page
+
+the docs get read in a browser, not as raw markdown. after either doc is committed or changed, publish one private page for the stream with the Artifact tool:
+
+- the page is `templates/view.html`, as it is. never write per-stream html. copy it to the scratchpad and publish that copy, with the stream's `prd.md` and `tech-spec.md` as `files` under those two names. `title` is the slug. the page fetches both files by name and skips a missing one.
+- state `plan` has a page link: read it, then publish to that `url`, so the link never changes. no link yet: publish, and record the link on the `plan` line.
+- no Artifact tool in the session: skip this and say so.
+
+## 4. issue comment
 
 if there's an issue, draft a terse comment: confirmed facts and decisions, the plan and why, tradeoffs accepted, branches per repo. decisions and rationale only, no transcript.
 
-exit: both docs committed; every Rn defined; verification and rollback path defined; branches pushed.
+exit: both docs committed; every Rn defined; verification and rollback path defined; branches pushed; the page link in state.
 
 ## handoff
 

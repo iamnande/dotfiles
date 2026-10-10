@@ -32,7 +32,7 @@ one ticket is one stream. one phase is one session. `/clear` between phases.
 senzu ADMIN-123          # new: fetch ticket, open /iam-ground. existing: cd to its worktree, open /senzu
 /senzu [slug]            # where am i, what's next. no match: table of every active stream
 /iam-ground <id|topic>   # open questions, terms, prior art. creates state file + slack thread
-/iam-plan                # worktrees, PRD, tech spec, issue comment
+/iam-plan                # worktrees, PRD, tech spec, plan page, issue comment
 /iam-execute             # small verified commits
 /iam-refine [fanout]     # idiom, DRY/YAGNI, Rn coverage, security, resilience. fanout: up to 2 subagents
 /iam-pr                  # draft PR (/pr-body), copilot review, resolve threads, ready for review
@@ -49,6 +49,7 @@ every phase drafts each action and waits for approval. nothing posts to github, 
 | handoff state | `~/src/iamnande/senzu/beans/<ISSUE>.md` |
 | worktrees | `~/worktrees/<ISSUE>-<slug>` on `nick/<issue>-<slug>` |
 | PRD + tech spec | `docs/prds/<date>_<slug>/` in the primary worktree, committed |
+| plan page | one private artifact per stream, rendered from those two files. link on the state file's `plan` line |
 | slack thread | #myspace-nick, parent `:thread: <ISSUE> / <title>` |
 | skills | `src/agents/.claude/skills/` (templates in `iam-plan/templates/`) |
 | CLI | `src/bin/.local/bin/senzu`, `senzu-fetch` (need `LINEAR_TOKEN`) |
