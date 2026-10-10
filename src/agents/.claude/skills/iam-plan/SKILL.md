@@ -34,7 +34,7 @@ one worktree per affected repo, so streams never share a checkout. after `git -C
 
 ## 2. PRD, then tech spec
 
-for each, in order: fill the template, write to `plan/<YYYY-MM-DD>_<slug>/` in the primary worktree, show the diff, wait for approval, `git add -f` (`plan/` is gitignored), commit. commit the PRD before drafting the tech spec.
+for each, in order: fill the template, write to `docs/prds/<YYYY-MM-DD>_<slug>/` in the primary worktree, show the diff, wait for approval, `git add`, commit. commit the PRD before drafting the tech spec.
 
 - templates: `templates/prd.md`, `templates/tech-spec.md`.
 - keep every section. mark an inapplicable one `N/A: <reason>`. never drop one.

@@ -48,7 +48,7 @@ every phase drafts each action and waits for approval. nothing posts to github, 
 |---|---|
 | handoff state | `~/src/iamnande/senzu/beans/<ISSUE>.md` |
 | worktrees | `~/worktrees/<ISSUE>-<slug>` on `nick/<issue>-<slug>` |
-| PRD + tech spec | `plan/<date>_<slug>/` in the primary worktree, force-committed |
+| PRD + tech spec | `docs/prds/<date>_<slug>/` in the primary worktree, committed |
 | slack thread | #myspace-nick, parent `:thread: <ISSUE> / <title>` |
 | skills | `src/agents/.claude/skills/` (templates in `iam-plan/templates/`) |
 | CLI | `src/bin/.local/bin/senzu`, `senzu-fetch` (need `LINEAR_TOKEN`) |
