@@ -1,7 +1,6 @@
 # dotfiles
 
-stow-managed configs. software via pacman/yay(for now - we'll figure something
-out here soon (probably brew).
+stow-managed configs. software is arch native: pacman, and yay for the aur.
 
 ## setup
 
