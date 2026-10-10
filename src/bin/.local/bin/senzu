@@ -3,7 +3,7 @@
 # Start a senzu session for a Linear ticket, or close one.
 # Usage:
 #   senzu ADMIN-376        — fetch ticket, inject context, launch claude on /iam-ground
-#                            (or /senzu in the stream's worktree if ~/opord/senzu/ADMIN-376.md exists)
+#                            (or /senzu in the stream's worktree if ~/src/iamnande/senzu/beans/ADMIN-376.md exists)
 #   senzu ADMIN-376 close  — transition ticket to done in Linear
 
 set identifier $argv[1]
@@ -41,7 +41,7 @@ function cmd_start
     rm -f $ctx_tmpfile
 
     # existing stream: resume in its first worktree via the router. new stream: ground it.
-    set state_file ~/opord/senzu/(string upper $identifier).md
+    set state_file ~/src/iamnande/senzu/beans/(string upper $identifier).md
     set opening "/iam-ground $identifier"
     if test -f $state_file
         set opening "/senzu $identifier"

@@ -6,8 +6,8 @@ out here soon (probably brew).
 ## setup
 
 ```fish
-git clone git@github.com:iamnande/dotfiles.git ~/dotfiles
-cd ~/dotfiles
+git clone git@github.com:iamnande/dotfiles.git ~/src/iamnande/dotfiles
+cd ~/src/iamnande/dotfiles
 make all          # every component
 make <component>  # or just one
 ```

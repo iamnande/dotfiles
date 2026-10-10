@@ -19,7 +19,7 @@ no code until both docs are committed.
 
 ## start
 
-state: `~/opord/senzu/<slug>.md`. slug from the argument, else the issue id or slug in the current branch name (ignore case), else ask. read `## decisions` and `repos`.
+state: `~/src/iamnande/senzu/beans/<slug>.md`. slug from the argument, else the issue id or slug in the current branch name (ignore case), else ask. read `## decisions` and `repos`.
 
 ## 1. worktrees
 

@@ -19,7 +19,7 @@ make it right, don't just review what was built. flag risks; don't assume a path
 
 ## start
 
-state: `~/opord/senzu/<slug>.md`. slug from the argument, else the issue id or slug in the current branch name (ignore case), else ask. review the branch diff against its base, with the tech spec and the PRD's Rn list.
+state: `~/src/iamnande/senzu/beans/<slug>.md`. slug from the argument, else the issue id or slug in the current branch name (ignore case), else ask. review the branch diff against its base, with the tech spec and the PRD's Rn list.
 
 ## check
 

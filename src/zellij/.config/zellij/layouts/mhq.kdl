@@ -10,7 +10,7 @@ layout {
     }
 
     // dotfiles
-    tab name="dotfiles" cwd="$HOME/dotfiles" {
+    tab name="dotfiles" cwd="$HOME/src/iamnande/dotfiles" {
         pane stacked=true {
             pane name="editor" command="hx" expanded=true focus=true
             pane name="shell"
@@ -26,7 +26,7 @@ layout {
     }
 
     // website
-    tab name="website" cwd="$HOME/iamnande" {
+    tab name="website" cwd="$HOME/src/iamnande/iamnande" {
         pane stacked=true {
             pane name="editor" command="hx" expanded=true focus=true
             pane name="shell"
@@ -38,7 +38,7 @@ layout {
     }
 
     // homelab
-    tab name="homelab" cwd="$HOME/homelab" {
+    tab name="homelab" cwd="$HOME/src/iamnande/homelab" {
         pane stacked=true {
             pane name="editor" command="hx" expanded=true focus=true
             pane name="shell"
@@ -46,7 +46,7 @@ layout {
     }
 
     // rawr
-    tab name="rawr" cwd="$HOME/rawr" {
+    tab name="rawr" cwd="$HOME/src/iamnande/rawr" {
         pane stacked=true {
             pane name="editor" command="hx" expanded=true focus=true
             pane name="shell"

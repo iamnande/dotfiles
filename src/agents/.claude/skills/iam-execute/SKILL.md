@@ -19,7 +19,7 @@ small iterations. one logical change per commit.
 
 ## start
 
-state: `~/opord/senzu/<slug>.md`. slug from the argument, else the issue id or slug in the current branch name (ignore case), else ask. read the tech spec from state `plan`; read the PRD only for Rn detail. work in the worktrees in state `repos`.
+state: `~/src/iamnande/senzu/beans/<slug>.md`. slug from the argument, else the issue id or slug in the current branch name (ignore case), else ask. read the tech spec from state `plan`; read the PRD only for Rn detail. work in the worktrees in state `repos`.
 
 ## work
 

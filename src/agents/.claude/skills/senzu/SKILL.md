@@ -24,7 +24,7 @@ one session per phase. run `/clear` between phases.
 
 ## state
 
-`~/opord/senzu/<slug>.md`. `<slug>` is the issue id (e.g. `ADMIN-376`), else kebab-case, 3-5 words.
+`~/src/iamnande/senzu/beans/<slug>.md`. `<slug>` is the issue id (e.g. `ADMIN-376`), else kebab-case, 3-5 words.
 
 find it: argument, else the issue id or slug in the current branch name (ignore case). no match: list every stream whose phase isn't `done`. none at all: cold start, suggest `/iam-ground <issue | topic>`.
 

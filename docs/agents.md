@@ -46,7 +46,7 @@ every phase drafts each action and waits for approval. nothing posts to github, 
 
 | what | where |
 |---|---|
-| handoff state | `~/opord/senzu/<ISSUE>.md` |
+| handoff state | `~/src/iamnande/senzu/beans/<ISSUE>.md` |
 | worktrees | `~/worktrees/<ISSUE>-<slug>` on `nick/<issue>-<slug>` |
 | PRD + tech spec | `plan/<date>_<slug>/` in the primary worktree, force-committed |
 | slack thread | #myspace-nick, parent `:thread: <ISSUE> / <title>` |

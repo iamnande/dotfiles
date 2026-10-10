@@ -19,7 +19,7 @@ understand the problem before planning it.
 ## start
 
 - ticket context: use the system prompt (from `senzu <id>`) if present, else fetch the issue.
-- state: `~/opord/senzu/<slug>.md`. `<slug>` is the issue id, else kebab-case, 3-5 words. resume it if it exists, else create it in the format below.
+- state: `~/src/iamnande/senzu/beans/<slug>.md`. `<slug>` is the issue id, else kebab-case, 3-5 words. resume it if it exists, else create it in the format below.
 - slack: search #myspace-nick for a parent message with the issue id. found: read its thread for context. none: draft the parent `:thread: <ISSUE> / <title>` (no issue: `:thread: <title>`) and post it when the user says post. record the permalink and ts in state `slack`.
 
 ## work

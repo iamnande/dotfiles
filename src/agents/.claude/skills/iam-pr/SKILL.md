@@ -19,7 +19,7 @@ one PR per branch, in the tech spec's Services & Ordering order. a stacked PR's 
 
 ## start
 
-state: `~/opord/senzu/<slug>.md`. slug from the argument, else the issue id or slug in the current branch name (ignore case), else ask. PRs already in state `prs`: pick up at their current step.
+state: `~/src/iamnande/senzu/beans/<slug>.md`. slug from the argument, else the issue id or slug in the current branch name (ignore case), else ask. PRs already in state `prs`: pick up at their current step.
 
 ## 1. draft
 

@@ -18,7 +18,7 @@ ship it, verify it against the deployed change, close it out.
 
 ## start
 
-state: `~/opord/senzu/<slug>.md`. slug from the argument, else the issue id or slug in the current branch name (ignore case), else ask. read the tech spec's Rollout Plan and Services & Ordering.
+state: `~/src/iamnande/senzu/beans/<slug>.md`. slug from the argument, else the issue id or slug in the current branch name (ignore case), else ask. read the tech spec's Rollout Plan and Services & Ordering.
 
 ## 1. merge
 
