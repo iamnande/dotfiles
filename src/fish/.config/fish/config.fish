@@ -48,12 +48,7 @@ end
 function z --wraps zellij --description "workspace management"
     zellij $argv
 end
-if test -d "$HOME/way"
-    alias mhq='z -d -l mhq a -c mhq'
-else
-    alias mhq='z -d a -c mhq'
-end
-alias tardis='z -d -l tardis a -c tardis'
+alias mhq='z -d -l mhq a -c mhq'
 
 # claim your fighter! (helix atm)
 set -gx EDITOR hx
