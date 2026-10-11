@@ -1,6 +1,7 @@
 hl.on("hyprland.start", function()
     hl.exec_cmd("hyprpaper")
-    hl.exec_cmd("1password --silent")
+    -- 1password only asks for a tray once, at start - so wait for the bar to have one
+    hl.exec_cmd("gdbus wait --session --timeout 10 org.kde.StatusNotifierWatcher; 1password --silent")
     hl.exec_cmd("waybar")
     hl.exec_cmd("hypridle")
 end)
