@@ -9,7 +9,9 @@
 - never add AI attribution or agent co-author trailers to commits or shared output.
 - write every commit as a conventional commit with the ticket last: `type(scope): subject [ISSUE]`, e.g. `fix(iam): handle an empty role list [ADMIN-123]`. drop `[ISSUE]` only when there's no ticket.
 - ask before launching expensive or large multi-agent workflows.
-- never set NGROK_ENV to prod or stage, delete branches, push outside github.com/ngrok-private, run nd ctl or nd db (except lint), publish, force-remove worktrees, or use sudo. hand me the command instead. in claude code, the claude-guard hook enforces this.
+- never set NGROK_ENV to prod or stage, delete branches, run nd ctl or nd db (except lint), publish, force-remove worktrees, or use sudo. hand me the command instead.
+- pushes follow the host. on work hosts, push only to github.com/ngrok-private. on my own hosts (rocinante, sector7), push only to github.com/iamnande or another public repo, and never to anything ngrok, public included. anything else: hand me the command.
+- in claude code, the claude-guard hook enforces the two rules above.
 
 ## maintaining these instructions
 

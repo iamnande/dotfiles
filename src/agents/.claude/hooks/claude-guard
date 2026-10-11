@@ -4,7 +4,7 @@
 exits 2, a hard block that wins over allow rules, for:
 - NGROK_ENV set to prod or stage, in any form
 - branch deletes, local or remote
-- pushes outside github.com/ngrok-private, and rewiring where remotes point
+- pushes the host's rule forbids (see push_block), and rewiring where remotes point
 - nd ctl, nd db (except lint), publishing, git worktree remove --force
 - sudo and friends
 
@@ -15,6 +15,7 @@ import json
 import os
 import re
 import shlex
+import socket
 import subprocess
 import sys
 
@@ -22,6 +23,10 @@ HOME = os.path.expanduser("~")
 MAX_DEPTH = 8
 
 PUSH_OK = re.compile(r"^(?:git@github\.com:|ssh://git@github\.com/|https://github\.com/)ngrok-private/[\w.-]+/?$", re.I)
+# my own hosts, not work's. there a push goes to my repos or to a public one, and never to anything ngrok.
+HOME_HOSTS = {"rocinante", "sector7"}
+PUSH_HOME = re.compile(r"^(?:git@github\.com:|ssh://git@github\.com/|https://github\.com/)iamnande/[\w.-]+/?$", re.I)
+PUSH_GITHUB = re.compile(r"^(?:git@github\.com:|ssh://git@github\.com/|https://github\.com/)([\w.-]+/[\w.-]+?)(?:\.git)?/?$", re.I)
 ENV_RES = [
     # NGROK_ENV=prod, export/env forms, ['NGROK_ENV']='stage', "NGROK_ENV": "prod"
     re.compile(r"NGROK_ENV[\"']?\s*\]?\s*[=:,]\s*[\"']?\s*(?:prod|stage)", re.I),
@@ -354,8 +359,35 @@ def check_push(rest, cwd, gopts):
         if ref.lstrip("+").startswith(":"):
             raise Blocked("deleting a remote branch")
     for url in push_urls(repo, cwd, gopts):
-        if not PUSH_OK.match(url):
-            raise Blocked(f"pushing to {url}, which is outside github.com/ngrok-private")
+        why = push_block(url)
+        if why:
+            raise Blocked(f"pushing to {url}, which is {why}")
+
+
+def push_block(url):
+    """why this host may not push to url, or None when it may."""
+    # the kernel's name for the host, not $HOSTNAME: the environment is the agent's to set
+    if socket.gethostname().split(".")[0].lower() not in HOME_HOSTS:
+        return None if PUSH_OK.match(url) else "outside github.com/ngrok-private"
+    if "ngrok" in url.lower():
+        return "an ngrok remote, and nothing ngrok is pushed from this host"
+    if PUSH_HOME.match(url) or is_public(url):
+        return None
+    return "neither github.com/iamnande nor a public github repo"
+
+
+def is_public(url):
+    """true when github serves the repo to a caller with no credentials at all."""
+    m = PUSH_GITHUB.match(url)
+    if not m:
+        return False
+    # a bare environment: no gitconfig, no credential helper, no netrc, no prompt
+    env = {"PATH": os.environ.get("PATH", "/usr/bin:/bin"), "HOME": os.devnull, "GIT_TERMINAL_PROMPT": "0",
+           "GIT_CONFIG_GLOBAL": os.devnull, "GIT_CONFIG_NOSYSTEM": "1"}
+    # and from /, so a repo's own config (a credential helper, an insteadOf) gets no say
+    p = subprocess.run(["git", "ls-remote", f"https://github.com/{m.group(1)}", "HEAD"],
+                       env=env, cwd="/", capture_output=True, text=True, timeout=10)
+    return p.returncode == 0
 
 
 def push_urls(repo, cwd, gopts):

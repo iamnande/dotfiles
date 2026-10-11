@@ -51,20 +51,20 @@
       "Edit(~/.claude/settings.json)",
       "Edit(~/.claude/settings.local.json)",
       "Edit(~/.claude/hooks/**)",
-      "Edit(~/dotfiles/guardrails/**)",
-      "Edit(~/dotfiles/src/agents/.claude/hooks/**)"
+      "Edit(~/src/iamnande/dotfiles/guardrails/**)",
+      "Edit(~/src/iamnande/dotfiles/src/agents/.claude/hooks/**)"
     ]
   },
   "autoMode": {
     "hard_deny": [
       "Running any command with NGROK_ENV set to prod or stage, in any form: inline, export, env, fish set, a script, or a subprocess.",
       "Deleting a git branch, local or remote: git branch -d/-D, git push --delete or :ref, git update-ref -d, gh pr merge --delete-branch, or the GitHub API.",
-      "Pushing to any remote outside github.com/ngrok-private, or changing where a remote points: git remote add/set-url, url.insteadOf, gh repo create/fork, repo visibility changes.",
+      "Pushing to a remote the host's push rule forbids, or changing where a remote points: git remote add/set-url, url.insteadOf, gh repo create/fork, repo visibility changes. The push rule: on the hosts rocinante and sector7, only github.com/iamnande or a public repo, and never anything ngrok, public included. On every other host, only github.com/ngrok-private.",
       "nd ctl, and any nd db command other than nd db lint.",
       "Publishing packages, images, or releases: npm/pnpm/yarn publish, docker push, gh release create/upload, cargo publish, and similar.",
       "git worktree remove --force.",
       "Running anything as root: sudo, doas, su, pkexec.",
-      "Changing Claude Code settings, hooks, or guardrails: ~/.claude/settings*.json, ~/.claude/hooks, ~/dotfiles/guardrails, or the claude-guard source."
+      "Changing Claude Code settings, hooks, or guardrails: ~/.claude/settings*.json, ~/.claude/hooks, ~/src/iamnande/dotfiles/guardrails, or the claude-guard source."
     ]
   }
 }

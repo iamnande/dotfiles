@@ -11,7 +11,9 @@ global agent instructions, claude skills, and the senzu workflow. `make agents` 
 
 hard blocks for claude code agents, set in user settings. `make guardrails` stows the hook and merges `guardrails/settings.json` into `~/.claude/settings.json` (it replaces the `permissions.deny` and `hooks` lists with the fragment's).
 
-blocked: NGROK_ENV set to prod or stage, branch deletes, pushes outside `github.com/ngrok-private`, remote rewiring, `nd ctl`, `nd db` (except `lint`), publishing, `git worktree remove --force`, sudo.
+blocked: NGROK_ENV set to prod or stage, branch deletes, pushes the host's rule forbids, remote rewiring, `nd ctl`, `nd db` (except `lint`), publishing, `git worktree remove --force`, sudo.
+
+the push rule follows the host. on `rocinante` and `sector7`: `github.com/iamnande`, or a public github repo, and never anything ngrok. everywhere else: `github.com/ngrok-private` only. the hook reads the host's name from the kernel, and calls a repo public when github serves it to a caller with no credentials.
 
 | layer | what it does |
 |---|---|
