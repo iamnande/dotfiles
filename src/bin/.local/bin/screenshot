@@ -1,0 +1,42 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+# screenshot region|output
+# grab the screen, stash it with the senzu references, copy it too.
+
+dir="$HOME/src/iamnande/senzu/references/screenshots"
+
+# binds don't get a terminal - so shout through a notification as well
+fail() {
+	printf 'screenshot: %s\n' "$1" >&2
+	notify-send --urgency=critical screenshot "$1" 2>/dev/null || true
+	exit 1
+}
+
+mode="${1:-}"
+case "$mode" in
+	region) tools=(grim slurp wl-copy) ;;
+	output) tools=(grim wl-copy) ;;
+	*)
+		printf 'usage: screenshot region|output\n' >&2
+		exit 2
+		;;
+esac
+
+for tool in "${tools[@]}"; do
+	command -v "$tool" >/dev/null 2>&1 || fail "$tool is not installed"
+done
+
+mkdir -p "$dir"
+file="$dir/$(date +%Y-%m-%dT%H-%M-%S).png"
+
+if [[ "$mode" == region ]]; then
+	# escape means "nevermind", not "it broke"
+	geometry="$(slurp)" || exit 0
+	grim -g "$geometry" "$file" || fail "grim could not capture the region"
+else
+	grim "$file" || fail "grim could not capture the output"
+fi
+
+wl-copy --type image/png < "$file" || fail "saved $file, but the copy failed"

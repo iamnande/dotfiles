@@ -44,3 +44,7 @@ hl.bind(mainMod .. " + CTRL + down",  hl.dsp.window.resize({ x = 0,   y = 30,  r
 -- mouse
 hl.bind(mainMod .. " + mouse:272", hl.dsp.window.drag(),   { mouse = true })
 hl.bind(mainMod .. " + mouse:273", hl.dsp.window.resize(), { mouse = true })
+
+-- screenshots
+hl.bind(mainMod .. " + SHIFT + S", hl.dsp.exec_cmd("screenshot region"))
+hl.bind("Print",                   hl.dsp.exec_cmd("screenshot output"))
