@@ -68,7 +68,9 @@ else if test (uname) = Darwin
     set onepassword_source "$HOME/Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock"
 end
 
+# a host that runs 1password itself owns that path - never link over its socket
 if test -S "$onepassword_source"; and test "$onepassword_source" != "$onepassword_agent"
+    and begin; test -L "$onepassword_agent"; or not test -e "$onepassword_agent"; end
     mkdir -p ~/.1password
     ln -sfn "$onepassword_source" "$onepassword_agent"
 end
