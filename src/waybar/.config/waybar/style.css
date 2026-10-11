@@ -9,18 +9,18 @@
 
 window#waybar {
     background: transparent;
-    background-color: @crust;
-    color: @overlay0;
+    background-color: @bg_dim;
+    color: @bg5;
     transition-property: background-color;
     transition-duration: 0.1s;
-    border-bottom: 1px solid @overlay1;
+    border-bottom: 1px solid @bg3;
 }
 
 #custom-hostname {
     margin: 8px;
     padding-left: 8px;
     padding-right: 8px;
-    color: @text;
+    color: @fg;
 }
 
 button {
@@ -31,8 +31,8 @@ button {
 
 button:hover {
     background: inherit;
-    color: @mauve;
-    border-top: 2px solid @mauve;
+    color: @purple;
+    border-top: 2px solid @purple;
 }
 
 #workspaces button {
@@ -40,24 +40,23 @@ button:hover {
 }
 
 #workspaces button.focused {
-    background-color: rgba(0, 0, 0, 0.3);
-    color: @rosewater;
-    border-top: 2px solid @rosewater;
+    background-color: shade(@bg_dim, 0.7);
+    color: @purple;
+    border-top: 2px solid @purple;
 }
 
 #workspaces button.active {
-    background-color: rgba(0, 0, 0, 0.3);
-    color: @mauve;
-    border-top: 2px solid @mauve;
+    background-color: shade(@bg_dim, 0.7);
+    color: @purple;
+    border-top: 2px solid @purple;
 }
 
 #workspaces button.urgent {
-    background-color: #eb4d4b;
+    background-color: @red;
 }
 
 #pulseaudio,
 #clock,
-#battery,
 #cpu,
 #memory,
 #disk,
@@ -77,13 +76,13 @@ button:hover {
 }
 
 #clock {
-    color: @maroon;
-    border-bottom: 2px solid @maroon;
+    color: @red;
+    border-bottom: 2px solid @red;
 }
 
 #clock.date {
-    color: @mauve;
-    border-bottom: 2px solid @mauve;
+    color: @purple;
+    border-bottom: 2px solid @purple;
 }
 
 #pulseaudio {
@@ -97,18 +96,18 @@ button:hover {
 }
 
 #cpu {
-    color: @peach;
-    border-bottom: 2px solid @peach;
+    color: @orange;
+    border-bottom: 2px solid @orange;
 }
 
 #memory {
-    color: @sapphire;
-    border-bottom: 2px solid @sapphire;
+    color: @blue;
+    border-bottom: 2px solid @blue;
 }
 
 #disk {
-    color: @teal;
-    border-bottom: 2px solid @teal;
+    color: @aqua;
+    border-bottom: 2px solid @aqua;
 }
 
 #custom-dashboard-toggle {
@@ -123,7 +122,7 @@ button:hover {
 }
 
 .dashboard-drawer {
-    background-color: @mantle;
+    background-color: @bg1;
     border-radius: 8px;
     padding: 0 6px;
 }
@@ -134,16 +133,11 @@ button:hover {
 
 #idle_inhibitor {
     margin-right: 12px;
-    color: #7cb342;
+    color: @green;
 }
 
 #idle_inhibitor.activated {
     color: @red;
-}
-
-#battery {
-    color: @green;
-    border-bottom: 2px solid @green;
 }
 
 /* If workspaces is the leftmost module, omit left margin */
@@ -154,11 +148,4 @@ button:hover {
 /* If workspaces is the rightmost module, omit right margin */
 .modules-right>widget:last-child>#workspaces {
     margin-right: 0;
-}
-
-#custom-vpn {
-    color: @lavender;
-    border-radius: 15px;
-    padding-left: 6px;
-    padding-right: 6px;
 }
