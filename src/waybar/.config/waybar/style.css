@@ -41,12 +41,6 @@ button:hover {
     color: @grey0;
 }
 
-#workspaces button.focused {
-    background-color: shade(@bg_dim, 0.7);
-    color: @purple;
-    border-top: 2px solid @purple;
-}
-
 #workspaces button.active {
     background-color: shade(@bg_dim, 0.7);
     color: @purple;
@@ -62,14 +56,11 @@ button:hover {
 #cpu,
 #memory,
 #disk,
-#temperature,
-#backlight,
-#wireplumber,
 #tray,
 #custom-caffeine,
-#network,
-#mode,
-#scratchpad {
+#custom-dashboard-toggle,
+#custom-power,
+#network {
   margin-top: 2px;
   margin-bottom: 2px;
   margin-left: 4px;
@@ -117,12 +108,6 @@ button:hover {
 #custom-power {
     color: @red;
     border-bottom: 2px solid @red;
-    margin-top: 2px;
-    margin-bottom: 2px;
-    margin-left: 4px;
-    margin-right: 4px;
-    padding-left: 4px;
-    padding-right: 4px;
 }
 
 .dashboard-drawer {
@@ -148,9 +133,4 @@ button:hover {
 /* If workspaces is the leftmost module, omit left margin */
 .modules-left>widget:first-child>#workspaces {
     margin-left: 0;
-}
-
-/* If workspaces is the rightmost module, omit right margin */
-.modules-right>widget:last-child>#workspaces {
-    margin-right: 0;
 }
