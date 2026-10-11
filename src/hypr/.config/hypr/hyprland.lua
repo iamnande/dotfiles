@@ -2,6 +2,7 @@ hl.on("hyprland.start", function()
     hl.exec_cmd("hyprpaper")
     hl.exec_cmd("1password --silent")
     hl.exec_cmd("waybar")
+    hl.exec_cmd("hypridle")
 end)
 
 local mainMod     = "SUPER"
