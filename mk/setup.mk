@@ -4,7 +4,7 @@ SETUP_TARGET   ?= ~/
 SETUP_VERBOSE  ?= true
 SETUP_OVERRIDE ?= true
 
-COMPONENTS := agents backgrounds bin fish ghostty git helix hypr mako waybar wofi zellij
+COMPONENTS := agents backgrounds bin fish ghostty git helix hypr mako ssh waybar wofi zellij
 
 _install_component = cd $(SETUP_HOME) \
 	&& stow \
@@ -49,6 +49,8 @@ ghostty: ## setup: ghostty (terminal)
 helix: ## setup: helix (editor)
 
 mako: ## setup: mako (notifications)
+
+ssh: ## setup: ssh (client)
 
 waybar: ## setup: waybar (status)
 

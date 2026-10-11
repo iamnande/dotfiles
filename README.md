@@ -38,6 +38,7 @@ src/
 | `helix`       | `~/.config/helix/`       |
 | `hypr`        | `~/.config/hypr/`        |
 | `mako`        | `~/.config/mako/`        |
+| `ssh`         | `~/.ssh/config`          |
 | `waybar`      | `~/.config/waybar/`      |
 | `wofi`        | `~/.config/wofi/`        |
 | `zellij`      | `~/.config/zellij/`      |
