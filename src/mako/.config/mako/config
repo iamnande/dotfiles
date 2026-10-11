@@ -1,3 +1,18 @@
 # ten seconds, no matter what the app asked for
 default-timeout=10000
 ignore-timeout=1
+
+# looks like wofi - everforest, same font, round corners
+font=OpenDyslexicM Nerd Font Mono 10
+background-color=#2d353b
+text-color=#d3c6aa
+border-color=#a7c080
+border-radius=8
+padding=10
+
+# 10 more around the stack, so it sits on hyprland's 20px window gap
+outer-margin=10
+
+# red border when it's urgent
+[urgency=critical]
+border-color=#e67e80
