@@ -37,6 +37,8 @@ button:hover {
 
 #workspaces button {
     padding: 0 4px;
+    /* say it here, or the gtk theme picks the color */
+    color: @grey0;
 }
 
 #workspaces button.focused {

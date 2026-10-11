@@ -1,12 +1,10 @@
 {
   "position": "top",
-  "modules-left": ["hyprland/workspaces"],
+  "modules-left": ["ext/workspaces"],
   "modules-center": ["custom/hostname"],
   "modules-right": ["tray", "custom/caffeine", "group/dashboard", "clock", "custom/power"],
-  "hyprland/workspaces": {
-    "persistent-workspaces": {
-      "*": [1, 2, 3, 4, 5, 6]
-    }
+  "ext/workspaces": {
+    "on-click": "activate"
   },
   "custom/hostname": {
     "exec": "uname -n",
