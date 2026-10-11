@@ -64,7 +64,7 @@ button:hover {
 #backlight,
 #wireplumber,
 #tray,
-#idle_inhibitor,
+#custom-caffeine,
 #network,
 #mode,
 #scratchpad {
@@ -133,12 +133,12 @@ button:hover {
     margin-right: 8px;
 }
 
-#idle_inhibitor {
+#custom-caffeine {
     color: @green;
     border-bottom: 2px solid @green;
 }
 
-#idle_inhibitor.activated {
+#custom-caffeine.activated {
     color: @red;
     border-bottom: 2px solid @red;
 }

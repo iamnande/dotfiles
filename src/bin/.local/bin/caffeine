@@ -1,0 +1,46 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+# caffeine toggle|status
+# hold the idle lock off, or let it back on. waybar shows which.
+
+unit=caffeine
+
+# binds don't get a terminal - so shout through a notification as well
+fail() {
+	printf 'caffeine: %s\n' "$1" >&2
+	notify-send --urgency=critical caffeine "$1" 2>/dev/null || true
+	exit 1
+}
+
+is_on() {
+	systemctl --user is-active --quiet "$unit"
+}
+
+case "${1:-}" in
+	toggle)
+		if is_on; then
+			systemctl --user stop "$unit" || fail "could not let go of the idle hold"
+		else
+			# hypridle backs off for as long as something holds this
+			systemd-run --user --quiet --collect --unit="$unit" \
+				systemd-inhibit --what=idle --who=caffeine --why='staying awake' \
+				sleep infinity || fail "could not hold the idle lock off"
+		fi
+		# poke the bar so the cup flips right away
+		pkill -RTMIN+8 -x waybar || true
+		;;
+	status)
+		# waybar picks the icon from alt and the color from class
+		if is_on; then
+			printf '{"alt": "activated", "class": "activated", "tooltip": "staying awake"}\n'
+		else
+			printf '{"alt": "deactivated", "class": "deactivated", "tooltip": "idle lock is on"}\n'
+		fi
+		;;
+	*)
+		printf 'usage: caffeine toggle|status\n' >&2
+		exit 2
+		;;
+esac
