@@ -2,7 +2,7 @@
   "position": "top",
   "modules-left": ["hyprland/workspaces"],
   "modules-center": ["custom/hostname"],
-  "modules-right": ["clock", "group/dashboard"],
+  "modules-right": ["tray", "idle_inhibitor", "group/dashboard", "clock", "custom/power"],
   "hyprland/workspaces": {
     "persistent-workspaces": {
       "*": [1, 2, 3, 4, 5, 6]
@@ -13,6 +13,24 @@
     "interval": "once",
     "format": "  {}",
     "tooltip": false
+  },
+  "tray": {
+    "icon-size": 18,
+    "spacing": 8
+  },
+  "idle_inhibitor": {
+    "format": "{icon}",
+    "format-icons": {
+      "activated": "󰅶",
+      "deactivated": "󰾪"
+    },
+    "tooltip-format-activated": "staying awake",
+    "tooltip-format-deactivated": "idle lock is on"
+  },
+  "custom/power": {
+    "format": "󰐥",
+    "tooltip": false,
+    "on-click": "powermenu"
   },
   "group/dashboard": {
     "orientation": "inherit",
