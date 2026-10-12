@@ -38,6 +38,7 @@ exit: `## open` is empty; scope and terms agreed.
 # <slug>: <title>
 
 - phase: ground | plan | execute | refine | pr | rollout | done
+- priority: urgent | high | medium | low (the issue's, else ask)
 - issue: <id or none>
 - slack: <#myspace-nick thread permalink> (ts <ts>)
 - repos: (one per repo; absolute worktree path, set in plan)

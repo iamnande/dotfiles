@@ -26,7 +26,7 @@ one session per phase. run `/clear` between phases.
 
 `~/src/iamnande/senzu/beans/<slug>.md`. `<slug>` is the issue id (e.g. `ADMIN-376`), else kebab-case, 3-5 words.
 
-find it: argument, else the issue id or slug in the current branch name (ignore case). no match: list every stream whose phase isn't `done`. none at all: cold start, suggest `/iam-ground <issue | topic>`.
+find it: argument, else the issue id or slug in the current branch name (ignore case). no match: list every stream whose phase isn't `done`, by `priority` (urgent, high, medium, low, then none), ties in slug order. none at all: cold start, suggest `/iam-ground <issue | topic>`.
 
 ## output
 
@@ -41,5 +41,5 @@ if `## open` has items that block the next phase, list them and hold.
 
 no match: one table, then ask which stream.
 
-| slug | phase | next | worktree |
-|---|---|---|---|
+| slug | priority | phase | next | worktree |
+|---|---|---|---|---|
