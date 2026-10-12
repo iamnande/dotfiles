@@ -32,7 +32,7 @@ state: `~/src/iamnande/senzu/beans/<slug>.md`. slug from the argument, else the 
 ## 2. copilot review
 
 - `gh pr edit <n> --add-reviewer @copilot`, unless the repo requests it automatically.
-- wait with a background poll (Monitor), not a sleep loop. watch CI too.
+- no background monitors or poll loops for copilot or CI (token cost). check status when the user asks, then report what's pending.
 
 ## 3. respond
 
