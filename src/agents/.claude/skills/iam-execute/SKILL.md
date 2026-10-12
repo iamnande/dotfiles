@@ -26,8 +26,10 @@ state: `~/src/iamnande/senzu/beans/<slug>.md`. slug from the argument, else the 
 - work in the tech spec's Services & Ordering order. if it defines a PR stack, one branch per stack item, each based on the one below; record them in state `repos`.
 - commit messages: `type(scope): subject [<ISSUE>]`, with the issue id from state.
 - run the tech spec's verification at each checkpoint. don't defer correctness checks to the deploy.
+- every new test names its red line: the one-line change to the implementation that turns it red. put it in the commit body. if you can't name one, the test is decoration: delete it or make it assert something.
+- for tests that guard a bug fix or a contract, apply the named change once, confirm the test goes red, then revert. don't commit the mutation.
 
-exit: all verification passes; no open blockers.
+exit: all verification passes; every new test has a named red line; no open blockers.
 
 ## handoff
 
