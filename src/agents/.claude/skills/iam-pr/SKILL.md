@@ -31,6 +31,7 @@ state: `~/src/iamnande/senzu/beans/<slug>.md`. slug from the argument, else the 
 
 ## 2. copilot review
 
+- if the branch has a non-trivial delta since refine exited, run `/iam-refine delta` first. no delta, no pass.
 - `gh pr edit <n> --add-reviewer @copilot`, unless the repo requests it automatically.
 - no background monitors or poll loops for copilot or CI (token cost). check status when the user asks, then report what's pending.
 
@@ -42,7 +43,7 @@ state: `~/src/iamnande/senzu/beans/<slug>.md`. slug from the argument, else the 
 
 ## 4. ready
 
-when threads are resolved and CI is green: update the body if needed, then `gh pr ready <n>`.
+when threads are resolved and CI is green: run `/iam-refine delta` again if commits landed since the last pass, update the body if needed, then `gh pr ready <n>`.
 
 exit: every PR ready for review; no unresolved threads; CI green.
 

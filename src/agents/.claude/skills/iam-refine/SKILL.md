@@ -52,9 +52,11 @@ state: `~/src/iamnande/senzu/beans/<slug>.md`. slug from the argument, else the 
 `/iam-refine delta` runs after refine has exited, on the changes since then.
 
 - the delta is every commit added since the head state recorded when refine exited. a commit that is a pure rebase (same patch-id) isn't a delta.
+- trivial deltas skip refine: comments, docs, or generated files only, with no behavior change and no claim moved. a docs change that moves a claim is non-trivial.
+- a P/R decision entry that changes behavior, with no code change, gets only the docs grep for the claim it changed.
 - same checks, scoped to the delta's hunks and their callers. read the contract (sql, filters, errors) of anything a fix newly calls.
-- run before copilot is requested and again before `gh pr ready`. no delta, no pass.
-- run the repo's lint and the targeted tests at each delta tip.
+- runs in-session, one pass over the delta. no subagents unless `fanout` is passed.
+- run the repo's lint and the targeted tests at each non-trivial delta tip.
 - record the new head and the result in state `## log`.
 
 exit: every finding fixed or accepted; every Rn implemented and covered; the delta (if any) passes.
