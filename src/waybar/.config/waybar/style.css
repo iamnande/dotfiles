@@ -36,9 +36,11 @@ button:hover {
 }
 
 #workspaces button {
-    padding: 0 4px;
+    padding: 0 10px;
     /* say it here, or the gtk theme picks the color */
     color: @grey0;
+    /* a line after each name, so they don't run together */
+    border-right: 1px solid @bg3;
 }
 
 #workspaces button.active {
