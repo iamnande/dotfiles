@@ -4,6 +4,8 @@
   "modules-center": ["custom/hostname"],
   "modules-right": ["tray", "custom/caffeine", "group/dashboard", "clock", "custom/power"],
   "ext/workspaces": {
+    // by id, so the names don't sort themselves a to z
+    "sort-by-id": true,
     "on-click": "activate"
   },
   "custom/hostname": {
