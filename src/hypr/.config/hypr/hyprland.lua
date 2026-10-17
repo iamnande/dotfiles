@@ -1,4 +1,7 @@
 hl.on("hyprland.start", function()
+    -- the lock is the login - tty1 logs itself in, so nothing shows before the password.
+    -- no grace, or an unlock takes no password and the keyring stays locked
+    hl.exec_cmd("hyprlock --grace 0")
     hl.exec_cmd("hyprpaper")
     -- 1password only asks for a tray once, at start - so wait for the bar to have one.
     -- its own autostart is masked in .config/systemd/user, or it starts first and gets no tray
