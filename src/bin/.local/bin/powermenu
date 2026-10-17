@@ -3,7 +3,7 @@
 set -euo pipefail
 
 # powermenu
-# lock, sleep, log out, reboot or shut down - picked from wofi.
+# lock, sleep, reboot or shut down - picked from wofi.
 
 # binds don't get a terminal - so shout through a notification as well
 fail() {
@@ -16,21 +16,13 @@ command -v wofi >/dev/null 2>&1 || fail "wofi is not installed"
 
 # no cache, or wofi floats the last pick to the top.
 # escape means "nevermind", not "it broke"
-choice="$(printf '%s\n' lock sleep 'log out' reboot 'shut down' |
-	wofi --dmenu --insensitive --prompt power --lines 6 --cache-file /dev/null)" || exit 0
+choice="$(printf '%s\n' lock sleep reboot 'shut down' |
+	wofi --dmenu --insensitive --prompt power --lines 5 --cache-file /dev/null)" || exit 0
 
 case "$choice" in
 	lock) loginctl lock-session ;;
 	# hypridle locks on the way down, so it wakes to hyprlock
 	sleep) systemctl suspend ;;
-	'log out')
-		# hyprshutdown closes the apps first, when it's around
-		if command -v hyprshutdown >/dev/null 2>&1; then
-			hyprshutdown
-		else
-			hyprctl dispatch 'hl.dsp.exit()'
-		fi
-		;;
 	reboot) systemctl reboot ;;
 	'shut down') systemctl poweroff ;;
 	# typed something that isn't on the list
