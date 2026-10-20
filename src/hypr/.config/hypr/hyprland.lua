@@ -8,6 +8,8 @@ hl.on("hyprland.start", function()
     hl.exec_cmd("hyprpaper")
     hl.exec_cmd("waybar")
     hl.exec_cmd("hypridle")
+    -- a terminal on workspace 1 at login - fish drops it straight into mhq
+    hl.exec_cmd("ghostty")
 end)
 
 local mainMod     = "SUPER"
