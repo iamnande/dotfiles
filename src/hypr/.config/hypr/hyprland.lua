@@ -23,6 +23,7 @@ hl.bind(mainMod .. " + R", hl.dsp.exec_cmd(menu))
 hl.bind(mainMod .. " + E", hl.dsp.exec_cmd(fileManager))
 hl.bind(mainMod .. " + L", hl.dsp.exec_cmd("hyprlock"))
 hl.bind(mainMod .. " + I", hl.dsp.exec_cmd("caffeine toggle"))
+hl.bind(mainMod .. " + B", hl.dsp.exec_cmd("bop"))
 
 -- window management
 hl.bind(mainMod .. " + C", hl.dsp.window.close())

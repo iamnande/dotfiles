@@ -1,0 +1,68 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+# bop
+# xm6, where are you? oh xm6, i hope i find you..
+# toggles on whether a paired homie is connected, not on power - bluez turns the
+# juice on at boot, so a power check just turned it right back off.
+
+# binds don't get a terminal - so shout through a notification as well
+say() {
+	printf 'bop: %s\n' "$1"
+	notify-send bop "$1" 2>/dev/null || true
+}
+
+fail() {
+	printf 'bop: %s\n' "$1" >&2
+	notify-send --urgency=critical bop "$1" 2>/dev/null || true
+	exit 1
+}
+
+# bluetoothctl hangs when bluetoothd is down - so never wait on it forever.
+# and no grep -q on its output: grep bails early, pipefail sees the broken pipe.
+btctl() {
+	timeout 20 bluetoothctl "$@"
+}
+
+systemctl is-active --quiet bluetooth || fail "bluetooth is down. sudo systemctl enable --now bluetooth"
+
+mapfile -t homies < <(btctl devices Paired | awk '/^Device/ {print $2}')
+[ "${#homies[@]}" -gt 0 ] || fail "no paired homies. pair one first"
+
+# anyone home? then say bye and cut the juice
+for homie in "${homies[@]}"; do
+	if btctl info "$homie" | grep 'Connected: yes' >/dev/null; then
+		for h in "${homies[@]}"; do
+			btctl disconnect "$h" >/dev/null || true
+		done
+		btctl power off >/dev/null || fail "could not turn off the blue juice"
+		say "blue juice off"
+		exit 0
+	fi
+done
+
+# we got juice?
+if ! btctl show | grep 'Powered: yes' >/dev/null; then
+	btctl power on >/dev/null || fail "could not turn on the blue juice"
+
+	# wait until the juice is flowing, for like 30 seconds
+	for _ in $(seq 150); do
+		btctl show | grep 'Powered: yes' >/dev/null && break
+		sleep 0.2
+	done
+fi
+
+# go get the homies
+missed=0
+for homie in "${homies[@]}"; do
+	name=$(btctl info "$homie" | sed -n 's/^\tName: //p')
+	if btctl connect "$homie" >/dev/null; then
+		say "connected to ${name:-$homie}"
+	else
+		printf 'bop: could not reach %s. is it on?\n' "${name:-$homie}" >&2
+		notify-send --urgency=critical bop "could not reach ${name:-$homie}. is it on?" 2>/dev/null || true
+		missed=1
+	fi
+done
+exit "$missed"
