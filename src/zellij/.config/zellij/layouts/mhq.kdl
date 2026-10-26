@@ -11,9 +11,7 @@ layout {
 
     // senzu
     tab name="senzu" focus=true cwd="$HOME/src/iamnande/senzu" {
-        pane name="bean" {
-            command "claude"
-            args "/senzu"
-        }
+        // just a shell - claude at boot runs gh, and gh asks the keyring before the unlock
+        pane name="bean"
     }
 }
