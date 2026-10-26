@@ -9,39 +9,11 @@ layout {
         }
     }
 
-    // dotfiles
-    tab name="dotfiles" cwd="$HOME/src/iamnande/dotfiles" {
-        pane stacked=true {
-            pane name="editor" command="hx" expanded=true focus=true
-            pane name="shell"
-        }
-    }
-
-    // website
-    tab name="website" cwd="$HOME/src/iamnande/iamnande" {
-        pane stacked=true {
-            pane name="editor" command="hx" expanded=true focus=true
-            pane name="shell"
-            pane name="pnpm dev" start_suspended=true {
-                command "pnpm"
-                args "run" "dev"
-            }
-        }
-    }
-
-    // homelab
-    tab name="homelab" cwd="$HOME/src/iamnande/homelab" {
-        pane stacked=true {
-            pane name="editor" command="hx" expanded=true focus=true
-            pane name="shell"
-        }
-    }
-
-    // rawr
-    tab name="rawr" cwd="$HOME/src/iamnande/rawr" {
-        pane stacked=true {
-            pane name="editor" command="hx" expanded=true focus=true
-            pane name="shell"
+    // senzu
+    tab name="senzu" focus=true cwd="$HOME/src/iamnande/senzu" {
+        pane name="bean" {
+            command "claude"
+            args "/senzu"
         }
     }
 }
