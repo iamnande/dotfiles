@@ -40,7 +40,7 @@ hl.bind(mainMod .. " + up",    hl.dsp.focus({ direction = "up" }))
 hl.bind(mainMod .. " + down",  hl.dsp.focus({ direction = "down" }))
 
 -- workspaces, and move window to workspace
-local names = { [1] = "terminal", [2] = "browser", [6] = "secrets" }
+local names = { [1] = "matrix", [2] = "interweb", [3] = "gaming" }
 for i = 1, 6 do
     -- the named ones are always there, so the bar can show and click them.
     -- the rest show up when used and go away when empty
