@@ -48,7 +48,9 @@ end
 function z --wraps zellij --description "workspace management"
     zellij $argv
 end
-alias mhq='z -d -l mhq a -c mhq'
+# zellij restores its saved copy of a dead session and skips the layout - so drop
+# the copy first. a live session is left alone (that takes --force).
+alias mhq='z delete-session mhq >/dev/null 2>&1; z -d -l mhq a -c mhq'
 
 # claim your fighter! (helix atm)
 set -gx EDITOR hx
