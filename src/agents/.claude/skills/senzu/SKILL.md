@@ -3,6 +3,7 @@ name: senzu
 description: senzu SDLC router. reads the session state file, reports the phase, names the next iam-* skill.
 argument-hint: "[<slug>]"
 disable-model-invocation: true
+model: haiku
 ---
 
 # senzu
