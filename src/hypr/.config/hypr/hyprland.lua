@@ -1,11 +1,11 @@
 hl.on("hyprland.start", function()
     -- the lock is the login - tty1 logs itself in, so nothing shows before the password.
     -- no grace, or an unlock takes no password and the keyring stays locked
-    -- 1password waits for the unlock too, or it asks the locked keyring and that prompt hides under the lock.
-    -- 1password only asks for a tray once, at start - so wait for the bar to have one.
+    -- bitwarden waits for the unlock too, or it asks the locked keyring and that prompt hides under the lock.
+    -- bitwarden only asks for a tray once, at start - so wait for the bar to have one.
     -- its own autostart is masked in .config/systemd/user, or it starts first and gets no tray
-    -- bitwarden gets the same treatment, and holds the ssh agent now
-    hl.exec_cmd("hyprlock --grace 0; gdbus wait --session --timeout 10 org.kde.StatusNotifierWatcher; 1password --silent & bitwarden-desktop")
+    -- land on secrets after the unlock - bitwarden wants its password, and its one approval per boot shows there
+    hl.exec_cmd("hyprlock --grace 0; hyprctl dispatch 'hl.dsp.focus({ workspace = 6 })'; gdbus wait --session --timeout 10 org.kde.StatusNotifierWatcher; bitwarden-desktop")
     hl.exec_cmd("hyprpaper")
     hl.exec_cmd("waybar")
     hl.exec_cmd("hypridle")
@@ -41,7 +41,7 @@ hl.bind(mainMod .. " + up",    hl.dsp.focus({ direction = "up" }))
 hl.bind(mainMod .. " + down",  hl.dsp.focus({ direction = "down" }))
 
 -- workspaces, and move window to workspace
-local names = { [1] = "matrix", [2] = "interweb", [3] = "gaming" }
+local names = { [1] = "matrix", [2] = "interweb", [3] = "gaming", [6] = "secrets" }
 for i = 1, 6 do
     -- the named ones are always there, so the bar can show and click them.
     -- the rest show up when used and go away when empty
@@ -51,6 +51,13 @@ for i = 1, 6 do
     hl.bind(mainMod .. " + " .. i,         hl.dsp.focus({ workspace = i }))
     hl.bind(mainMod .. " + SHIFT + " .. i, hl.dsp.window.move({ workspace = i }))
 end
+
+-- bitwarden lives on secrets. silent, so its prompts never pull me off what i'm on
+hl.window_rule({
+    name      = "bitwarden-on-secrets",
+    match     = { class = "^Bitwarden$" },
+    workspace = "6 silent",
+})
 
 -- resize
 hl.bind(mainMod .. " + CTRL + right", hl.dsp.window.resize({ x = 30,  y = 0,   relative = true }), { repeating = true })
