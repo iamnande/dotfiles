@@ -4,7 +4,8 @@ hl.on("hyprland.start", function()
     -- 1password waits for the unlock too, or it asks the locked keyring and that prompt hides under the lock.
     -- 1password only asks for a tray once, at start - so wait for the bar to have one.
     -- its own autostart is masked in .config/systemd/user, or it starts first and gets no tray
-    hl.exec_cmd("hyprlock --grace 0; gdbus wait --session --timeout 10 org.kde.StatusNotifierWatcher; 1password --silent")
+    -- bitwarden gets the same treatment, and holds the ssh agent now
+    hl.exec_cmd("hyprlock --grace 0; gdbus wait --session --timeout 10 org.kde.StatusNotifierWatcher; 1password --silent & bitwarden-desktop")
     hl.exec_cmd("hyprpaper")
     hl.exec_cmd("waybar")
     hl.exec_cmd("hypridle")
