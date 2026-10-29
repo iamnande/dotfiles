@@ -4,13 +4,23 @@ hl.on("hyprland.start", function()
     -- bitwarden waits for the unlock too, or it asks the locked keyring and that prompt hides under the lock.
     -- bitwarden only asks for a tray once, at start - so wait for the bar to have one.
     -- its own autostart is masked in .config/systemd/user, or it starts first and gets no tray
-    -- land on secrets after the unlock - bitwarden wants its password, and its one approval per boot shows there
-    hl.exec_cmd("hyprlock --grace 0; hyprctl dispatch 'hl.dsp.focus({ workspace = 6 })'; gdbus wait --session --timeout 10 org.kde.StatusNotifierWatcher; bitwarden-desktop")
+    hl.exec_cmd("hyprlock --grace 0; gdbus wait --session --timeout 10 org.kde.StatusNotifierWatcher; bitwarden-desktop")
     hl.exec_cmd("hyprpaper")
     hl.exec_cmd("waybar")
     hl.exec_cmd("hypridle")
     -- a terminal on workspace 1 at login - fish drops it straight into mhq
     hl.exec_cmd("ghostty")
+end)
+
+-- land on secrets once bitwarden is up - bitwarden wants its password, and its one approval per boot shows there.
+-- not before: a window that opens under a still cursor shows no cursor until it moves.
+-- once per boot, so a later restart stays silent
+local landing
+landing = hl.on("window.open", function(w)
+    if w.class == "Bitwarden" then
+        hl.dispatch(hl.dsp.focus({ workspace = 6 }))
+        landing:remove()
+    end
 end)
 
 local mainMod     = "SUPER"
