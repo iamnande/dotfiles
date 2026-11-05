@@ -1,5 +1,5 @@
 ---
-name: iam-refine
+name: senzu-refine
 description: senzu phase 3. makes the branch right: idiom, completeness, DRY/YAGNI, requirements coverage, security, resilience, callers, deploy compatibility.
 argument-hint: "[<slug>] [fanout | delta]"
 disable-model-invocation: true
@@ -15,11 +15,12 @@ make it right, don't just review what was built. assume a model wrote most of th
 - never post to github, linear, or slack without sign-off on the exact text.
 - surface blockers at once. don't work around them.
 - phase too big for one session: at a clean checkpoint, update the state file and hand off to the same skill.
+- the state file is json. after each write, `senzu check` prints `ok`.
 - before `git add`, say which files go in which commit and why. before `--amend`, check `git log --oneline` for HEAD.
 
 ## start
 
-state: `~/src/iamnande/senzu/beans/<slug>.md`. slug from the argument, else the issue id or slug in the current branch name (ignore case), else ask. review the branch diff against its base, with the tech spec and the PRD's Rn list.
+state: `$SENZU_BEANS/<slug>.json`. slug from the argument, else the issue id or slug in the current branch name (ignore case), else ask. review the branch diff against its base, with the tech spec and the PRD's Rn list.
 
 ## check
 
@@ -36,7 +37,7 @@ state: `~/src/iamnande/senzu/beans/<slug>.md`. slug from the argument, else the 
 - errors: every changed error condition has text that says what to do. user-correctable errors aren't 500s. a changed status code is intended, not a side effect.
 - docs: grep docs, protos, and comments for claims the change makes false (end state, defaults, "not supported" lines).
 - generated and mirrored files: regenerated or updated in the same change.
-- tests: every new test has a named red line (see iam-execute). a test that asserts a constant against its own copy, or that a mock got the value the test passed in, is decoration.
+- tests: every new test has a named red line (see senzu-execute). a test that asserts a constant against its own copy, or that a mock got the value the test passed in, is decoration.
 
 ## how
 
@@ -44,12 +45,12 @@ state: `~/src/iamnande/senzu/beans/<slug>.md`. slug from the argument, else the 
 - `fanout` argument, or on request for a high-risk change: at most 2 subagents, one scope each (e.g. security, deploy). give each only the diff and the relevant tech spec sections. each returns at most 10 findings, with file:line and a concrete failure.
 - a finding needs a trigger (the input, state, or sequence), the wrong behavior, and the test that would go red. no trigger means it's a question, listed apart from findings.
 - before showing a finding, try to refute it: look for the guard, the caller-side check, or the test that makes it harmless. check it against the current code. drop noise.
-- show one list, most severe first. user picks fix, accept, or drop per item. record accepted tradeoffs in state `## decisions`.
+- show one list, most severe first. user picks fix, accept, or drop per item. record accepted tradeoffs in state `decisions`.
 - end with one line naming the categories checked and clean. name any category skipped.
 
 ## delta
 
-`/iam-refine delta` runs after refine has exited, on the changes since then.
+`/senzu-refine delta` runs after refine has exited, on the changes since then.
 
 - the delta is every commit added since the head state recorded when refine exited. a commit that is a pure rebase (same patch-id) isn't a delta.
 - trivial deltas skip refine: comments, docs, or generated files only, with no behavior change and no claim moved. a docs change that moves a claim is non-trivial.
@@ -57,17 +58,17 @@ state: `~/src/iamnande/senzu/beans/<slug>.md`. slug from the argument, else the 
 - same checks, scoped to the delta's hunks and their callers. read the contract (sql, filters, errors) of anything a fix newly calls.
 - runs in-session, one pass over the delta. no subagents unless `fanout` is passed.
 - run the repo's lint and the targeted tests at each non-trivial delta tip.
-- record the new head and the result in state `## log`.
+- record the new head and the result in state `log`.
 
 exit: every finding fixed or accepted; every Rn implemented and covered; the delta (if any) passes.
 
 ## handoff
 
-update the state file (phase, next, decisions, one `## log` line), then:
+update the state file (phase, next, decisions, one `log` entry), then:
 
 **phase complete: refine**
 - <2-4 terse bullets>
 
-**next: /iam-pr** (<one line>). run `/clear` first.
+**next: /senzu-pr** (<one line>). run `/clear` first.
 
-if state has `slack`, also draft a one-line reply for that thread: `<phase> done: <outcome>. next: <phase>`, PR links inline. post it only when the user says post.
+if state has `thread`, also draft a one-line reply for that thread: `<phase> done: <outcome>. next: <phase>`, PR links inline. post it only when the user says post.

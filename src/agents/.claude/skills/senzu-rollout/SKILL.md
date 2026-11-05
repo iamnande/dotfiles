@@ -1,5 +1,5 @@
 ---
-name: iam-rollout
+name: senzu-rollout
 description: senzu phase 5. merges in order, runs the staged rollout with verification, then closes out (learnings, issue comment, close, branch cleanup).
 argument-hint: "[<slug>]"
 disable-model-invocation: true
@@ -15,10 +15,11 @@ ship it, verify it against the deployed change, close it out.
 - never post to github, linear, or slack without sign-off on the exact text.
 - surface blockers at once. don't work around them.
 - phase too big for one session: at a clean checkpoint, update the state file and hand off to the same skill. a rollout that spans days checkpoints between stages.
+- the state file is json. after each write, `senzu check` prints `ok`.
 
 ## start
 
-state: `~/src/iamnande/senzu/beans/<slug>.md`. slug from the argument, else the issue id or slug in the current branch name (ignore case), else ask. read the tech spec's Rollout Plan and Services & Ordering.
+state: `$SENZU_BEANS/<slug>.json`. slug from the argument, else the issue id or slug in the current branch name (ignore case), else ask. read the tech spec's Rollout Plan and Services & Ordering.
 
 ## 1. merge
 
@@ -33,7 +34,7 @@ state: `~/src/iamnande/senzu/beans/<slug>.md`. slug from the argument, else the 
 
 ## 3. close-out
 
-- learnings: what went well, what went wrong or took longer, what was surprising. record in state `## decisions`.
+- learnings: what went well, what went wrong or took longer, what was surprising. record in state `decisions`.
 - draft the issue completion comment: what shipped, tradeoffs accepted, anything worth carrying forward. user edits or cuts, then post.
 - close the issue only after every PR shows merged.
 - per merged PR: `git -C <repo> worktree remove <path>`. then hand the user the branch deletes (claude-guard blocks agents from running them): `git push origin --delete <branch>` and `git branch -D <branch>` (rebase merges make `-d` refuse).
@@ -43,9 +44,9 @@ exit: rollout verified; issue closed; worktrees removed; branch deletes handed o
 
 ## handoff
 
-update the state file (phase, one `## log` line), then:
+update the state file (phase, one `log` entry), then:
 
 **phase complete: rollout**
 - <2-4 terse bullets: what shipped, what's left>
 
-if state has `slack`, also draft a one-line reply for that thread: `<phase> done: <outcome>. next: <phase>`, PR links inline. post it only when the user says post.
+if state has `thread`, also draft a one-line reply for that thread: `<phase> done: <outcome>. next: <phase>`, PR links inline. post it only when the user says post.

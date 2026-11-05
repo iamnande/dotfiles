@@ -1,6 +1,6 @@
 # agents
 
-global agent instructions, claude skills, and the senzu workflow. `make agents` stows `src/agents/` into `~`. `make bin` stows the `senzu` CLI.
+global agent instructions, claude skills, and the senzu workflow. `make agents` stows `src/agents/` into `~`. the `senzu` cli is [senzu-rs](https://github.com/iamnande/senzu-rs).
 
 ## instructions
 
@@ -31,15 +31,15 @@ the push rule follows the host. on `rocinante` and `sector7`: `github.com/iamnan
 one ticket is one stream. one phase is one session. `/clear` between phases.
 
 ```
-senzu ADMIN-123          # new: fetch ticket, open /iam-ground. existing: cd to its worktree, open /senzu
-/senzu [slug]            # where am i, what's next. no match: table of every active stream
-/iam-ground <id|topic>   # open questions, terms, prior art. creates state file + slack thread
-/iam-plan                # worktrees, PRD, tech spec, plan page, issue comment
-/iam-execute             # small verified commits
-/iam-refine [fanout]     # idiom, DRY/YAGNI, Rn coverage, security, resilience. fanout: up to 2 subagents
-/iam-pr                  # draft PR (/pr-body), copilot review, resolve threads, ready for review
-/iam-rollout             # merge, staged rollout, verify, close-out, remove worktrees + branches
-senzu ADMIN-123 close    # mark the linear ticket done
+senzu                      # tui: browse streams. enter opens the agent on the bean's next skill
+senzu ls | show <slug>     # one line per stream, or one bean. json when piped
+senzu check                # every bean against the schema
+/senzu-ground <id|topic>   # open questions, terms, prior art. creates state file + slack thread
+/senzu-plan                # worktrees, PRD, tech spec, plan page, issue comment
+/senzu-execute             # small verified commits
+/senzu-refine [fanout]     # idiom, DRY/YAGNI, Rn coverage, security, resilience. fanout: up to 2 subagents
+/senzu-pr                  # draft PR (/pr-body), copilot review, resolve threads, ready for review
+/senzu-rollout             # merge, staged rollout, verify, close-out, remove worktrees + branches
 ```
 
 every phase drafts each action and waits for approval. nothing posts to github, linear, or slack without sign-off on the exact text. each phase ends by updating the state file and naming the next skill. a phase too big for one session: checkpoint, `/clear`, rerun the same skill.
@@ -48,13 +48,13 @@ every phase drafts each action and waits for approval. nothing posts to github, 
 
 | what | where |
 |---|---|
-| handoff state | `~/src/iamnande/senzu/beans/<ISSUE>.md` |
+| handoff state | `$SENZU_BEANS/<slug>.json`, set in `conf.d/senzu.fish` |
 | worktrees | `~/worktrees/<ISSUE>-<slug>` on `nick/<issue>-<slug>` |
 | PRD + tech spec | `docs/prds/<date>_<slug>/` in the primary worktree, committed |
-| plan page | one private artifact per stream, rendered from those two files. link on the state file's `plan` line |
+| plan page | one private artifact per stream, rendered from those two files. link in the state file's `plan.page` |
 | slack thread | #myspace-nick, parent `:thread: <ISSUE> / <title>` |
-| skills | `src/agents/.claude/skills/` (templates in `iam-plan/templates/`) |
-| CLI | `src/bin/.local/bin/senzu`, `senzu-fetch` (need `LINEAR_TOKEN`) |
+| skills | `src/agents/.claude/skills/` (templates in `senzu-plan/templates/`) |
+| CLI | `cargo install --locked --git https://github.com/iamnande/senzu-rs`, into `~/.cargo/bin` |
 
 ## editing skills
 
