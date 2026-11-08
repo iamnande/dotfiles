@@ -1,5 +1,6 @@
 [[language]]
 name = "markdown"
+text-width = 80
 auto-format = true
 formatter = {command = "prettier", args = ["--prose-wrap", "always", "--parser", "markdown"]}
 

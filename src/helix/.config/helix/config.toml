@@ -5,6 +5,12 @@ mouse = false
 line-number = "relative"
 bufferline = "multiple"
 end-of-line-diagnostics = "hint"
+text-width = 120
+rulers = [80, 120]
+
+[editor.soft-wrap]
+enable = true
+wrap-at-text-width = true
 
 [editor.cursor-shape]
 insert = "bar"
