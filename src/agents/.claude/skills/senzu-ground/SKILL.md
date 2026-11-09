@@ -21,7 +21,7 @@ understand the problem before planning it.
 
 - ticket context: fetch the issue, if there is one.
 - state: the bean `<slug>`. `<slug>` is the issue id, else kebab-case, 3-5 words. `senzu show <slug>` finds it: resume it. none: create `<slug>.json` in the beans dir (`senzu config`) in the format below.
-- slack: search #myspace-nick for a parent message with the issue id. found: read its thread for context. none: draft the parent `:thread: <ISSUE> / <title>` (no issue: `:thread: <title>`) and post it when the user says post. record the permalink and ts in state `thread`.
+- slack: only when `thread_channel` is set in `senzu config --json`. search that channel for a parent message with the issue id. found: read its thread for context. none: draft the parent `:thread: <ISSUE> / <title>` (no issue: `:thread: <title>`) and post it when the user says post. record the permalink and ts in state `thread`.
 
 ## work
 
@@ -73,4 +73,4 @@ update the state file (phase, next, decisions, one `log` entry), then:
 
 **next: /senzu-plan** (<one line>). run `/clear` first.
 
-if state has `thread`, also draft a one-line reply for that thread: `<phase> done: <outcome>. next: <phase>`, PR links inline. post it only when the user says post.
+if state has `thread` and `senzu config` sets `thread_channel`, also draft a one-line reply for that thread: `<phase> done: <outcome>. next: <phase>`, PR links inline. post it only when the user says post.
