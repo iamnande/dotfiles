@@ -19,18 +19,18 @@ ship it, verify it against the deployed change, close it out.
 
 ## start
 
-state: `$SENZU_BEANS/<slug>.json`. slug from the argument, else the issue id or slug in the current branch name (ignore case), else ask. read the tech spec's Rollout Plan and Services & Ordering.
+state: the bean `<slug>`. read it with `senzu show <slug>`; its file is `.uri` in `senzu show <slug> --json`. slug from the argument, else the issue id or slug in the current branch name (ignore case), else ask. the plan is the `plan` attachment in `senzu show <slug> --json`. read its verify and rollback.
 
 ## 1. merge
 
-- per PR, in order: confirm approval and green CI, then merge. prefer rebase merge. never `--delete-branch`.
+- per PR, in /senzu-pr's order: confirm approval and green CI, then merge. prefer rebase merge. never `--delete-branch`.
 - confirm with `gh pr view <n> --json state,mergedAt`. never infer a merge from titles or ticket text.
 
 ## 2. rollout
 
-- follow the Rollout Plan: stages, flags, gates. stage it when the blast radius is broad.
-- at each stage, run the plan's verification against the deployed change.
-- on a regression: stop, surface it, propose the rollback from the tech spec.
+- stage it when the blast radius is broad: flags, gates, one host first.
+- at each stage, run the plan's verify against the deployed change.
+- on a regression: stop, surface it, propose the plan's rollback.
 
 ## 3. close-out
 
