@@ -24,12 +24,12 @@ state: the bean `<slug>`. read it with `senzu show <slug>`; its file is `.uri` i
 
 ## 1. worktrees
 
-one worktree per affected repo, so streams never share a checkout. after `git -C <repo> fetch origin`:
+one worktree per affected repo, so streams never share a checkout. `<worktrees>` and `<branch_prefix>` come from `senzu config --json` (no prefix when it's unset). after `git -C <repo> fetch origin`:
 
-`git -C <repo> worktree add -b nick/<issue>-<slug> ~/worktrees/<ISSUE>-<slug> origin/<default-branch>`
+`git -C <repo> worktree add -b <branch_prefix><issue>-<slug> <worktrees>/<ISSUE>-<slug> origin/<default-branch>`
 
 - `<ISSUE>` is the issue id as written, `<issue>` is lowercase. no issue: drop the id.
-- slug is kebab-case, 3-5 words, e.g. `nick/admin-123-short-slug`.
+- slug is kebab-case, 3-5 words, e.g. `admin-123-short-slug`.
 - second repo in the same stream: append `-<repo>` to the worktree dir.
 - record each absolute worktree path and branch in state `repos`. work only in the worktrees from here on.
 
@@ -59,4 +59,4 @@ update the state file (phase, next, decisions, one `log` entry), then:
 
 **next: /senzu-execute** (<one line>). run `/clear` first.
 
-if state has `thread`, also draft a one-line reply for that thread: `<phase> done: <outcome>. next: <phase>`, PR links inline. post it only when the user says post.
+if state has `thread` and `senzu config` sets `thread_channel`, also draft a one-line reply for that thread: `<phase> done: <outcome>. next: <phase>`, PR links inline. post it only when the user says post.

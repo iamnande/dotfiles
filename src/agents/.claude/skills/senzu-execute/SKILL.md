@@ -41,4 +41,4 @@ update the state file (phase, next, decisions, one `log` entry with the commits 
 
 **next: /senzu-refine** (<one line>). run `/clear` first.
 
-if state has `thread`, also draft a one-line reply for that thread: `<phase> done: <outcome>. next: <phase>`, PR links inline. post it only when the user says post.
+if state has `thread` and `senzu config` sets `thread_channel`, also draft a one-line reply for that thread: `<phase> done: <outcome>. next: <phase>`, PR links inline. post it only when the user says post.
