@@ -1,6 +1,6 @@
 ---
 name: senzu-rollout
-description: senzu phase 5. merges in order, runs the staged rollout with verification, then closes out (learnings, issue comment, close, branch cleanup).
+description: senzu phase 5. hands over merges in order, runs the staged rollout with verification, then closes out (learnings, issue comment, close, branch cleanup).
 argument-hint: "[<slug>]"
 disable-model-invocation: true
 ---
@@ -11,7 +11,9 @@ ship it, verify it against the deployed change, close it out.
 
 ## rules
 
-- draft each action (code change, commit, push, PR change, comment, close) and wait for explicit approval. after an approved action succeeds, report it and propose the next one.
+- commits, pushes, PRs, merges and branch deletes are the user's. make one commit-sized change, leave it unstaged, say in a few lines what changed and why and which files go in which commit, then stop.
+- draft each outward action (comment, post, close) and wait for explicit approval. after an approved action succeeds, report it and propose the next one.
+- beans, worktrees and other reversible non-git steps: do them, then say so.
 - never post to github, linear, or slack without sign-off on the exact text.
 - surface blockers at once. don't work around them.
 - phase too big for one session: at a clean checkpoint, update the state file and hand off to the same skill. a rollout that spans days checkpoints between stages.
@@ -19,11 +21,13 @@ ship it, verify it against the deployed change, close it out.
 
 ## start
 
-state: the bean `<slug>`. read it with `senzu show <slug>`; its file is `.uri` in `senzu show <slug> --json`. slug from the argument, else the issue id or slug in the current branch name (ignore case), else ask. the plan is the `plan` attachment in `senzu show <slug> --json`. read its verify and rollback.
+on a resumed bean, the first reply is a recap, one line each: the goal, where we are, what is next and why. never assume the user remembers the plan.
+
+state: the bean `<slug>`. read it with `senzu show <slug>`; its file is `.path` in `senzu show <slug> --json`. slug from the argument, else the issue id or slug in the current branch name (ignore case), else ask. the plan is the `path` of the `plan` attachment in `senzu show <slug> --json`. read its verify and rollback.
 
 ## 1. merge
 
-- per PR, in /senzu-pr's order: confirm approval and green CI, then merge. prefer rebase merge. never `--delete-branch`.
+- per PR, in /senzu-pr's order: confirm approval and green CI, then hand the user the merge (`gh pr merge <n> --rebase`, never `--delete-branch`).
 - confirm with `gh pr view <n> --json state,mergedAt`. never infer a merge from titles or ticket text.
 
 ## 2. rollout

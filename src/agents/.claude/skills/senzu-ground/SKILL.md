@@ -11,13 +11,17 @@ understand the problem before planning it.
 
 ## rules
 
-- draft each action (code change, commit, push, PR change, comment, close) and wait for explicit approval. after an approved action succeeds, report it and propose the next one.
+- commits, pushes, PRs, merges and branch deletes are the user's. make one commit-sized change, leave it unstaged, say in a few lines what changed and why and which files go in which commit, then stop.
+- draft each outward action (comment, post, close) and wait for explicit approval. after an approved action succeeds, report it and propose the next one.
+- beans, worktrees and other reversible non-git steps: do them, then say so.
 - never post to github, linear, or slack without sign-off on the exact text.
 - surface blockers at once. don't work around them.
 - phase too big for one session: at a clean checkpoint, update the state file and hand off to the same skill.
 - the state file is json. after each write, `senzu check` prints `ok`.
 
 ## start
+
+on a resumed bean, the first reply is a recap, one line each: the goal, where we are, what is next and why. never assume the user remembers the plan.
 
 - ticket context: fetch the issue, if there is one.
 - state: the bean `<slug>`. `<slug>` is the issue id, else kebab-case, 3-5 words. `senzu show <slug>` finds it: resume it. none: create `<slug>.json` in the beans dir (`senzu config`) in the format below.

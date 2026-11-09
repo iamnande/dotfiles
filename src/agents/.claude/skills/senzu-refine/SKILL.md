@@ -11,16 +11,19 @@ make it right, don't just review what was built. assume a model wrote most of th
 
 ## rules
 
-- draft each action (code change, commit, push, PR change, comment, close) and wait for explicit approval. after an approved action succeeds, report it and propose the next one.
+- commits, pushes, PRs, merges and branch deletes are the user's. make one commit-sized change, leave it unstaged, say in a few lines what changed and why and which files go in which commit, then stop.
+- draft each outward action (comment, post, close) and wait for explicit approval. after an approved action succeeds, report it and propose the next one.
+- beans, worktrees and other reversible non-git steps: do them, then say so.
 - never post to github, linear, or slack without sign-off on the exact text.
 - surface blockers at once. don't work around them.
 - phase too big for one session: at a clean checkpoint, update the state file and hand off to the same skill.
 - the state file is json. after each write, `senzu check` prints `ok`.
-- before `git add`, say which files go in which commit and why. before `--amend`, check `git log --oneline` for HEAD.
 
 ## start
 
-state: the bean `<slug>`. read it with `senzu show <slug>`; its file is `.uri` in `senzu show <slug> --json`. slug from the argument, else the issue id or slug in the current branch name (ignore case), else ask. the plan is the `plan` attachment in `senzu show <slug> --json`. review the branch diff against its base, with the plan's requirements.
+on a resumed bean, the first reply is a recap, one line each: the goal, where we are, what is next and why. never assume the user remembers the plan.
+
+state: the bean `<slug>`. read it with `senzu show <slug>`; its file is `.path` in `senzu show <slug> --json`. slug from the argument, else the issue id or slug in the current branch name (ignore case), else ask. the plan is the `path` of the `plan` attachment in `senzu show <slug> --json`. review the branch diff against its base, with the plan's requirements.
 
 ## check
 
@@ -45,7 +48,13 @@ state: the bean `<slug>`. read it with `senzu show <slug>`; its file is `.uri` i
 - `fanout` argument, or on request for a high-risk change: at most 2 subagents, one scope each (e.g. security, deploy). give each only the diff and the relevant plan sections. each returns at most 10 findings, with file:line and a concrete failure.
 - a finding needs a trigger (the input, state, or sequence), the wrong behavior, and the test that would go red. no trigger means it's a question, listed apart from findings.
 - before showing a finding, try to refute it: look for the guard, the caller-side check, or the test that makes it harmless. check it against the current code. drop noise.
-- show one list, most severe first. user picks fix, accept, or drop per item. record accepted tradeoffs in state `decisions`.
+- sort each finding into a bucket. no per-item question:
+  - must fix: trigger reproduced, and the diff adds it or makes it worse (code, or a docs claim the diff makes false). fix it.
+  - may fix: a nit in the diff's own hunks, a few lines, no behavior change. fix it.
+  - out of branch: pre-existing, the diff didn't touch it. one line on a bean, never fixed here.
+  - falls away: no trigger, or a decision in state already covers it. one line in the `log`.
+- a fix that changes behavior or a contract past the finding is the user's call: stop and ask.
+- show one list, most severe first, with each bucket and what was done. then one delta pass over the fix hunks: only must-fix counts there, nits drop. a must-fix on that pass is a blocker for the user, never a third round.
 - end with one line naming the categories checked and clean. name any category skipped.
 
 ## delta
@@ -60,7 +69,7 @@ state: the bean `<slug>`. read it with `senzu show <slug>`; its file is `.uri` i
 - run the repo's lint and the targeted tests at each non-trivial delta tip.
 - record the new head and the result in state `log`.
 
-exit: every finding fixed or accepted; every Rn implemented and covered; the delta (if any) passes.
+exit: every must-fix and may-fix fixed, and the fix pass clean; every Rn implemented and covered; the delta (if any) passes.
 
 ## handoff
 
