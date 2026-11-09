@@ -7,7 +7,7 @@ disable-model-invocation: true
 
 # pr
 
-one PR per branch, in the tech spec's Services & Ordering order. a stacked PR's base is the branch below it.
+one PR per branch, steel thread first, then state `repos` order. a stacked PR's base is the branch below it.
 
 ## rules
 
@@ -20,7 +20,7 @@ one PR per branch, in the tech spec's Services & Ordering order. a stacked PR's 
 
 ## start
 
-state: `$SENZU_BEANS/<slug>.json`. slug from the argument, else the issue id or slug in the current branch name (ignore case), else ask. PRs already in state `prs`: pick up at their current step.
+state: the bean `<slug>`. read it with `senzu show <slug>`; its file is `.uri` in `senzu show <slug> --json`. slug from the argument, else the issue id or slug in the current branch name (ignore case), else ask. PRs already in state `prs`: pick up at their current step.
 
 ## 1. draft
 

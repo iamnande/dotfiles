@@ -20,7 +20,7 @@ make it right, don't just review what was built. assume a model wrote most of th
 
 ## start
 
-state: `$SENZU_BEANS/<slug>.json`. slug from the argument, else the issue id or slug in the current branch name (ignore case), else ask. review the branch diff against its base, with the tech spec and the PRD's Rn list.
+state: the bean `<slug>`. read it with `senzu show <slug>`; its file is `.uri` in `senzu show <slug> --json`. slug from the argument, else the issue id or slug in the current branch name (ignore case), else ask. the plan is the `plan` attachment in `senzu show <slug> --json`. review the branch diff against its base, with the plan's requirements.
 
 ## check
 
@@ -42,7 +42,7 @@ state: `$SENZU_BEANS/<slug>.json`. slug from the argument, else the issue id or 
 ## how
 
 - review in this session. no subagents by default.
-- `fanout` argument, or on request for a high-risk change: at most 2 subagents, one scope each (e.g. security, deploy). give each only the diff and the relevant tech spec sections. each returns at most 10 findings, with file:line and a concrete failure.
+- `fanout` argument, or on request for a high-risk change: at most 2 subagents, one scope each (e.g. security, deploy). give each only the diff and the relevant plan sections. each returns at most 10 findings, with file:line and a concrete failure.
 - a finding needs a trigger (the input, state, or sequence), the wrong behavior, and the test that would go red. no trigger means it's a question, listed apart from findings.
 - before showing a finding, try to refute it: look for the guard, the caller-side check, or the test that makes it harmless. check it against the current code. drop noise.
 - show one list, most severe first. user picks fix, accept, or drop per item. record accepted tradeoffs in state `decisions`.

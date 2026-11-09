@@ -33,27 +33,27 @@ one ticket is one stream. one phase is one session. `/clear` between phases.
 ```
 senzu                      # tui: browse streams. enter opens the agent on the bean's next skill
 senzu ls | show <slug>     # one line per stream, or one bean. json when piped
-senzu check                # every bean against the schema
-/senzu-ground <id|topic>   # open questions, terms, prior art. creates state file + slack thread
-/senzu-plan                # worktrees, PRD, tech spec, plan page, issue comment
-/senzu-execute             # small verified commits
+senzu check                # every bean against the schema, plus the plans beside them
+senzu config               # each setting and the layer that set it. the skills read it
+/senzu-ground <id|topic>   # open questions, terms, prior art. creates the bean (+ slack thread when thread_channel is set)
+/senzu-plan                # worktrees, the plan beside the bean, issue comment
+/senzu-execute             # one reviewed diff at a time, i commit each
 /senzu-refine [fanout]     # idiom, DRY/YAGNI, Rn coverage, security, resilience. fanout: up to 2 subagents
-/senzu-pr                  # draft PR (/pr-body), copilot review, resolve threads, ready for review
-/senzu-rollout             # merge, staged rollout, verify, close-out, remove worktrees + branches
+/senzu-pr                  # facts outline + submission preview, i open the PR. threads, then ready
+/senzu-rollout             # merges handed over, staged rollout, verify, close-out, worktrees + branch deletes
 ```
 
-every phase drafts each action and waits for approval. nothing posts to github, linear, or slack without sign-off on the exact text. each phase ends by updating the state file and naming the next skill. a phase too big for one session: checkpoint, `/clear`, rerun the same skill.
+commits, pushes, PRs, merges and branch deletes are mine. the agent makes one commit-sized change, leaves it unstaged, and stops. beans and worktrees it just does, then says so. nothing posts to github, linear, or slack without sign-off on the exact text. each phase ends by updating the bean and naming the next skill. a phase too big for one session: checkpoint, `/clear`, rerun the same skill.
 
 ## where things live
 
 | what | where |
 |---|---|
-| handoff state | `$SENZU_BEANS/<slug>.json`, set in `conf.d/senzu.fish` |
-| worktrees | `~/worktrees/<ISSUE>-<slug>` on `nick/<issue>-<slug>` |
-| PRD + tech spec | `docs/prds/<date>_<slug>/` in the primary worktree, committed |
-| plan page | one private artifact per stream, rendered from those two files. link in the state file's `plan.page` |
-| slack thread | #myspace-nick, parent `:thread: <ISSUE> / <title>` |
-| skills | `src/agents/.claude/skills/` (templates in `senzu-plan/templates/`) |
+| beans | `<beans>/<slug>.json`. the dir comes from `senzu config` (`SENZU_BEANS`, set in `conf.d/senzu.fish`) |
+| plan | `<beans>/<slug>.plan.md`, beside the bean. never committed (`senzu check` fails on one git tracks) |
+| worktrees | `<worktrees>/<ISSUE>-<slug>` on `<branch_prefix><issue>-<slug>`, both from `senzu config` |
+| slack thread | only when `thread_channel` is set. parent `:thread: <ISSUE> / <title>` |
+| skills | `src/agents/.claude/skills/` (the plan template is `senzu-plan/templates/plan.md`) |
 | CLI | `cargo install --locked --git https://github.com/iamnande/senzu-rs`, into `~/.cargo/bin` |
 
 ## editing skills

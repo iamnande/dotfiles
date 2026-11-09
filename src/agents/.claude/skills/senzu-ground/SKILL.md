@@ -20,7 +20,7 @@ understand the problem before planning it.
 ## start
 
 - ticket context: fetch the issue, if there is one.
-- state: `$SENZU_BEANS/<slug>.json`. `<slug>` is the issue id, else kebab-case, 3-5 words. resume it if it exists, else create it in the format below.
+- state: the bean `<slug>`. `<slug>` is the issue id, else kebab-case, 3-5 words. `senzu show <slug>` finds it: resume it. none: create `<slug>.json` in the beans dir (`senzu config`) in the format below.
 - slack: search #myspace-nick for a parent message with the issue id. found: read its thread for context. none: draft the parent `:thread: <ISSUE> / <title>` (no issue: `:thread: <title>`) and post it when the user says post. record the permalink and ts in state `thread`.
 
 ## work
@@ -37,7 +37,7 @@ exit: `open` is empty; scope and terms agreed.
 
 ```json
 {
-  "schema": 1,
+  "schema": 2,
   "slug": "<slug>",
   "title": "<title>",
   "phase": "ground | plan | execute | refine | pr | rollout | done",
@@ -46,7 +46,7 @@ exit: `open` is empty; scope and terms agreed.
   "issue": null,
   "thread": null,
   "repos": [{ "path": "<absolute>", "repo": "<name>", "branch": null, "base": null, "note": null }],
-  "plan": { "prd": null, "spec": null, "page": null, "note": null },
+  "attachments": [{ "kind": "artifact | issue | link", "uri": "<absolute, or relative to the bean>" }],
   "prs": ["<pr url> (draft | ready | merged)"],
   "next": { "text": "/senzu-<phase> <slug>: <first action>", "draft": null },
   "context": [{ "text": "<fact>", "source": "<who said it>", "date": "YYYY-MM-DD" }],
@@ -57,7 +57,8 @@ exit: `open` is empty; scope and terms agreed.
 }
 ```
 
-- every key is present. unknown is `null` or `[]`. paths are absolute.
+- every key is present. unknown is `null` or `[]`. repo paths are absolute.
+- the plan is never an attachment: senzu finds `<slug>.plan.md` beside the bean.
 - `priority` is the issue's, else ask. `none` is the triage queue.
 - `source` and `by` name a person, or `agent` for a finding of your own.
 - work product (an email, a calc, a map) is a draft. `open` and `next` point at it by `draft` id.

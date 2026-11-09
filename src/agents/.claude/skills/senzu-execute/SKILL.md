@@ -1,6 +1,6 @@
 ---
 name: senzu-execute
-description: senzu phase 2. implements the tech spec in small verified commits.
+description: senzu phase 2. implements the plan in small verified commits.
 argument-hint: "[<slug>]"
 disable-model-invocation: true
 ---
@@ -20,13 +20,13 @@ small iterations. one logical change per commit.
 
 ## start
 
-state: `$SENZU_BEANS/<slug>.json`. slug from the argument, else the issue id or slug in the current branch name (ignore case), else ask. read the tech spec from state `plan`; read the PRD only for Rn detail. work in the worktrees in state `repos`.
+state: the bean `<slug>`. read it with `senzu show <slug>`; its file is `.uri` in `senzu show <slug> --json`. slug from the argument, else the issue id or slug in the current branch name (ignore case), else ask. the plan is the `plan` attachment in `senzu show <slug> --json`. work in the worktrees in state `repos`.
 
 ## work
 
-- work in the tech spec's Services & Ordering order. if it defines a PR stack, one branch per stack item, each based on the one below; record them in state `repos`.
+- land the plan's steel thread first. one branch per repo in state `repos`; a stack, each based on the one below, only when the plan says so.
 - commit messages: `type(scope): subject [<ISSUE>]`, with the issue id from state.
-- run the tech spec's verification at each checkpoint. don't defer correctness checks to the deploy.
+- run the plan's verify at each checkpoint. don't defer correctness checks to the deploy.
 - every new test names its red line: the one-line change to the implementation that turns it red. put it in the commit body. if you can't name one, the test is decoration: delete it or make it assert something.
 - for tests that guard a bug fix or a contract, apply the named change once, confirm the test goes red, then revert. don't commit the mutation.
 
