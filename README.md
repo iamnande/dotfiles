@@ -11,7 +11,9 @@ these days we're rockin' a superb pairing of
 [stow](https://www.gnu.org/software/stow/manual/stow.html#Introduction) to
 orchestrate all the bits and bobs.
 
-> [!NOTE] me in ~1 month: "sir, a second nix migration has hit the dotfiles!"
+> [!NOTE]
+>
+> me in ~1 month: "sir, a second nix migration has hit the dotfiles!"
 
 ## file structure
 
