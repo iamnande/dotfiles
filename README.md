@@ -1,44 +1,56 @@
 # dotfiles
 
-stow-managed configs. software is arch native: pacman, and yay for the aur.
+> the dotfiles are in the computer?!
 
-## setup
+in the computer, it's so simple.
 
-```fish
-git clone git@github.com:iamnande/dotfiles.git ~/src/iamnande/dotfiles
-cd ~/src/iamnande/dotfiles
-make all          # every component
-make <component>  # or just one
+## how do we do it?
+
+these days we're rockin' a superb pairing of
+[make](https://www.gnu.org/software/make/manual/make.html#Overview) and
+[stow](https://www.gnu.org/software/stow/manual/stow.html#Introduction) to
+orchestrate all the bits and bobs.
+
+> [!NOTE] me in ~1 month: "sir, a second nix migration has hit the dotfiles!"
+
+## file structure
+
 ```
-
-## structure
-
-```
-Makefile
-docs/             guides (agents.md: skills, senzu, guardrails)
-guardrails/       claude settings fragment (make guardrails)
-mk/
-  log.mk
-  setup.mk
+Makefile          # install mechanics
+docs/             # guides, info, DOCS, etc.
+mk/               # have i told you about King Make?
 src/
-  <component>/    mirrors home directory
+  <component>/    # component structures, with $HOME as the assumed root
 ```
 
 ## components
 
-| component     | target                   |
-| ------------- | ------------------------ |
-| `agents`      | global agent instructions, `~/.claude/skills/` ([guide](docs/agents.md)) |
-| `backgrounds` | `~/.config/backgrounds/` |
-| `bin`         | `~/.local/bin/`          |
-| `fish`        | `~/.config/fish/`        |
-| `fisher`      | fish plugins (fisher, tide, ...) |
-| `ghostty`     | `~/.config/ghostty/`     |
-| `git`         | `~/`                     |
-| `helix`       | `~/.config/helix/`       |
-| `hypr`        | `~/.config/hypr/`        |
-| `mako`        | `~/.config/mako/`        |
-| `ssh`         | `~/.ssh/config`          |
-| `waybar`      | `~/.config/waybar/`      |
-| `wofi`        | `~/.config/wofi/`        |
-| `zellij`      | `~/.config/zellij/`      |
+| component              |
+| ---------------------- |
+| `@apps` (all)          |
+| `@app/senzu`           |
+| `@bootstrap`           |
+| `@dependencies`        |
+| `@desktop` (all)       |
+| `@desktop/backgrounds` |
+| `@desktop/hypr`        |
+| `@desktop/mako`        |
+| `@desktop/tools`       |
+| `@desktop/waybar`      |
+| `@desktop/wofi`        |
+| `@git`                 |
+| `@ide` (all)           |
+| `@ide/helix`           |
+| `@ide/lazygit`         |
+| `@ide/lsp` (all)       |
+| `@ide/lsp/go`          |
+| `@ide/lsp/rust`        |
+| `@shell` (all)         |
+| `@shell/fish`          |
+| `@shell/fisher`        |
+| `@shell/tide`          |
+| `@ssh`                 |
+| `@ssh/key` (hardware)  |
+| `@terminal`            |
+| `@terminal/ghostty`    |
+| `@terminal/zellij`     |
