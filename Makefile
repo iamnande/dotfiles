@@ -28,6 +28,6 @@ help: ## available targets
 	@echo -e "${COLOR_GREEN}=================================================================================${COLOR_NONE}"
 	@echo -e "                    [ ${COLOR_MAGENTA}$(OWNER_NAME)${COLOR_YELLOW}/${COLOR_MAGENTA}$(PROJECT_NAME)${COLOR_NONE} - ${COLOR_MAGENTA}$(PROJECT_REF)${COLOR_NONE} ]"
 	@echo -e "${COLOR_GREEN}=================================================================================${COLOR_NONE}"
-	@grep -h -E '^[a-zA-Z0-9_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort -k1 | \
+	@grep -h -E '^[@a-zA-Z0-9_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort -k1 | \
 		awk 'BEGIN {FS = ":.*?## "} \
 		{printf "${COLOR_CYAN}%-12s${COLOR_NONE} %s %s\n", $$1, "    ..................................    ", $$2}'
