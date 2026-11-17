@@ -1,0 +1,21 @@
+// Bitwarden
+// start date: 2027/11/09
+layout {
+	default_tab_template {
+		pane size=1 borderless=true {
+			plugin location="zellij:tab-bar"
+		}
+		children
+		pane size=2 borderless=true {
+			plugin location="zellij:status-bar"
+		}
+	}
+
+	// senzu: landing zone
+	// "dude, where's my car?"
+	tab name="🫘 senzu 🫘" focus=true cwd="$HOME/src/bitwarden/senzu" {
+		// senzu CLI (eventually)
+		// for now, just a clean shell.
+		pane name="senzu"
+	}
+}

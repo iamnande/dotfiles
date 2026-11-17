@@ -1,3 +1,5 @@
+// MHQ
+// my daily driver for personal shenanigans.
 layout {
     default_tab_template {
         pane size=1 borderless=true {
@@ -9,9 +11,8 @@ layout {
         }
     }
 
-    // senzu
+    // TODO: make this pretty
     tab name="senzu" focus=true cwd="$HOME/src/iamnande/senzu" {
-        // just a shell - claude at boot runs gh, and gh asks the keyring before the unlock
         pane name="bean"
     }
 }
