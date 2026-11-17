@@ -1,5 +1,5 @@
 // Bitwarden
-// start date: 2027/11/09
+// start date: 2026/11/09
 layout {
 	default_tab_template {
 		pane size=1 borderless=true {
