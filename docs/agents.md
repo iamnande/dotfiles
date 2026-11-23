@@ -11,14 +11,11 @@ global agent instructions, claude skills, and the senzu workflow. `make agents` 
 
 hard blocks for claude code agents, set in user settings. `make guardrails` stows the hook and merges `guardrails/settings.json` into `~/.claude/settings.json` (it replaces the `permissions.deny` and `hooks` lists with the fragment's).
 
-blocked: NGROK_ENV set to prod or stage, branch deletes, pushes the host's rule forbids, remote rewiring, `nd ctl`, `nd db` (except `lint`), publishing, `git worktree remove --force`, sudo.
-
-the push rule follows the host. on `rocinante` and `sector7`: `github.com/iamnande`, or a public github repo, and never anything ngrok. everywhere else: `github.com/ngrok-private` only. the hook reads the host's name from the kernel, and calls a repo public when github serves it to a caller with no credentials.
+blocked: every push, branch deletes, remote rewiring, publishing, `git worktree remove --force`, sudo.
 
 | layer | what it does |
 |---|---|
-| `env` | `NGROK_ENV=local` for every command claude runs |
-| `claude-guard` hook | parses each Bash/Monitor command, resolves real push URLs, exits 2. wins over allow rules. fails closed |
+| `claude-guard` hook | parses each Bash/Monitor command, exits 2. wins over allow rules. fails closed |
 | `permissions.deny` | literal forms, in case the hook doesn't run. also denies agent edits to the guardrail files |
 | `autoMode.hard_deny` | tells the auto-mode classifier, which catches forms text checks can't (scripts, subprocesses) |
 

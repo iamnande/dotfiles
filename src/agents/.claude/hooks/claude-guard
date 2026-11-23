@@ -2,10 +2,9 @@
 """claude-guard: PreToolUse hook for Bash and Monitor commands.
 
 exits 2, a hard block that wins over allow rules, for:
-- NGROK_ENV set to prod or stage, in any form
 - branch deletes, local or remote
-- pushes the host's rule forbids (see push_block), and rewiring where remotes point
-- nd ctl, nd db (except lint), publishing, git worktree remove --force
+- every push, and rewiring where remotes point
+- publishing, git worktree remove --force
 - sudo and friends
 
 anything it can't parse or resolve is blocked too (fail closed). these are
@@ -15,26 +14,12 @@ import json
 import os
 import re
 import shlex
-import socket
 import subprocess
 import sys
 
 HOME = os.path.expanduser("~")
 MAX_DEPTH = 8
 
-PUSH_OK = re.compile(r"^(?:git@github\.com:|ssh://git@github\.com/|https://github\.com/)ngrok-private/[\w.-]+/?$", re.I)
-# my own hosts, not work's. there a push goes to my repos or to a public one, and never to anything ngrok.
-HOME_HOSTS = {"rocinante", "sector7"}
-PUSH_HOME = re.compile(r"^(?:git@github\.com:|ssh://git@github\.com/|https://github\.com/)iamnande/[\w.-]+/?$", re.I)
-PUSH_GITHUB = re.compile(r"^(?:git@github\.com:|ssh://git@github\.com/|https://github\.com/)([\w.-]+/[\w.-]+?)(?:\.git)?/?$", re.I)
-ENV_RES = [
-    # NGROK_ENV=prod, export/env forms, ['NGROK_ENV']='stage', "NGROK_ENV": "prod"
-    re.compile(r"NGROK_ENV[\"']?\s*\]?\s*[=:,]\s*[\"']?\s*(?:prod|stage)", re.I),
-    # a value the guard can't see: NGROK_ENV=$X, NGROK_ENV=`x`
-    re.compile(r"NGROK_ENV\s*=\s*[\"']?\s*[$`]"),
-    # fish: set -gx NGROK_ENV prod
-    re.compile(r"\bset\b[^;&|\n]*\bNGROK_ENV\s+[\"']?\s*(?:prod|stage|[$`(])", re.I),
-]
 URL_KEY = re.compile(r"^(?:remote\..+\.(?:url|pushurl)|url\..+\.(?:insteadof|pushinsteadof)|remote\.pushdefault|branch\..+\.(?:remote|pushremote))$", re.I)
 ASSIGN = re.compile(r"^[A-Za-z_][A-Za-z0-9_]*=")
 HEREDOC = re.compile(r"<<(-?)\s*([\"']?)([A-Za-z_][\w-]*)\2")
@@ -153,9 +138,6 @@ def commands(text):
 def check(text, cwd, depth=0):
     if depth > MAX_DEPTH:
         raise Blocked("a command nested too deep to check")
-    for rx in ENV_RES:
-        if rx.search(text):
-            raise Blocked("NGROK_ENV set to prod or stage (or to a value the guard can't see)")
     for inner in re.findall(r"`([^`]*)`", text) + substitutions(text):
         check(inner, cwd, depth + 1)
     text, fed = split_heredocs(text)
@@ -264,8 +246,6 @@ def check_simple(words, redirs, sep, prev, cwd, depth):
         check_git(args, cwd, depth)
     elif prog == "gh":
         check_gh(args)
-    elif prog == "nd":
-        check_nd(args)
     check_publish(prog, args)
     return cwd
 
@@ -296,18 +276,9 @@ def check_git(args, cwd, depth):
     if i >= len(args):
         return
     sub, rest = args[i], args[i + 1:]
-    if sub in ("subtree", "lfs") and "push" in rest:
-        # git subtree push -P <prefix> <repository> <ref>, git lfs push <remote> [ref]
-        push_args, rest, j = [], rest[rest.index("push") + 1:], 0
-        while j < len(rest):
-            if rest[j] in ("-P", "--prefix", "-m", "--message", "--annotate"):
-                j += 2
-                continue
-            if not rest[j].startswith(("--prefix=", "--message=", "--annotate=")):
-                push_args.append(rest[j])
-            j += 1
-        check_push(push_args, cwd, gopts)
-        return
+    # every push is the user's: git push, git subtree push, git lfs push, and the plumbing under them
+    if sub in ("push", "send-pack", "http-push") or (sub in ("subtree", "lfs") and "push" in rest):
+        raise Blocked(f"git {sub}{' push' if sub in ('subtree', 'lfs') else ''}: pushes are the user's")
     if sub not in GIT_BUILTINS:
         alias = git(["config", "--get", f"alias.{sub}"], cwd, gopts)
         if alias and alias.startswith("!"):
@@ -315,11 +286,7 @@ def check_git(args, cwd, depth):
         elif alias:
             check_git(shlex.split(alias) + rest, cwd, depth + 1)
         return
-    if sub == "push":
-        check_push(rest, cwd, gopts)
-    elif sub in ("send-pack", "http-push"):
-        raise Blocked(f"git {sub}")
-    elif sub == "branch" and any(a == "--delete" or set(short_flags(a)) & set("dD") for a in rest):
+    if sub == "branch" and any(a == "--delete" or set(short_flags(a)) & set("dD") for a in rest):
         raise Blocked("deleting a branch")
     elif sub == "update-ref" and ("-d" in rest or "--stdin" in rest):
         raise Blocked("deleting a ref")
@@ -333,76 +300,6 @@ def check_git(args, cwd, depth):
         keys = [a for a in rest if not a.startswith("-") and a not in reading | writing]
         if keys and URL_KEY.match(keys[0]) and not reading & set(rest) and (len(keys) > 1 or writing & set(rest)):
             raise Blocked("changing where a git remote points")
-
-
-def check_push(rest, cwd, gopts):
-    repo, pos, i = None, [], 0
-    while i < len(rest):
-        a = rest[i]
-        if a == "--":
-            pos += rest[i + 1:]
-            break
-        if a in ("--delete", "--mirror", "--prune") or a.startswith(("--receive-pack", "--exec")) or "d" in short_flags(a):
-            raise Blocked("a push that deletes remote refs or runs a custom receive-pack")
-        if a.startswith("--repo="):
-            repo = a.split("=", 1)[1]
-        elif a in ("--repo", "-o", "--push-option"):
-            if a == "--repo":
-                repo = rest[i + 1] if i + 1 < len(rest) else ""
-            i += 1
-        elif not a.startswith("-"):
-            pos.append(a)
-        i += 1
-    if pos:
-        repo, pos = pos[0], pos[1:]
-    for ref in pos:
-        if ref.lstrip("+").startswith(":"):
-            raise Blocked("deleting a remote branch")
-    for url in push_urls(repo, cwd, gopts):
-        why = push_block(url)
-        if why:
-            raise Blocked(f"pushing to {url}, which is {why}")
-
-
-def push_block(url):
-    """why this host may not push to url, or None when it may."""
-    # the kernel's name for the host, not $HOSTNAME: the environment is the agent's to set
-    if socket.gethostname().split(".")[0].lower() not in HOME_HOSTS:
-        return None if PUSH_OK.match(url) else "outside github.com/ngrok-private"
-    if "ngrok" in url.lower():
-        return "an ngrok remote, and nothing ngrok is pushed from this host"
-    if PUSH_HOME.match(url) or is_public(url):
-        return None
-    return "neither github.com/iamnande nor a public github repo"
-
-
-def is_public(url):
-    """true when github serves the repo to a caller with no credentials at all."""
-    m = PUSH_GITHUB.match(url)
-    if not m:
-        return False
-    # a bare environment: no gitconfig, no credential helper, no netrc, no prompt
-    env = {"PATH": os.environ.get("PATH", "/usr/bin:/bin"), "HOME": os.devnull, "GIT_TERMINAL_PROMPT": "0",
-           "GIT_CONFIG_GLOBAL": os.devnull, "GIT_CONFIG_NOSYSTEM": "1"}
-    # and from /, so a repo's own config (a credential helper, an insteadOf) gets no say
-    p = subprocess.run(["git", "ls-remote", f"https://github.com/{m.group(1)}", "HEAD"],
-                       env=env, cwd="/", capture_output=True, text=True, timeout=10)
-    return p.returncode == 0
-
-
-def push_urls(repo, cwd, gopts):
-    if repo is None:
-        branch = git(["symbolic-ref", "--quiet", "--short", "HEAD"], cwd, gopts)
-        repo = ((branch and git(["config", f"branch.{branch}.pushRemote"], cwd, gopts))
-                or git(["config", "remote.pushDefault"], cwd, gopts)
-                or (branch and git(["config", f"branch.{branch}.remote"], cwd, gopts))
-                or "origin")
-    urls = git(["remote", "get-url", "--push", "--all", repo], cwd, gopts)
-    if urls is None:  # not a named remote: a URL or a path
-        if git(["config", "--get-regexp", r"^url\..*\.pushinsteadof$"], cwd, gopts):
-            raise Blocked("a push through pushInsteadOf rewrites the guard can't resolve")
-        urls = git(["ls-remote", "--get-url", repo], cwd, gopts) or repo
-    return urls.splitlines() or [repo]
 
 
 def check_gh(args):
@@ -421,16 +318,6 @@ def check_gh(args):
             raise Blocked("deleting a branch through the GitHub API")
         if re.search(r"(?:^|\s)(?:-f|-F|--field|--raw-field)[= ]?\s*[\"']?(?:visibility|private)=", joined) or "deleteRef" in joined:
             raise Blocked("changing repo visibility or deleting refs through the GitHub API")
-
-
-def check_nd(args):
-    pos = [a for a in args if not a.startswith("-")]
-    if pos[:1] == ["ctl"]:
-        raise Blocked("nd ctl")
-    if pos[:1] == ["db"] and pos[1:2] != ["lint"]:
-        raise Blocked("nd db (only nd db lint is allowed)")
-    if "publish" in pos:
-        raise Blocked("nd publish")
 
 
 def check_publish(prog, args):
