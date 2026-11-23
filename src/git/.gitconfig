@@ -1,6 +1,7 @@
 [user]
 	name = nick anderson
 	email = nick@morethq.com
+	signingKey = ~/.ssh/id_ed25519_sk_rk_mhq-naomi-ssh
 
 [alias]
 	up = pull --rebase --autostash
@@ -14,13 +15,6 @@
 [gpg "ssh"]
 	allowedSignersFile = ~/.ssh/allowed_signers
 
-[user]
-	signingKey = ~/.ssh/iamnande.pub
-
-[includeIf "gitdir:~/ngrok/"]
-	path = ~/.gitconfig-ngrok
-[includeIf "gitdir:/opt/ngrok/"]
-	path = ~/.gitconfig-ngrok
 [include]
 	path = ~/.gitconfig-local
 [init]
