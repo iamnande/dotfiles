@@ -13,9 +13,7 @@ layout {
 
 	// senzu: landing zone
 	// "dude, where's my car?"
-	tab name="🫘 senzu 🫘" focus=true cwd="$HOME/src/bitwarden/senzu" {
-		// senzu CLI (eventually)
-		// for now, just a clean shell.
-		pane name="senzu"
+	tab name="🫘 senzu" focus=true cwd="$HOME/src/iamnande/senzu" {
+		pane name="senzu" command="senzu"
 	}
 }

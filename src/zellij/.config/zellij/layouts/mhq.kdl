@@ -1,5 +1,4 @@
-// MHQ
-// my daily driver for personal shenanigans.
+// home is where the beans are.
 layout {
     default_tab_template {
         pane size=1 borderless=true {
@@ -11,8 +10,7 @@ layout {
         }
     }
 
-    // TODO: make this pretty
-    tab name="senzu" focus=true cwd="$HOME/src/iamnande/senzu" {
+    tab name="🫘 senzu" focus=true cwd="$HOME/src/iamnande/senzu" {
         pane name="bean"
     }
 }
