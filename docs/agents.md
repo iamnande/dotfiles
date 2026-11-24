@@ -30,10 +30,10 @@ one ticket is one stream. one phase is one session. `/clear` between phases.
 ```
 senzu                      # tui: browse streams. enter opens the agent on the bean's next skill
 senzu ls | show <slug>     # one line per stream, or one bean. json when piped
-senzu check                # every bean against the schema, plus the plans beside them
+senzu check                # every bean against the schema, plus the rfcs beside them
 senzu config               # each setting and the layer that set it. the skills read it
 /senzu-ground <id|topic>   # open questions, terms, prior art. creates the bean (+ slack thread when thread_channel is set)
-/senzu-plan                # worktrees, the plan beside the bean, issue comment
+/senzu-rfc                 # worktrees, the rfc (a PR or beside the bean), fresh-context review, the stack
 /senzu-execute             # one reviewed diff at a time, i commit each
 /senzu-refine [fanout]     # idiom, DRY/YAGNI, Rn coverage, security, resilience. fanout: up to 2 subagents
 /senzu-pr                  # facts outline + submission preview, i open the PR. threads, then ready
@@ -47,10 +47,11 @@ commits, pushes, PRs, merges and branch deletes are mine. the agent makes one co
 | what | where |
 |---|---|
 | beans | `<beans>/<slug>.json`. the dir comes from `senzu config` (`SENZU_BEANS`, set in `conf.d/senzu.fish`) |
-| plan | `<beans>/<slug>.plan.md`, beside the bean. never committed (`senzu check` fails on one git tracks) |
+| rfc | an rfc PR when the work sets lasting rules, else `<beans>/<slug>.rfc.md` beside the bean, never committed (`senzu check` fails on one git tracks) |
+| stack | the bean's draft `stack`: the commit layout and pr stack, set at the end of the rfc |
 | worktrees | `<worktrees>/<ISSUE>-<slug>` on `<branch_prefix><issue>-<slug>`, both from `senzu config` |
 | slack thread | only when `thread_channel` is set. parent `:thread: <ISSUE> / <title>` |
-| skills | `src/agents/.claude/skills/` (the plan template is `senzu-plan/templates/plan.md`) |
+| skills | `src/agents/.claude/skills/` (the rfc template is `senzu-rfc/templates/rfc.md`) |
 | CLI | `cargo install --locked --git https://github.com/iamnande/senzu-rs`, into `~/.cargo/bin` |
 
 ## editing skills

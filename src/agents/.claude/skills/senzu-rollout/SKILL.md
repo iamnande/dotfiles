@@ -23,7 +23,7 @@ ship it, verify it against the deployed change, close it out.
 
 on a resumed bean, the first reply is a recap, one line each: the goal, where we are, what is next and why. never assume the user remembers the plan.
 
-state: the bean `<slug>`. read it with `senzu show <slug>`; its file is `.path` in `senzu show <slug> --json`. slug from the argument, else the issue id or slug in the current branch name (ignore case), else ask. the plan is the `path` of the `plan` attachment in `senzu show <slug> --json`. read its verify and rollback.
+state: the bean `<slug>`. read it with `senzu show <slug>`; its file is `.path` in `senzu show <slug> --json`. slug from the argument, else the issue id or slug in the current branch name (ignore case), else ask. the rfc is the `path` of the `rfc` attachment in `senzu show <slug> --json`, or the rfc PR named in `decisions`. the commit layout and pr stack are the draft `stack`. read its verify and rollback.
 
 ## 1. merge
 
@@ -33,8 +33,8 @@ state: the bean `<slug>`. read it with `senzu show <slug>`; its file is `.path` 
 ## 2. rollout
 
 - stage it when the blast radius is broad: flags, gates, one host first.
-- at each stage, run the plan's verify against the deployed change.
-- on a regression: stop, surface it, propose the plan's rollback.
+- at each stage, run the rfc's verify against the deployed change.
+- on a regression: stop, surface it, propose the rfc's rollback.
 
 ## 3. close-out
 

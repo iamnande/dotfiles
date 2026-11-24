@@ -44,7 +44,7 @@ exit: `open` is empty; scope and terms agreed.
   "schema": 2,
   "slug": "<slug>",
   "title": "<title>",
-  "phase": "ground | plan | execute | refine | pr | rollout | done",
+  "phase": "ground | rfc | execute | refine | pr | rollout | done",
   "priority": "urgent | high | medium | low | none",
   "priority_note": null,
   "issue": null,
@@ -62,7 +62,7 @@ exit: `open` is empty; scope and terms agreed.
 ```
 
 - every key is present. unknown is `null` or `[]`. repo paths are absolute.
-- the plan is never an attachment: senzu finds `<slug>.plan.md` beside the bean.
+- the rfc is never stored as an attachment: senzu finds `<slug>.rfc.md` beside the bean. the stack is a draft with id `stack`.
 - `priority` is the issue's, else ask. `none` is the triage queue.
 - `source` and `by` name a person, or `agent` for a finding of your own.
 - work product (an email, a calc, a map) is a draft. `open` and `next` point at it by `draft` id.
@@ -75,6 +75,6 @@ update the state file (phase, next, decisions, one `log` entry), then:
 **phase complete: ground**
 - <2-4 terse bullets>
 
-**next: /senzu-plan** (<one line>). run `/clear` first.
+**next: /senzu-rfc** (<one line>). run `/clear` first.
 
 if state has `thread` and `senzu config` sets `thread_channel`, also draft a one-line reply for that thread: `<phase> done: <outcome>. next: <phase>`, PR links inline. post it only when the user says post.

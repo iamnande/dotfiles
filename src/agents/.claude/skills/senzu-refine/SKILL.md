@@ -23,7 +23,7 @@ make it right, don't just review what was built. assume a model wrote most of th
 
 on a resumed bean, the first reply is a recap, one line each: the goal, where we are, what is next and why. never assume the user remembers the plan.
 
-state: the bean `<slug>`. read it with `senzu show <slug>`; its file is `.path` in `senzu show <slug> --json`. slug from the argument, else the issue id or slug in the current branch name (ignore case), else ask. the plan is the `path` of the `plan` attachment in `senzu show <slug> --json`. review the branch diff against its base, with the plan's requirements.
+state: the bean `<slug>`. read it with `senzu show <slug>`; its file is `.path` in `senzu show <slug> --json`. slug from the argument, else the issue id or slug in the current branch name (ignore case), else ask. the rfc is the `path` of the `rfc` attachment in `senzu show <slug> --json`, or the rfc PR named in `decisions`. the commit layout and pr stack are the draft `stack`. review the branch diff against its base, with the rfc's rules and their checks.
 
 ## check
 
@@ -45,7 +45,7 @@ state: the bean `<slug>`. read it with `senzu show <slug>`; its file is `.path` 
 ## how
 
 - review in this session. no subagents by default.
-- `fanout` argument, or on request for a high-risk change: at most 2 subagents, one scope each (e.g. security, deploy). give each only the diff and the relevant plan sections. each returns at most 10 findings, with file:line and a concrete failure.
+- `fanout` argument, or on request for a high-risk change: at most 2 subagents, one scope each (e.g. security, deploy). give each only the diff and the relevant rfc sections. each returns at most 10 findings, with file:line and a concrete failure.
 - a finding needs a trigger (the input, state, or sequence), the wrong behavior, and the test that would go red. no trigger means it's a question, listed apart from findings.
 - before showing a finding, try to refute it: look for the guard, the caller-side check, or the test that makes it harmless. check it against the current code. drop noise.
 - sort each finding into a bucket. no per-item question:
