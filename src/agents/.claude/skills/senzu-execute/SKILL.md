@@ -1,6 +1,6 @@
 ---
 name: senzu-execute
-description: senzu phase 2. implements the plan one reviewed, commit-sized diff at a time. the user commits.
+description: senzu phase 2. implements the rfc's stack one reviewed, commit-sized diff at a time. the user commits.
 argument-hint: "[<slug>]"
 disable-model-invocation: true
 ---
@@ -23,13 +23,13 @@ small iterations. one logical change per diff, and the user commits each one bef
 
 on a resumed bean, the first reply is a recap, one line each: the goal, where we are, what is next and why. never assume the user remembers the plan.
 
-state: the bean `<slug>`. read it with `senzu show <slug>`; its file is `.path` in `senzu show <slug> --json`. slug from the argument, else the issue id or slug in the current branch name (ignore case), else ask. the plan is the `path` of the `plan` attachment in `senzu show <slug> --json`. work in the worktrees in state `repos`.
+state: the bean `<slug>`. read it with `senzu show <slug>`; its file is `.path` in `senzu show <slug> --json`. slug from the argument, else the issue id or slug in the current branch name (ignore case), else ask. the rfc is the `path` of the `rfc` attachment in `senzu show <slug> --json`, or the rfc PR named in `decisions`. the commit layout and pr stack are the draft `stack`. work in the worktrees in state `repos`.
 
 ## work
 
-- land the plan's steel thread first. one branch per repo in state `repos`; a stack, each based on the one below, only when the plan says so.
+- follow the stack: each step is its next commit, in its pr, steel thread first. one branch per pr, each based on the one below when the stack says so. a step that doesn't fit is a stack change, made with the user.
 - commit messages are the user's. suggest one only when asked: `type(scope): subject [<ISSUE>]` with the issue id from state. beans stay uncommitted.
-- run the plan's verify (lint and the targeted tests at least) before each diff is handed over. don't defer correctness checks to the deploy.
+- run the rfc's verify (lint and the targeted tests at least) before each diff is handed over. don't defer correctness checks to the deploy.
 - every new test names its red line: the one-line change to the implementation that turns it red. put it in the bean's `log` entry, not the commit. if you can't name one, the test is decoration: delete it or make it assert something.
 - for tests that guard a bug fix or a contract, apply the named change once, confirm the test goes red, then revert. don't commit the mutation.
 
