@@ -1,14 +1,13 @@
 # dotfiles
 
-stow-managed configs. software is arch native: pacman, and yay for the aur.
+stow-managed configs. software is arch native (but we tolerate darwin).
 
 ## setup
 
 ```fish
 git clone git@github.com:iamnande/dotfiles.git ~/src/iamnande/dotfiles
 cd ~/src/iamnande/dotfiles
-make all          # every component
-make <component>  # or just one
+make backgrounds fish fisher ghostty git helix ssh zellij
 ```
 
 ## structure
