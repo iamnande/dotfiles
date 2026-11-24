@@ -28,7 +28,7 @@ end
 
 # release the files
 function ls --wraps eza --description "list the files"
-    eza -lh --group-directories-first --time-style=long-iso --git
+    eza -lh --group-directories-first --time-style=long-iso --git $argv
 end
 
 # ermergerhd... make the damn dirs
@@ -55,35 +55,14 @@ alias mhq='z delete-session mhq >/dev/null 2>&1; z -d -l mhq a -c mhq'
 # claim your fighter! (helix atm)
 set -gx EDITOR hx
 
-# okay, so like - friends don't let friends distribute their identity across
-# machines.. or really, anywhere outside a secure vault.
-#
-# bitwarden is the single ssh-agent source of truth, always reachable at this
-# same canonical socket path no matter the host or how the agent got here
-# (native app locally, forwarded over ssh remotely).
-set -l ssh_agent ~/.bitwarden-ssh-agent.sock
-set -l ssh_agent_source $ssh_agent
-if set -q SSH_CONNECTION
-    set ssh_agent_source $SSH_AUTH_SOCK
-end
-
-# a host that runs bitwarden itself owns that path - never link over its socket
-if test -S "$ssh_agent_source"; and test "$ssh_agent_source" != "$ssh_agent"
-    and begin; test -L "$ssh_agent"; or not test -e "$ssh_agent"; end
-    ln -sfn "$ssh_agent_source" "$ssh_agent"
-end
-
-# only point at it if it actually resolves to a live socket - a dead path
-# here silently breaks every ssh/git-signing call, so leave SSH_AUTH_SOCK
-# alone rather than clobbering it with something unusable.
-if test -S "$ssh_agent"
-    set -gx SSH_AUTH_SOCK "$ssh_agent"
-end
-
 # n: i know kung-fu.
 # m: show me.
 fish_add_path /home/linuxbrew/.linuxbrew/bin
 fish_add_path $HOME/.local/bin
+
+# where we going?
+set -q LANDING_SESSION; or set -g LANDING_SESSION mhq
 if status is-interactive && not set -q ZELLIJ
-    mhq
+    z delete-session $LANDING_SESSION >/dev/null 2>&1
+    z -d -l $LANDING_SESSION a -c $LANDING_SESSION
 end
