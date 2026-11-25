@@ -1,66 +1,85 @@
 # agents
 
-global agent instructions, claude skills, and the senzu workflow. `make agents` stows `src/agents/` into `~`. the `senzu` cli is [senzu-rs](https://github.com/iamnande/senzu-rs).
+everyone is doing llms, it's so cool. (may be considered harmful)
 
-## instructions
+current setup:
 
-- edit `src/agents/.config/AGENTS.md`. it's the only real instructions file.
-- `src/agents/.claude/CLAUDE.md` just imports it (`@~/.config/AGENTS.md`). keep it. claude code reads AGENTS.md at project level only (cwd and above, and only when the repo has no CLAUDE.md). it never reads `~/.config/AGENTS.md`, so without the import, global instructions disappear.
+- agent: `claude`
+- harness: `senzu` ([senzu-rs](https://github.com/iamnande/senzu-rs))
+
+## configuration
+
+`src/agents/.config/AGENTS.md`is the one true agents file.
 
 ## guardrails
 
-hard blocks for claude code agents, set in user settings. `make guardrails` stows the hook and merges `guardrails/settings.json` into `~/.claude/settings.json` (it replaces the `permissions.deny` and `hooks` lists with the fragment's).
+confirmed consent and established boundaries are super hot.
 
-blocked: every push, branch deletes, remote rewiring, publishing, `git worktree remove --force`, sudo.
+we rock a custom `~/.claude/settings.json#permissions.deny` and `hooks`.
 
-| layer | what it does |
-|---|---|
-| `claude-guard` hook | parses each Bash/Monitor command, exits 2. wins over allow rules. fails closed |
-| `permissions.deny` | literal forms, in case the hook doesn't run. also denies agent edits to the guardrail files |
-| `autoMode.hard_deny` | tells the auto-mode classifier, which catches forms text checks can't (scripts, subprocesses) |
+all ssh and git operations require hardware security keys & pins, the below are
+additional protective measures around:
 
-- change them yourself: agents are denied edits to `~/.claude/settings*.json`, `~/.claude/hooks/`, and `guardrails/`.
-- hook source: `src/agents/.claude/hooks/claude-guard`.
-- limits: text checks can't see inside a script file, and user settings are editable by anything running as you. the real boundary for either is the sandbox or managed settings.
+- git `push`
+- branch `delete`
+- modifying remote
+- publishing
+- forceful worktree removal
+- sudo
 
-## senzu
+| layer                | what it does                                        |
+| -------------------- | --------------------------------------------------- |
+| `claude-guard`       | checks each Bash/Monitor command against deny list  |
+| `permissions.deny`   | fallback for hook misfire, denies guardails edits   |
+| `autoMode.hard_deny` | comms channel to denial in the auto-mode classifier |
 
-one ticket is one stream. one phase is one session. `/clear` between phases.
+## what is a senzu, even?
+
+well, its a bean. also a stream. oh, and there's phases. memory wipes.
+
+senzu is my process, with configurable profiles that follow work guidance when
+needed and personal when not.
 
 ```
-senzu                      # tui: browse streams. enter opens the agent on the bean's next skill
-senzu ls | show <slug>     # one line per stream, or one bean. json when piped
-senzu check                # every bean against the schema, plus the rfcs beside them
-senzu config               # each setting and the layer that set it. the skills read it
-/senzu-ground <id|topic>   # open questions, terms, prior art. creates the bean (+ slack thread when thread_channel is set)
-/senzu-rfc                 # worktrees, the rfc (a PR or beside the bean), fresh-context review, the stack
-/senzu-execute             # one reviewed diff at a time, i commit each
-/senzu-refine [fanout]     # idiom, DRY/YAGNI, Rn coverage, security, resilience. fanout: up to 2 subagents
-/senzu-pr                  # facts outline + submission preview, i open the PR. threads, then ready
-/senzu-rollout             # merges handed over, staged rollout, verify, close-out, worktrees + branch deletes
+senzu                      # tui
+senzu ls | show <slug>     # one line per stream, or one bean
+senzu check                # schema check all beans and rfcs
+senzu config               # config source map
 ```
 
-commits, pushes, PRs, merges and branch deletes are mine. the agent makes one commit-sized change, leaves it unstaged, and stops. beans and worktrees it just does, then says so. nothing posts to github, linear, or slack without sign-off on the exact text. each phase ends by updating the bean and naming the next skill. a phase too big for one session: checkpoint, `/clear`, rerun the same skill.
+senzu skill assisted SDLC:
 
-## where things live
+- (1) `/senzu-ground` - creates the new bean. gather and work through open
+  questions between now and an `aligned` rfc driving `/senzu-execute`.
 
-| what | where |
-|---|---|
-| beans | `<beans>/<slug>.json`. the dir comes from `senzu config` (`SENZU_BEANS`, set in `conf.d/senzu.fish`) |
-| rfc | an rfc PR when the work sets lasting rules, else `<beans>/<slug>.rfc.md` beside the bean, never committed (`senzu check` fails on one git tracks) |
-| stack | the bean's draft `stack`: the commit layout and pr stack, set at the end of the rfc |
-| worktrees | `<worktrees>/<ISSUE>-<slug>` on `<branch_prefix><issue>-<slug>`, both from `senzu config` |
-| slack thread | only when `thread_channel` is set. parent `:thread: <ISSUE> / <title>` |
-| skills | `src/agents/.claude/skills/` (the rfc template is `senzu-rfc/templates/rfc.md`) |
-| CLI | `cargo install --locked --git https://github.com/iamnande/senzu-rs`, into `~/.cargo/bin` |
+- (2) `/senzu-rfc` - document the purpose, constraints - what `MUST` be true
+  about the system (and what `MUST NOT`).
 
-## editing skills
+- (3) `/senzu-execute` - diff by diff bb. commit. by. commit.
 
-- edit under `src/agents/.claude/skills/`. the symlinks pick it up. start a new session to load it.
-- added a skill dir: rerun `make agents`.
-- keep skills lean. each loads in full on every invocation. write rules that change behavior, not things the model already knows.
+- (4) `/senzu-refine` - ZOOM OUT. or gardening. goes away when debugging broken
+  code at 3am does, or we solved security, or like - anything cool.
 
-## gotchas
+- (5) `/senzu-pr` - seek approval and validation from others (or CI, we don't
+  judge)
 
-- stow won't overwrite files it doesn't own. remove the old file first, then `make <component>`.
-- home-manager (`~/.config/home-manager`, old pin) still installs kami. `home-manager switch` would collide with the stowed senzu files.
+- (6) `/senzu-rollout` - changes aren't real if they aren't in prod. inspect
+  what you expect. leave the place nicer than you found it.
+
+ultimately, each individual is responsible for their own decisions and how those
+decisions impact others.
+
+i own the design, verification, commits, pushes, PRs, merges, and cleanup.
+
+the agent is a workhorse making one reviewable commit-sized change at a time.
+
+consistently shipping quality through orchestrated <100k token sessions.
+
+## phonebook
+
+| who       | what/where                                                      |
+| --------- | --------------------------------------------------------------- |
+| beans     | `<beans>/<slug>.json`                                           |
+| rfc       | `<beans>/<slug>.rfc.md`                                         |
+| worktrees | `<worktrees>/<ISSUE>-<slug>` on `<branch_prefix><issue>-<slug>` |
+| skills    | `src/agents/.claude/skills/`                                    |
