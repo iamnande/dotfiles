@@ -1,3 +1,6 @@
+# TODO: broooo.. we gotta organize here.
+# this is mass bloody chaos. (organic growth is good)
+
 # yeah, no. thanks though.
 set -g fish_greeting
 
@@ -6,12 +9,15 @@ if status is-login && test (tty) = /dev/tty1
     exec uwsm start hyprland.desktop
 end
 
-# Arch exposes Helix as `helix`; Homebrew provides the canonical `hx`.
+# y'all need unions, and it shows
 if not type -q hx; and type -q helix
     function hx --wraps helix --description helix
         helix $argv
     end
 end
+
+# claim your fighter! (helix atm)
+set -gx EDITOR hx
 
 # we don't talk about that dark place over there - where YAML goes to die.
 function k --wraps kubectl --description k8s
@@ -48,12 +54,6 @@ end
 function z --wraps zellij --description "workspace management"
     zellij $argv
 end
-# zellij restores its saved copy of a dead session and skips the layout - so drop
-# the copy first. a live session is left alone (that takes --force).
-alias mhq='z delete-session mhq >/dev/null 2>&1; z -d -l mhq a -c mhq'
-
-# claim your fighter! (helix atm)
-set -gx EDITOR hx
 
 # n: i know kung-fu.
 # m: show me.
