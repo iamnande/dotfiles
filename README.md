@@ -16,8 +16,7 @@ launch setup:
 git clone git@github.com:iamnande/dotfiles.git ~/src/iamnande/dotfiles
 ```
 
-2.  \_"uhh, roci this iz houstonn.. i'm gonna need you to \_change
-    dir_ectionction to `~/src/iamnande/dotfiles`"
+2.  _"uhh, roci this iz houstonn.. i'm gonna need you to **c**hange **d**irectionction to `~/src/iamnande/dotfiles`"_
 
 ```fish
 cd ~/src/iamnande/dotfiles
@@ -33,7 +32,7 @@ make backgrounds fish fisher ghostty git helix ssh zellij
 
 | code          | payload                                         |
 | ------------- | ----------------------------------------------- |
-| `agents`      | ([lets talk about agents](docs/agents.md))      |
+| `agents`      | [lets talk about agents](docs/agents.md)      |
 | `backgrounds` | current-day bg rotashe                          |
 | `bin`         | a few trinkets                                  |
 | `fish`        | steak (jk, its fish)                            |
@@ -47,7 +46,3 @@ make backgrounds fish fisher ghostty git helix ssh zellij
 | `waybar`      | who put that BAR WAY up there?                  |
 | `wofi`        | service pad                                     |
 | `zellij`      | there's a surprising amount of windows in space |
-
-```
-
-```
