@@ -4,3 +4,6 @@
 
 [gpg "ssh"]
 	allowedSignersFile = ~/.ssh/.mhq-signers
+
+[includeIf "gitdir:~/src/iamnande/senzu/.git"]
+	path = ~/.gitconfig-iamnande-senzu
