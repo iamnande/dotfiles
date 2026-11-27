@@ -5,3 +5,6 @@
 
 [gpg "ssh"]
 	allowedSignersFile = ~/.ssh/.mhq.senzu-signers
+
+[core]
+	hooksPath = ~/.config/git/hooks/senzu

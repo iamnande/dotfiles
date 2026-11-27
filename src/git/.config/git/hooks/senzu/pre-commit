@@ -1,0 +1,33 @@
+#!/bin/sh
+# scan what this commit takes for secrets before it lands (rfc 0002 §2.7).
+# git hands the hook the index the commit uses, even the temporary one behind
+# `git commit -- <file>`, so gitleaks sees exactly what lands. no gitleaks means
+# no commit, so nothing lands unscanned. --redact keeps a found secret out of
+# the terminal, and out of an agent's context.
+#
+# commit-msg is a link to this file, so the message gets the same scan: it
+# lands with the commit all the same, and pre-commit never sees it.
+hook=${0##*/}
+command -v gitleaks >/dev/null || {
+	echo "$hook: gitleaks isn't installed, so this commit can't be scanned" >&2
+	exit 1
+}
+
+# the default rules, always. a .gitleaks.toml an agent drops in the repo, a
+# config in the env, or an inline gitleaks:allow would each wave a secret
+# through. gitleaks reads a .gitleaksignore at the repo root whatever its flags
+# say, so that one is the owner's call.
+if [ -e .gitleaksignore ]; then
+	echo "$hook: a .gitleaksignore at the repo root would wave secrets through, so the owner decides on it" >&2
+	exit 1
+fi
+unset GITLEAKS_CONFIG
+GITLEAKS_CONFIG_TOML=$(printf '[extend]\nuseDefault = true\n')
+export GITLEAKS_CONFIG_TOML
+scan() { gitleaks "$@" --redact --no-banner --log-level warn --verbose --ignore-gitleaks-allow; }
+
+# git hands commit-msg the message file as $1
+case $hook in
+commit-msg) scan stdin <"$1" ;;
+*) scan git --pre-commit --staged . ;;
+esac
