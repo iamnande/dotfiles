@@ -6,6 +6,16 @@ exits 2, a hard block that wins over allow rules, for:
 - every push, and rewiring where remotes point
 - publishing, git worktree remove --force
 - sudo and friends
+- every commit, except one in a state repo (rfc 0002 §2.7)
+- the other git commands that make commits (cherry-pick, revert, am, rebase, a
+  merge or pull that isn't --ff-only, and friends), everywhere
+- in a state repo, any git command that isn't on its list of reads
+
+a state repo is listed in claude-guard.json, next to this file. a commit there
+takes only `git commit -m <msg> -- <file>...`, every file under one of its agent
+paths, and the repo's own git config can't set who commits, how it's signed or
+which hooks run. a missing config means no state repos; a broken one blocks
+every commit.
 
 anything it can't parse or resolve is blocked too (fail closed). these are
 text checks, not a sandbox: a script file's contents are invisible here.
@@ -18,6 +28,7 @@ import subprocess
 import sys
 
 HOME = os.path.expanduser("~")
+CONFIG = os.path.join(HOME, ".claude", "hooks", "claude-guard.json")
 MAX_DEPTH = 8
 
 URL_KEY = re.compile(r"^(?:remote\..+\.(?:url|pushurl)|url\..+\.(?:insteadof|pushinsteadof)|remote\.pushdefault|branch\..+\.(?:remote|pushremote))$", re.I)
@@ -25,6 +36,36 @@ ASSIGN = re.compile(r"^[A-Za-z_][A-Za-z0-9_]*=")
 HEREDOC = re.compile(r"<<(-?)\s*([\"']?)([A-Za-z_][\w-]*)\2")
 SHELL_FED = re.compile(r"(?:^|[\s;&|(])(?:\S*/)?(?:bash|sh|zsh|fish|dash|ksh|eval|source)(?=\s|$)")
 PUNCT = set("();<>|&\n")
+# env that changes who commits, how, or into which repo. only setting one
+# counts, so a commit message can still name it.
+_GIT_ENV = r"GIT_(?:AUTHOR_\w+|COMMITTER_\w+|CONFIG\w*|DIR|WORK_TREE|INDEX_FILE|OBJECT_DIRECTORY|ALTERNATE_OBJECT_DIRECTORIES|NAMESPACE|EXEC_PATH)"
+GIT_ENV_SET = re.compile(rf"\b{_GIT_ENV}=|\b(?:export|declare|typeset|readonly|read|-v)\s+(?:-\S+\s+)*{_GIT_ENV}\b")
+GIT_ENV_NAME = re.compile(rf"{_GIT_ENV}$")
+# names that make a path agent config (skills, settings, hooks, instructions), never an agent path
+AGENT_CONFIG = {".claude", "skills", "hooks", "settings.json", "settings.local.json", "CLAUDE.md", "CLAUDE.local.md", "AGENTS.md"}
+# repo config keys that change who commits, how it's signed or which hooks run.
+# only the owner's global config sets them for a state repo.
+REPO_OVERRIDES = re.compile(r"^(?:user|author|committer|gpg|include|includeif)\.|^(?:commit\.gpgsign|core\.hookspath)$", re.I)
+# the only commit flags an agent commit takes; -m and -F carry the message
+COMMIT_MSG = ("-m", "--message", "-F", "--file")
+COMMIT_QUIET = ("-q", "--quiet")
+# commit flags 0002 §2.7 names as overrides, plus the history rewrites
+COMMIT_OVERRIDES = ("--author", "--gpg-sign", "--no-gpg-sign", "--no-verify", "--amend", "--reset-author", "--date")
+# git commands that make commits, beyond commit and commit-tree. a merge or pull
+# that isn't --ff-only joins them. stash and notes make commits too, but off
+# any branch, so they're fine outside a state repo.
+COMMIT_MAKERS = {"cherry-pick", "revert", "am", "rebase", "fast-import", "filter-branch", "filter-repo", "subtree"}
+# git commands that leave a state repo's history alone. any other one is a
+# history write there, so one nobody listed fails closed. branch, tag, checkout,
+# switch, stash, merge, pull, fetch, reflog, worktree and notes read or write by
+# their flags (rewrites()).
+STATE_READS = set("""
+add annotate apply archive blame cat-file check-attr check-ignore check-mailmap cherry clone config
+count-objects describe diff diff-files diff-index diff-tree difftool for-each-ref format-patch fsck grep help
+init interpret-trailers log ls-files ls-remote ls-tree merge-base mv name-rev range-diff restore rev-list
+rev-parse rm shortlog show show-branch show-ref status var verify-commit verify-tag version whatchanged
+""".split())
+BRANCH_WRITES = {"-m", "-M", "-c", "-C", "-f", "--force", "-u", "--set-upstream-to", "--unset-upstream", "--edit-description", "-t", "--track", "--no-track", "--create-reflog", "--move", "--copy"}
 
 SHELLS = {"bash", "sh", "zsh", "fish", "dash", "ksh", "mksh", "ash"}
 ROOT = {"sudo", "doas", "su", "pkexec", "run0"}
@@ -44,7 +85,7 @@ PUBLISH = {
 # git builtins can't be shadowed by aliases, so only other subcommands need an alias lookup
 GIT_BUILTINS = set("""
 add am annotate apply archive bisect blame branch bundle cat-file check-ignore checkout cherry cherry-pick
-clean clone commit config count-objects credential describe diff diff-tree difftool fast-export fast-import
+clean clone commit commit-tree config count-objects credential describe diff diff-tree difftool fast-export fast-import
 fetch filter-branch for-each-ref format-patch fsck gc grep hash-object help http-push init interpret-trailers
 log ls-files ls-remote ls-tree maintenance merge merge-base mergetool mv name-rev notes prune pull push
 range-diff rebase reflog remote repack replace request-pull reset restore rev-list rev-parse revert rm
@@ -55,6 +96,14 @@ update-index update-ref var verify-commit version whatchanged worktree
 
 class Blocked(Exception):
     pass
+
+
+class Reform(Blocked):
+    """a state repo commit in the wrong shape: the agent can fix it and retry."""
+
+
+# the whole command, for the env check on commits
+TEXT = ""
 
 
 def short_flags(a):
@@ -182,6 +231,7 @@ def shell_script(words):
 
 def check_simple(words, redirs, sep, prev, cwd, depth):
     words = list(words)
+    fed = False  # xargs adds arguments the guard never sees
     while True:
         while words and ASSIGN.match(words[0]):
             words.pop(0)
@@ -213,6 +263,7 @@ def check_simple(words, redirs, sep, prev, cwd, depth):
             words = rest
             continue
         if prog in WRAPPERS:
+            fed = fed or prog == "xargs"
             words = unwrap(words[1:], *WRAPPERS[prog])
             continue
         if prog == "flock":
@@ -243,14 +294,14 @@ def check_simple(words, redirs, sep, prev, cwd, depth):
     if prog in ("cd", "pushd"):
         return resolve(cwd, args[0] if args else "~")
     if prog == "git":
-        check_git(args, cwd, depth)
+        check_git(args, cwd, depth, fed)
     elif prog == "gh":
         check_gh(args)
     check_publish(prog, args)
     return cwd
 
 
-def check_git(args, cwd, depth):
+def check_git(args, cwd, depth, fed=False, overridden=False):
     if depth > MAX_DEPTH:
         raise Blocked("a git alias nested too deep to check")
     gopts, i = [], 0
@@ -265,6 +316,7 @@ def check_git(args, cwd, depth):
                 raise Blocked("git -c overriding where a remote points")
             if kv.lower().startswith("alias."):
                 raise Blocked("an inline git alias the guard can't follow")
+            overridden = True
             i += 1 if "=" in a else 2
         elif a in ("--git-dir", "--work-tree", "--namespace"):
             gopts += args[i:i + 2]
@@ -282,10 +334,14 @@ def check_git(args, cwd, depth):
     if sub not in GIT_BUILTINS:
         alias = git(["config", "--get", f"alias.{sub}"], cwd, gopts)
         if alias and alias.startswith("!"):
+            if fed or overridden:
+                raise Blocked("a shell alias under xargs or git -c, which the guard can't follow")
             check(alias[1:] + " " + " ".join(map(shlex.quote, rest)), cwd, depth + 1)
-        elif alias:
-            check_git(shlex.split(alias) + rest, cwd, depth + 1)
-        return
+            return
+        if alias:
+            check_git(shlex.split(alias) + rest, cwd, depth + 1, fed, overridden)
+            return
+        # an outside command (subtree, filter-repo, lfs) goes on to the history checks
     if sub == "branch" and any(a == "--delete" or set(short_flags(a)) & set("dD") for a in rest):
         raise Blocked("deleting a branch")
     elif sub == "update-ref" and ("-d" in rest or "--stdin" in rest):
@@ -300,6 +356,174 @@ def check_git(args, cwd, depth):
         keys = [a for a in rest if not a.startswith("-") and a not in reading | writing]
         if keys and URL_KEY.match(keys[0]) and not reading & set(rest) and (len(keys) > 1 or writing & set(rest)):
             raise Blocked("changing where a git remote points")
+    if sub in ("commit", "commit-tree"):
+        check_commit(sub, rest, cwd, gopts, fed, overridden)
+    elif rewrites(sub, rest):
+        if gopts or GIT_ENV_SET.search(TEXT):
+            raise Blocked(f"git {sub} with --git-dir, --work-tree or git env the guard can't place")
+        repo = state_repo(load_config(), cwd)
+        if repo:
+            raise Blocked(f"git {sub} writes history in a state repo ({repo['path']}), which is the owner's (0002 §2.7)")
+        if makes_commits(sub, rest):
+            raise Blocked(f"git {sub} makes commits, and agents don't commit outside a state repo (0001 §2.3)")
+
+
+def rewrites(sub, rest):
+    """whether a git subcommand may write a state repo's history: commits,
+    refs, tags or branches. anything off STATE_READS does."""
+    pos = [a for a in rest if not a.startswith("-")]
+    flags = {a.split("=", 1)[0] for a in rest if a.startswith("-")}
+    if sub in ("merge", "pull"):
+        return "--ff-only" not in flags or any(":" in p for p in pos)
+    if sub == "tag":
+        return bool(flags & {"-d", "--delete"}) or (bool(pos) and not flags & {"-l", "--list"})
+    if sub == "branch":
+        return bool(flags & BRANCH_WRITES) or (bool(pos) and not flags & {"-l", "--list"})
+    if sub in ("checkout", "switch"):
+        return bool(flags & {"-b", "-B", "-c", "-C", "--orphan"})
+    if sub == "stash":
+        return not pos or pos[0] not in ("list", "show")
+    if sub == "fetch":
+        return any(":" in p for p in pos)  # a refspec that names a local ref
+    if sub in ("reflog", "notes"):
+        return bool(pos) and pos[0] not in ("show", "list", "exists")
+    if sub == "worktree":
+        return not pos or pos[0] != "list"
+    return sub not in STATE_READS
+
+
+def makes_commits(sub, rest):
+    """whether a git subcommand makes commits on a branch, which an agent does
+    only with `git commit` in a state repo."""
+    return sub in COMMIT_MAKERS or (sub in ("merge", "pull") and "--ff-only" not in rest)
+
+
+def load_config(check_disk=False):
+    """the state repos in claude-guard.json, as [{path, root, agent_paths}].
+
+    a missing file means there are none. anything malformed blocks, and so does
+    an agent path that is, or holds, agent config (0002 §2.7).
+    """
+    def bad(why):
+        raise Blocked(f"claude-guard.json is broken ({why}), so commits and state repo history writes are blocked")
+
+    try:
+        with open(CONFIG) as f:
+            data = json.load(f)
+    except FileNotFoundError:
+        return []
+    except (OSError, ValueError) as e:
+        bad(e)
+    repos = data.get("state_repos") if isinstance(data, dict) else None
+    if not isinstance(repos, list):
+        bad("no state_repos list")
+    out = []
+    for r in repos:
+        path, agent_paths = (r.get("path"), r.get("agent_paths")) if isinstance(r, dict) else (None, None)
+        if not isinstance(path, str) or not isinstance(agent_paths, list) or not agent_paths:
+            bad("each state repo needs a path and a non-empty agent_paths list")
+        expanded = re.sub(r"^~(?=/|$)", HOME, path)
+        if not os.path.isabs(expanded):
+            bad(f"{path} isn't absolute")
+        root = os.path.realpath(expanded)
+        clean = []
+        for a in agent_paths:
+            n = os.path.normpath(a) if isinstance(a, str) and a else ""
+            parts = set(n.split(os.sep))
+            if n in ("", ".") or os.path.isabs(n) or parts & ({"..", ".git"} | AGENT_CONFIG) or any(c in n for c in "*?[]$`~"):
+                bad(f"agent path {a!r} isn't a plain subdirectory, or it is agent config")
+            if check_disk:
+                for dirpath, dirs, files in os.walk(os.path.join(root, n)):
+                    if ".git" in dirs or ".git" in files:
+                        dirs[:] = []  # a nested repo's files, its AGENTS.md too, aren't this repo's to commit
+                        continue
+                    hit = AGENT_CONFIG & (set(dirs) | set(files))
+                    if hit:
+                        bad(f"{os.path.relpath(dirpath, root)} holds {', '.join(sorted(hit))}")
+            clean.append(n)
+        out.append({"path": path, "root": root, "agent_paths": clean})
+    return out
+
+
+def state_repo(repos, cwd):
+    """the state repo whose toplevel cwd sits in, or None. a nested repo or a
+    worktree has its own toplevel, so it never matches."""
+    if not repos:
+        return None
+    top = git(["rev-parse", "--show-toplevel"], cwd, [])
+    top = os.path.realpath(top) if top else None
+    return next((r for r in repos if r["root"] == top), None)
+
+
+def check_commit(sub, rest, cwd, gopts, fed, overridden):
+    if sub == "commit-tree":
+        raise Blocked("git commit-tree: an agent commit is `git commit -m <msg> -- <file>...` in a state repo")
+    if overridden or gopts:
+        raise Blocked("git -c, --git-dir or --work-tree on a commit (0002 §2.7 overrides)")
+    if GIT_ENV_SET.search(TEXT) or any(GIT_ENV_NAME.match(k) for k in os.environ):
+        raise Blocked("GIT_AUTHOR_*, GIT_COMMITTER_*, GIT_CONFIG_* or GIT_DIR-style env on a commit (0002 §2.7 overrides)")
+    if fed:
+        raise Blocked("a git commit fed by xargs, whose paths the guard can't see")
+    repo = state_repo(load_config(check_disk=True), cwd)
+    if repo is None:
+        raise Blocked("a commit outside a state repo; agents don't commit here (0001 §2.3)")
+    hits = repo_overrides(cwd)
+    if hits:
+        raise Blocked(f"the state repo's own git config sets {', '.join(hits)}, which can change who commits, how it's signed or which hooks run (0002 §2.7 overrides)")
+    msg, paths, i = False, None, 0
+    while i < len(rest):
+        a = rest[i]
+        if a == "--":
+            paths = rest[i + 1:]
+            break
+        if a in COMMIT_MSG:
+            if i + 1 >= len(rest):
+                raise Reform(f"git commit {a} with no message")
+            msg, i = True, i + 2
+        elif a.startswith(("--message=", "--file=")) or (a[:2] in ("-m", "-F") and len(a) > 2):
+            msg, i = True, i + 1
+        elif a in COMMIT_QUIET:
+            i += 1
+        elif a.split("=", 1)[0] in COMMIT_OVERRIDES or set(short_flags(a)) & {"n", "S"}:
+            raise Blocked(f"git commit {a} (0002 §2.7 overrides)")
+        else:
+            raise Reform(f"git commit {a}")
+    if not msg:
+        raise Reform("git commit with no -m")
+    if not paths:
+        raise Reform("git commit with no -- <file>..., which takes the whole index, another session's staging included")
+    for p in paths:
+        check_agent_path(repo, cwd, p)
+
+
+def repo_overrides(cwd):
+    """the REPO_OVERRIDES keys a repo's own config sets (local or worktree
+    scope). a `git config` or an edit to .git/config lasts past the command
+    that made it, so the guard reads the config, not the command."""
+    out = git(["config", "--list", "--show-scope", "--name-only"], cwd, [])
+    if out is None:
+        raise Blocked("the guard couldn't read the state repo's git config")
+    keys = (line.partition("\t") for line in out.splitlines())
+    return sorted({k for scope, _, k in keys if scope in ("local", "worktree") and REPO_OVERRIDES.search(k)})
+
+
+def check_agent_path(repo, cwd, p):
+    if p.startswith(":") or any(c in p for c in "*?[]"):
+        raise Reform(f"{p}: name each file, no globs or pathspec magic")
+    path = resolve(cwd, p)
+    if path is None:
+        raise Reform(f"{p}: a path the guard can't resolve")
+    real = os.path.join(os.path.realpath(os.path.dirname(path)), os.path.basename(path))
+    rel = os.path.relpath(real, repo["root"])
+    parts = rel.split(os.sep)
+    if rel == "." or parts[0] == "..":
+        raise Blocked(f"{p} is outside the state repo")
+    if ".git" in parts or AGENT_CONFIG & set(parts):
+        raise Blocked(f"{rel} is agent config or a .git dir, never an agent path (0001 §2.3)")
+    if not any(rel == a or rel.startswith(a + os.sep) for a in repo["agent_paths"]):
+        raise Blocked(f"{rel} isn't under an agent path ({', '.join(repo['agent_paths'])})")
+    if os.path.isdir(real):
+        raise Reform(f"{rel} is a directory: name each file")
 
 
 def check_gh(args):
@@ -330,11 +554,15 @@ def check_publish(prog, args):
 
 
 def main():
+    global TEXT
     try:
         data = json.load(sys.stdin)
-        cmd = (data.get("tool_input") or {}).get("command") or ""
+        cmd = TEXT = (data.get("tool_input") or {}).get("command") or ""
         if cmd.strip():
             check(cmd, data.get("cwd") or os.getcwd())
+    except Reform as e:
+        print(f"claude-guard blocked this: {e}. an agent commit in a state repo takes only `git commit -m <msg> -- <file>...`, each file under an agent path. fix it and retry, or hand the command to the user.", file=sys.stderr)
+        return 2
     except Blocked as e:
         print(f"claude-guard blocked this: {e}. this is a hard rule; don't retry it another way. hand the command to the user.", file=sys.stderr)
         return 2

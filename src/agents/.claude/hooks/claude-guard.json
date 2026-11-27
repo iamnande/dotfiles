@@ -1,0 +1,8 @@
+{
+  "state_repos": [
+    {
+      "path": "~/src/iamnande/senzu",
+      "agent_paths": ["beans/", "memory/", "references/", "weeks/", "docs/"]
+    }
+  ]
+}
