@@ -1,21 +1,37 @@
+# hello, i am nick (nande).
 [user]
 	name = nick anderson
-	email = nick@morethq.com
-	signingKey = ~/.ssh/id_ed25519_sk_rk_mhq-naomi-ssh
+	useConfigOnly = true
 
+# i build services, automation & tools for people i love..
+# and sometimes myself.
+[includeIf "gitdir:~/src/iamnande/"]
+    path = ~/.gitconfig-iamnande
+
+# i'm a sr authonaut @ bitwarden.
+# use passkeys, use a password manager. stay safe out there.
+# note to dingus (self): the mattering here orders, mkay?
+[includeIf "gitdir:~/src/bitwarden/"]
+    path = ~/.gitconfig-bitwarden
+
+# these save real time for my degenerate, non-agentic fingers.
 [alias]
 	up = pull --rebase --autostash
 
-[commit]
-	gpgSign = true
+[init]
+	defaultBranch = main
 
+# multi-layer hardware keys for a resilient end-to-end secure
+# digital identity.
+#
+# primary - naomi, backup - amos, and failover - alex.
+#           (which obv makes me cpt holden)
+#
+# when not in-use or on my person, each key is stored in a
+# separate secure safe, under continuous protection by a
+# dedicated close protection officer.
 [gpg]
 	format = ssh
 
-[gpg "ssh"]
-	allowedSignersFile = ~/.ssh/allowed_signers
-
-[include]
-	path = ~/.gitconfig-local
-[init]
-	defaultBranch = main
+[commit]
+	gpgSign = true
