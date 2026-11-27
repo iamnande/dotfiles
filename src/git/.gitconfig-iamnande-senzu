@@ -1,0 +1,7 @@
+[user]
+	name = [mhq] senzu agent
+	email = senzu-agent@mhq.invalid
+	signingKey = ~/.ssh/.mhq.senzu-agent.pub
+
+[gpg "ssh"]
+	allowedSignersFile = ~/.ssh/.mhq.senzu-signers
