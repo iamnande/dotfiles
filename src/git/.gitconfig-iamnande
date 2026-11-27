@@ -1,0 +1,6 @@
+[user]
+	email = nick@morethq.com
+	signingKey = ~/.ssh/id_ed25519_sk_rk_mhq-naomi-ssh
+
+[gpg "ssh"]
+	allowedSignersFile = ~/.ssh/.mhq-signers

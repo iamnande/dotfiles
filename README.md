@@ -13,14 +13,14 @@ i use `arch` (`hypr`, `ghostty`, `fish`, `zellij`), btw. nix is coming.
 sudo pacman -Syu stow
 ```
 
-2. _"(`:bufo-is-a-little-worried-but-still-trying-to-be-supportive:)` houston,
+2. _"(`:bufo-is-a-little-worried-but-still-trying-to-be-supportive:`) houston,
    confirm launch clearance?"_,
 
 ```fish
 git clone git@github.com:iamnande/dotfiles.git ~/src/iamnande/dotfiles
 ```
 
-2.  _"(:`bufo-is-exhausted-rooting-for-the-anti-hero:`) uhhhhh, roci this izzzz
+3.  _"(`:bufo-is-exhausted-rooting-for-the-anti-hero:`) uhhhhh, roci this izzzz
     houstonn... i'm gonna need you to **c**hange **d**irectionction to
     `~/src/iamnande/dotfiles`, confirm."_
 
@@ -28,7 +28,7 @@ git clone git@github.com:iamnande/dotfiles.git ~/src/iamnande/dotfiles
 cd ~/src/iamnande/dotfiles
 ```
 
-3. _"(`:bufo-offers-coffee:`) roger, houston. new direction confirmed.
+4. _"(`:bufo-offers-coffee:`) roger, houston. new direction confirmed.
    initiating launch."_
 
 ```
