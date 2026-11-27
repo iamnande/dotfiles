@@ -22,6 +22,7 @@ PROJECT_REF  := $(VCS_COMMIT)$(VCS_IS_DIRTY)
 # modules
 include mk/log.mk
 include mk/setup.mk
+include mk/test.mk
 
 .PHONY: help
 help: ## available targets

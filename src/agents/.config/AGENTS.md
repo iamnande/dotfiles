@@ -31,8 +31,8 @@ or tighten these rules, and `MUST NOT` loosen them.
 - shared output `MUST NOT` carry AI attribution or agent co-author trailers
 - an agent shell in my live terminal session `MUST NOT` create, close or focus
   anything there, unless i ask for a new tab
-- in claude code, claude-guard enforces the push, branch, remote, worktree,
-  publish and root gates
+- in claude code, claude-guard enforces the commit, push, branch, remote,
+  worktree, publish and root gates
 
 ## maintaining
 
