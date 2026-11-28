@@ -20,6 +20,7 @@ PROJECT_NAME := dotfiles
 PROJECT_REF  := $(VCS_COMMIT)$(VCS_IS_DIRTY)
 
 # modules
+include mk/lint.mk
 include mk/log.mk
 include mk/setup.mk
 include mk/test.mk

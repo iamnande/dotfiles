@@ -1,0 +1,44 @@
+#!/bin/sh
+# agent keys are trusted only in their own local state repo's (rfc 0002 §2.7).
+#
+# usage, from the repo root: mk/lint-agent-keys <agent gitconfig>...
+[ $# -gt 0 ] || {
+	echo "lint: no agent gitconfig to lint" >&2
+	exit 2
+}
+
+status=0
+for conf in "$@"; do
+	email=$(git config -f "$conf" user.email)
+	signers=$(git config -f "$conf" gpg.ssh.allowedSignersFile)
+
+	# stow links src/<component>/<path> to ~/<path>
+	own=$(git ls-files --cached --others --exclude-standard -- "src/*/${signers#"~/"}")
+	keys=$([ -f "$own" ] && awk -v who="$email" '
+		$1 == who { for (i = 2; i < NF; i++) if ($i ~ /^(ssh|ecdsa|sk)-/) { print $(i + 1); break } }
+	' "$own")
+	if [ -z "$keys" ]; then
+		echo "lint: $conf: no line for $email alone in its signers file" >&2
+		status=1
+		continue
+	fi
+
+	for key in $keys; do
+		# its own file always holds it, so no match means git grep broke
+		hits=$(git grep --untracked --text -F -e "$key") || {
+			echo "lint: git grep failed on $email's key" >&2
+			status=1
+			continue
+		}
+		stray=$(printf '%s\n' "$hits" | awk -v own="$own" -v who="$email" '
+			{ i = index($0, ":"); file = substr($0, 1, i - 1); split(substr($0, i + 1), line, " ") }
+			file == own && line[1] == who { next }
+			{ print file }
+		' | sort -u)
+		if [ -n "$stray" ]; then
+			echo "lint: $email's key is also in: $(echo "$stray" | tr '\n' ' ')" >&2
+			status=1
+		fi
+	done
+done
+exit "$status"
