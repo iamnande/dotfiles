@@ -26,6 +26,8 @@ or tighten these rules, and `MUST NOT` loosen them.
 
 - agents `MUST NOT` commit, push, open or merge PRs, delete branches, or change
   where a remote points. hand me the command
+- the one exception: in a state repo, an agent `MAY` commit its own changes
+  under its agent paths (rfc 0002 §2.7)
 - agents `MUST NOT` publish, force-remove worktrees, or run as root
 - nothing `MUST` go to an outside service without my sign-off on the exact text
 - shared output `MUST NOT` carry AI attribution or agent co-author trailers

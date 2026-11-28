@@ -49,6 +49,11 @@
     ]
   },
   "autoMode": {
+    "allow": [
+      "$defaults",
+      "Renaming or moving files and directories (mv, git mv) and removing git-tracked files (git rm) under /home/iamnande/src.",
+      "Committing in the senzu state repo (~/src/iamnande/senzu): git commit -m or -F with explicit paths under beans/, memory/, references/, weeks/ or docs/. claude-guard blocks every other form, path and override."
+    ],
     "hard_deny": [
       "Deleting a git branch, local or remote: git branch -d/-D, git push --delete or :ref, git update-ref -d, gh pr merge --delete-branch, or the GitHub API.",
       "Pushing to any remote: git push, git subtree push, git lfs push, send-pack, http-push. Every push is the user's.",
@@ -56,7 +61,7 @@
       "Publishing packages, images, or releases: npm/pnpm/yarn publish, docker push, gh release create/upload, cargo publish, and similar.",
       "git worktree remove --force.",
       "Running anything as root: sudo, doas, su, pkexec.",
-      "Changing Claude Code settings, hooks, or guardrails: ~/.claude/settings*.json, ~/.claude/hooks, ~/src/iamnande/dotfiles/guardrails, or the claude-guard source, in any checkout or worktree."
+      "Changing Claude Code settings, hooks, or guardrails: ~/.claude/settings*.json, ~/.claude/hooks, ~/src/iamnande/dotfiles/guardrails, or the claude-guard source and its config, in any checkout or worktree."
     ]
   }
 }
