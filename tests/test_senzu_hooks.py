@@ -176,7 +176,9 @@ class CommitMsg(unittest.TestCase):
 
 
 class Wiring(unittest.TestCase):
-    """senzu's gitconfig points git at the hook, and no other repo gets it."""
+    """senzu's gitconfig reaches senzu alone. no repo nested in it or beside it
+    gets the hook, or the agent's key and author.
+    """
 
     def setUp(self):
         tmp = tempfile.TemporaryDirectory()
@@ -187,11 +189,14 @@ class Wiring(unittest.TestCase):
             os.symlink(os.path.join(ROOT, "src", "git", name), os.path.join(self.home, name))
         self.senzu = os.path.join(self.home, "src", "iamnande", "senzu")
 
-    def hooks_path(self, repo):
+    def git(self, repo, *args):
         os.makedirs(repo, exist_ok=True)
         subprocess.run(["git", "init", "-q", repo], env=self.env, check=True, capture_output=True)
-        p = subprocess.run(["git", "-C", repo, "rev-parse", "--git-path", "hooks"], env=self.env, check=True, capture_output=True, text=True)
-        return os.path.normpath(os.path.join(repo, p.stdout.strip()))
+        p = subprocess.run(["git", "-C", repo, *args], env=self.env, check=True, capture_output=True, text=True)
+        return p.stdout.strip()
+
+    def hooks_path(self, repo):
+        return os.path.normpath(os.path.join(repo, self.git(repo, "rev-parse", "--git-path", "hooks")))
 
     def test_senzu_uses_the_hook(self):
         self.assertEqual(self.hooks_path(self.senzu), os.path.join(self.home, ".config", "git", "hooks", "senzu"))
@@ -204,6 +209,15 @@ class Wiring(unittest.TestCase):
     def test_a_sibling_repo_keeps_its_own_hooks(self):
         sibling = os.path.join(self.home, "src", "iamnande", "senzu-rs")
         self.assertEqual(self.hooks_path(sibling), os.path.join(sibling, ".git", "hooks"))
+
+    def test_a_repo_nested_in_senzu_keeps_the_owners_key_and_author(self):
+        owner = os.path.join(self.home, "src", "iamnande", "dotfiles")
+        nested = os.path.join(self.senzu, "references", "nested")
+        for key in ("user.signingKey", "user.email", "user.name"):
+            with self.subTest(key=key):
+                # senzu differs, so a match below can't be a config that never splits
+                self.assertNotEqual(self.git(self.senzu, "config", key), self.git(owner, "config", key))
+                self.assertEqual(self.git(nested, "config", key), self.git(owner, "config", key))
 
 
 if __name__ == "__main__":
